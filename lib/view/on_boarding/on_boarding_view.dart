@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projrect_annam/common/color_extension.dart';
 import 'package:projrect_annam/common_widget/round_button.dart';
-import 'package:projrect_annam/view/main_tabview/main_tabview.dart';
 
 class OnBoardingView extends StatefulWidget {
   const OnBoardingView({super.key});
@@ -135,12 +134,12 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                       if (selectPage >= 2) {
                         // Home Screen
 
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const MainTabView(),
-                          ),
-                        );
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => const MainTabView(role: ,),
+                        //   ),
+                        // );
                       } else {
                         //Next Screen
 

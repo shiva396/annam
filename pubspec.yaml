@@ -50,6 +50,10 @@ dependencies:
   carousel_slider: ^4.2.1
   calendar_date_picker2: ^1.1.5
   font_awesome_flutter: ^10.7.0
+  firebase_core: ^3.2.0
+  firebase_auth: ^5.1.2
+  firebase_storage: ^12.1.1
+  cloud_firestore: ^5.1.0
 
 dev_dependencies:
   flutter_test:

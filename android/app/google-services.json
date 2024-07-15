@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "194345459531",
+    "project_id": "annam-627a7",
+    "storage_bucket": "annam-627a7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:194345459531:android:873aaeccbb9ada415752ce",
+        "android_client_info": {
+          "package_name": "com.codeforany.projrect_annam"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVwWJj2n-0EghPdLibD6ucfpTLs2pX4Ik"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

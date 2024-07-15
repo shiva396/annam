@@ -1,17 +1,21 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:projrect_annam/Firebase/firebase_operations.dart';
+import 'package:projrect_annam/canteen_owner/canteen_owner.dart';
+import '../student/main_tabview.dart';
 
 class RoleSeperationPage extends StatefulWidget {
-  const RoleSeperationPage({super.key});
+  final Map<String, dynamic> userData;
 
+  const RoleSeperationPage({super.key, required this.userData});
   @override
   State<RoleSeperationPage> createState() => _RoleSeperationPageState();
 }
 
 class _RoleSeperationPageState extends State<RoleSeperationPage> {
-  String _selectedRole = 'student'; // Default role is student
+  String _selectedRole = 'student';
+  String _selectedCollege = '';
   TextEditingController _nameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
   TextEditingController _collegeController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
@@ -20,51 +24,33 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
   TextEditingController _organizationController = TextEditingController();
   TextEditingController _coordinatorController = TextEditingController();
 
+  List<DropdownMenuItem<String>> _dropdownItems = [];
+
   @override
   void initState() {
     super.initState();
-    _loadPreferences();
+    _fetchDropdownItems();
   }
 
-  Future<void> _loadPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _selectedRole = prefs.getString('selectedRole') ??
-          'student'; 
-    });
-  }
+  Future<void> _fetchDropdownItems() async {
+    QuerySnapshot snapshot =
+        await FirebaseOperations.firebaseInstance.collection('college').get();
+    Set<DropdownMenuItem<String>> items = snapshot.docs.map((doc) {
+      print(doc.id);
+      return DropdownMenuItem<String>(
+        value: doc.id,
+        child: Text(doc.id),
+      );
+    }).toSet();
 
-  Future<void> _savePreferences(String role) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('selectedRole', role);
     setState(() {
-      _selectedRole = role;
+      _dropdownItems = items.toList();
     });
-
-    // Navigate to respective page based on role
-    switch (role) {
-      case 'student':
-        Navigator.pushReplacementNamed(context, '/student');
-        break;
-      case 'cattle_owner':
-        Navigator.pushReplacementNamed(context, '/cattle_owner');
-        break;
-      case 'canteen_owner':
-        Navigator.pushReplacementNamed(context, '/canteen_owner');
-        break;
-      case 'ngo':
-        // Handle navigation or additional logic for NGO role
-        break;
-      default:
-        // Navigate to default page or handle accordingly
-        break;
-    }
   }
 
   @override
   void dispose() {
     _nameController.dispose();
-    _emailController.dispose();
     _collegeController.dispose();
     _phoneController.dispose();
     _addressController.dispose();
@@ -132,8 +118,9 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                               Colors.orange[100], // Color when dropdown is open
                           value: _selectedRole,
                           onChanged: (value) {
-                            _savePreferences(
-                                value!); // Save selected role to preferences
+                            setState(() {
+                              _selectedRole = value!;
+                            });
                           },
                           items: [
                             DropdownMenuItem(
@@ -160,14 +147,6 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                             controller: _nameController,
                             decoration: const InputDecoration(
                               labelText: 'Name',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          TextField(
-                            controller: _emailController,
-                            decoration: const InputDecoration(
-                              labelText: 'Email ID',
                               border: OutlineInputBorder(),
                             ),
                           ),
@@ -233,7 +212,7 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                           TextField(
                             controller: _nameController,
                             decoration: const InputDecoration(
-                              labelText: 'Name',
+                              labelText: 'Canteen Name',
                               border: OutlineInputBorder(),
                             ),
                           ),
@@ -246,13 +225,28 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                             ),
                           ),
                           const SizedBox(height: 10),
-                          TextField(
-                            controller: _collegeController,
-                            decoration: const InputDecoration(
-                              labelText: 'College Name',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
+                          DropdownButtonFormField<String>(
+                              decoration: InputDecoration(
+                                contentPadding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                hintText: 'Choose College',
+                                filled: true,
+                                fillColor: Colors.grey[200],
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide:
+                                        BorderSide(color: Colors.black)),
+                              ),
+                              dropdownColor: Colors.orange[100],
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedCollege = value!;
+                                });
+                              },
+                              items: _dropdownItems),
                           const SizedBox(height: 10),
                           TextField(
                             controller: _addressController,
@@ -288,14 +282,6 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                           ),
                           const SizedBox(height: 10),
                           TextField(
-                            controller: _emailController,
-                            decoration: const InputDecoration(
-                              labelText: 'Email ID',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          TextField(
                             controller: _phoneController,
                             decoration: const InputDecoration(
                               labelText: 'Phone Number',
@@ -313,15 +299,118 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                         ],
                         const SizedBox(height: 20), // Added space at the bottom
                         ElevatedButton(
-                          onPressed: () {
-                            // Handle save logic here
-                            _saveData();
+                          onPressed: () async {
+                            // Data store to firebase
+
+                            if (_selectedRole == 'student') {
+                              if (_nameController.text.trim().isNotEmpty &&
+                                  _collegeController.text.trim().isNotEmpty &&
+                                  _phoneController.text.trim().isNotEmpty) {
+                                widget.userData.addAll({
+                                  'name': _nameController.text.trim(),
+                                  'collegeName': _collegeController.text.trim(),
+                                  'phoneNumber': _phoneController.text.trim()
+                                });
+                              } else {
+                                print("Fill all");
+                              }
+                            } else if (_selectedRole == 'canteen_owner') {
+                              widget.userData.addAll({
+                                'name': _nameController.text.trim(),
+                                'collegeName': _selectedCollege,
+                                'phoneNumber': _phoneController.text.trim(),
+                                'address': _addressController.text.trim(),
+                                'city': _cityController.text.trim(),
+                                'state': _stateController.text.trim()
+                              });
+                            } else if (_selectedRole == '') {
+                            } else if (_selectedRole == '') {
+                            } else {}
+
+                            FirebaseOperations.firebaseAuth
+                                .createUserWithEmailAndPassword(
+                                    email: widget.userData['email'],
+                                    password: widget.userData['password'])
+                                .then((v) async {
+                              try {
+                                DocumentReference docRef = FirebaseFirestore
+                                    .instance
+                                    .collection('role')
+                                    .doc('role');
+                                DocumentSnapshot docSnapshot =
+                                    await docRef.get();
+                                Map<String, dynamic> roleMap =
+                                    docSnapshot.get('role') ?? {};
+                                if (docSnapshot.exists) {
+                                  if (!roleMap
+                                      .containsKey(widget.userData['email'])) {
+                                    roleMap[widget.userData['email']] =
+                                        _selectedRole;
+
+                                    await docRef.update({
+                                      'role': roleMap,
+                                    });
+                                  } else {
+                                    print('Already exist');
+                                  }
+                                } else {
+                                  roleMap[widget.userData['email']] =
+                                      _selectedRole;
+                                  FirebaseFirestore.instance
+                                      .collection('role')
+                                      .doc('role')
+                                      .set({
+                                    'role': roleMap,
+                                  });
+                                }
+                              } catch (e) {
+                                print(e.toString());
+                              }
+                              if (_selectedRole == 'canteen_owner') {
+                                FirebaseOperations.firebaseInstance
+                                    .collection('college')
+                                    .doc(_selectedCollege)
+                                    .collection(_nameController.text.trim())
+                                    .doc(FirebaseOperations
+                                        .firebaseAuth.currentUser!.uid
+                                        .toString())
+                                    .set(widget.userData);
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => CanteenOwner(
+                                              role: 'canteen_owner',
+                                            )));
+                              } else {
+                                FirebaseOperations.firebaseInstance
+                                    .collection(_selectedRole)
+                                    .doc(FirebaseOperations
+                                        .firebaseAuth.currentUser!.uid
+                                        .toString())
+                                    .set(widget.userData)
+                                    .whenComplete(() {
+                                  if (_selectedRole == 'student') {
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => MainTabView(
+                                          role: 'student',
+                                        ),
+                                      ),
+                                    );
+                                  } else {}
+                                });
+                              }
+                            });
                           },
                           style: ButtonStyle(
                             backgroundColor:
-                                MaterialStateProperty.all(Colors.orange),
+                                WidgetStateProperty.all(Colors.orange),
                           ),
-                          child: const Text('Save'),
+                          child: const Text(
+                            'Save',
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       ],
                     ),
@@ -333,26 +422,5 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
         ],
       ),
     );
-  }
-
-  void _saveData() {
-    // Implement your save data logic here based on the role
-    // Example:
-    if (_selectedRole == 'student') {
-      // Save student data
-      // Navigate to student page
-      Navigator.pushReplacementNamed(context, '/student');
-    } else if (_selectedRole == 'cattle_owner') {
-      // Save cattle owner data
-      // Navigate to cattle owner page
-      Navigator.pushReplacementNamed(context, '/cattle_owner');
-    } else if (_selectedRole == 'canteen_owner') {
-      // Save canteen owner data
-      // Navigate to canteen owner page
-      Navigator.pushReplacementNamed(context, '/canteen_owner');
-    } else if (_selectedRole == 'ngo') {
-      // Save NGO data
-      // Navigate to NGO page or handle accordingly
-    }
   }
 }

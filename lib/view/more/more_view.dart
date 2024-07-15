@@ -47,12 +47,6 @@ class _MoreViewState extends State<MoreView> {
       "image": "assets/img/more_info.png",
       "base": 0
     },
-    {
-      "index": "6",
-      "name": "Logout",
-      "image": "assets/img/more_info.png",
-      "base": 0
-    },
   ];
 
   @override

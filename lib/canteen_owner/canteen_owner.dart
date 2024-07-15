@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:projrect_annam/canteen_owner/canteen_history.dart';
 import 'package:projrect_annam/canteen_owner/canteen_main_page.dart';
+import 'package:projrect_annam/canteen_owner/creation.dart';
 import 'package:projrect_annam/common/color_extension.dart';
 import 'package:projrect_annam/common_widget/tab_button.dart';
-import 'package:projrect_annam/view/home/home_view.dart';
-import 'package:projrect_annam/view/main_tabview/main_tabview.dart';
-import 'package:projrect_annam/view/menu/menu_view.dart';
 import 'package:projrect_annam/view/more/more_view.dart';
-import 'package:projrect_annam/view/offer/offer_view.dart';
-import 'package:projrect_annam/view/profile/profile_view.dart';
+import 'package:projrect_annam/student/profile_view.dart';
 
 class CanteenOwner extends StatefulWidget {
-  const CanteenOwner({super.key});
+  const CanteenOwner({super.key, required this.role});
+  final String role;
 
   @override
   State<CanteenOwner> createState() => _CanteenOwnerState();
@@ -66,7 +64,7 @@ class _CanteenOwnerState extends State<CanteenOwner> {
                   onTap: () {
                     if (selctTab != 0) {
                       selctTab = 0;
-                      // selectPageView = const MenuView();
+                      selectPageView = const Creation();
                     }
                     if (mounted) {
                       setState(() {});
@@ -96,7 +94,9 @@ class _CanteenOwnerState extends State<CanteenOwner> {
                   onTap: () {
                     if (selctTab != 3) {
                       selctTab = 3;
-                      selectPageView = const ProfileView();
+                      selectPageView = ProfileView(
+                        role: widget.role,
+                      );
                     }
                     if (mounted) {
                       setState(() {});

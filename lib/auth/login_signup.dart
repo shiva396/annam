@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:projrect_annam/auth/detail.dart';
+import 'package:projrect_annam/student/main_tabview.dart';
+import 'role_page.dart';
 
 class LoginSignUp extends StatefulWidget {
   const LoginSignUp({
@@ -35,45 +37,40 @@ class _LoginSignUpState extends State<LoginSignUp> {
             ),
           ),
           Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Image.asset('assets/img/logo.png'),
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  margin: const EdgeInsets.all(10),
-                  height: 500,
-                  width: 330,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: const BorderRadius.all(Radius.circular(20)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: const Offset(0, 3),
-                      )
-                    ],
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Image.asset('assets/img/logo.png'),
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    margin: const EdgeInsets.all(10),
+                    height: 500,
+                    width: 330,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: const BorderRadius.all(Radius.circular(20)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset: const Offset(0, 3),
+                        )
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        SignUpBar(toggleForm: _toggleForm, isSignUp: _isSignUp),
+                        _isSignUp ? SignUpFields() : const EmailBar(),
+                        const ContinueDivider(),
+                        const SocialIcons(),
+                      ],
+                    ),
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      SignUpBar(toggleForm: _toggleForm, isSignUp: _isSignUp),
-                      _isSignUp ? const SignUpFields() : const EmailBar(),
-                      const SizedBox(
-                        height: 70,
-                      ),
-                      _isSignUp ? const SignUpButton() : const LogInButton(),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      const ContinueDivider(),
-                      const SocialIcons(),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           )
         ],
@@ -102,7 +99,9 @@ class SocialIcons extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const RoleSeperationPage()));
+                    builder: (context) => const RoleSeperationPage(
+                          userData: {},
+                        )));
           },
         ),
         IconButton(
@@ -155,62 +154,31 @@ class ContinueDivider extends StatelessWidget {
   }
 }
 
-class LogInButton extends StatelessWidget {
-  const LogInButton({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TextButton(
-      style: ButtonStyle(
-        padding:
-            WidgetStateProperty.all(const EdgeInsets.fromLTRB(80, 2, 80, 2)),
-        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(25.0),
-            side: const BorderSide(color: Colors.orange),
-          ),
-        ),
-        backgroundColor: WidgetStateProperty.resolveWith<Color>(
-          (Set<WidgetState> states) {
-            if (states.contains(WidgetState.hovered)) {
-              return Colors.orange.withOpacity(0.8); // darker shade on hover
-            }
-            return Colors.orange;
-          },
-        ),
-        foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
-      ),
-      onPressed: () {
-        print("ds");
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const RoleSeperationPage()));
-      },
-      child: const Text(
-        'Log In',
-        style: TextStyle(fontSize: 18),
-      ),
-    );
-  }
-}
-
-class EmailBar extends StatelessWidget {
+class EmailBar extends StatefulWidget {
   const EmailBar({
     super.key,
   });
 
   @override
+  State<EmailBar> createState() => _EmailBarState();
+}
+
+class _EmailBarState extends State<EmailBar> {
+  TextEditingController emailController = TextEditingController();
+
+  TextEditingController passwordController = TextEditingController();
+
+  @override
   Widget build(BuildContext context) {
-    return const Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         TextField(
-          decoration: InputDecoration(hintText: 'Enter email or username'),
+          controller: emailController,
+          decoration: InputDecoration(hintText: 'Enter email'),
         ),
         TextField(
+          controller: passwordController,
           decoration: InputDecoration(hintText: 'Password'),
           obscureText: true,
           enableSuggestions: false,
@@ -219,10 +187,66 @@ class EmailBar extends StatelessWidget {
         SizedBox(
           height: 20,
         ),
-        Text(
-          'Forgot Password?',
-          style: TextStyle(color: Colors.orange),
+        Align(
+          alignment: Alignment.bottomRight,
+          child: Text(
+            'Forgot Password?',
+            style: TextStyle(color: Colors.orange),
+          ),
         ),
+        SizedBox(
+          height: 35,
+        ),
+        TextButton(
+          style: ButtonStyle(
+            padding: WidgetStateProperty.all(
+                const EdgeInsets.fromLTRB(80, 2, 80, 2)),
+            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25.0),
+                side: const BorderSide(color: Colors.orange),
+              ),
+            ),
+            backgroundColor: WidgetStateProperty.resolveWith<Color>(
+              (Set<WidgetState> states) {
+                if (states.contains(WidgetState.hovered)) {
+                  return Colors.orange
+                      .withOpacity(0.8); // darker shade on hover
+                }
+                return Colors.orange;
+              },
+            ),
+            foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+          ),
+          onPressed: () async {
+            if (emailController.text.trim().toLowerCase().isNotEmpty) {
+              DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
+                  .collection('role')
+                  .doc('role') // Replace with the actual document ID
+                  .get();
+              Map<String, dynamic> res = (docSnapshot.get('role'));
+              if (res.containsKey(emailController.text.trim().toLowerCase())) {
+                String role = res[emailController.text.trim().toLowerCase()];
+                if (role == 'student') {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MainTabView(role: role,),
+                    ),
+                  );
+                } else if (role == 'canteen_owner') {}
+              } else {
+                print("Account not found");
+              }
+            } else {
+              print("Error");
+            }
+          },
+          child: const Text(
+            'Log In',
+            style: TextStyle(fontSize: 18),
+          ),
+        )
       ],
     );
   }
@@ -302,69 +326,103 @@ class SignUpBar extends StatelessWidget {
   }
 }
 
-class SignUpFields extends StatelessWidget {
-  const SignUpFields({super.key});
+class SignUpFields extends StatefulWidget {
+  SignUpFields({super.key});
+
+  @override
+  State<SignUpFields> createState() => _SignUpFieldsState();
+}
+
+class _SignUpFieldsState extends State<SignUpFields> {
+  TextEditingController emailController = TextEditingController();
+
+  TextEditingController passwordController = TextEditingController();
+
+  TextEditingController retypedPasswordController = TextEditingController();
+
+  void dispose() {
+    super.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    retypedPasswordController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         TextField(
+          controller: emailController,
           decoration: InputDecoration(hintText: 'Enter email or username'),
         ),
         SizedBox(height: 10),
         TextField(
-          decoration: InputDecoration(hintText: 'New Password'),
+          controller: passwordController,
+          decoration: InputDecoration(hintText: 'Password'),
           obscureText: true,
           enableSuggestions: false,
           autocorrect: false,
         ),
         SizedBox(height: 10),
         TextField(
+          controller: retypedPasswordController,
           decoration: InputDecoration(hintText: 'Re-type Password'),
           obscureText: true,
           enableSuggestions: false,
           autocorrect: false,
         ),
-      ],
-    );
-  }
-}
-
-class SignUpButton extends StatelessWidget {
-  const SignUpButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return TextButton(
-      style: ButtonStyle(
-        padding:
-            WidgetStateProperty.all(const EdgeInsets.fromLTRB(80, 2, 80, 2)),
-        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(25.0),
-            side: const BorderSide(color: Colors.orange),
+        SizedBox(
+          height: 25,
+        ),
+        TextButton(
+          style: ButtonStyle(
+            padding: WidgetStateProperty.all(
+                const EdgeInsets.fromLTRB(80, 2, 80, 2)),
+            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25.0),
+                side: const BorderSide(color: Colors.orange),
+              ),
+            ),
+            backgroundColor: WidgetStateProperty.resolveWith<Color>(
+              (Set<WidgetState> states) {
+                if (states.contains(WidgetState.hovered)) {
+                  return Colors.orange
+                      .withOpacity(0.8); // darker shade on hover
+                }
+                return Colors.orange;
+              },
+            ),
+            foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
           ),
-        ),
-        backgroundColor: WidgetStateProperty.resolveWith<Color>(
-          (Set<WidgetState> states) {
-            if (states.contains(WidgetState.hovered)) {
-              return Colors.orange.withOpacity(0.8); // darker shade on hover
+          onPressed: () {
+            //  SIGN UP
+            if (emailController.text.isNotEmpty &&
+                passwordController.text.isNotEmpty &&
+                retypedPasswordController.text.isNotEmpty) {
+              if (passwordController.text != retypedPasswordController.text) {
+                print("Error");
+              } else {
+                // All correct
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => RoleSeperationPage(
+                              userData: {
+                                'email':
+                                    emailController.text.toLowerCase().trim(),
+                                'password': passwordController.text.trim()
+                              },
+                            )));
+              }
+            } else {
+              print("Error");
             }
-            return Colors.orange;
           },
-        ),
-        foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
-      ),
-      onPressed: () {
-        print("ds");
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const RoleSeperationPage()));
-      },
-      child: const Text('Sign Up', style: TextStyle(fontSize: 18)),
+          child: const Text('Sign Up', style: TextStyle(fontSize: 18)),
+        )
+      ],
     );
   }
 }

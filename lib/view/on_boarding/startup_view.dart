@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:projrect_annam/auth/detail.dart';
 import 'package:projrect_annam/auth/login_signup.dart';
-import 'package:projrect_annam/canteen_owner/canteen_owner.dart';
 
 import '../../common/globs.dart';
 
@@ -28,10 +26,6 @@ class _StarupViewState extends State<StartupView> {
     if (Globs.udValueBool(Globs.userLogin)) {
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => const LoginSignUp()));
-      // Navigator.push(context,
-      //     MaterialPageRoute(builder: (context) => const CanteenOwner()));
-      // Navigator.push(context,
-      //     MaterialPageRoute(builder: (context) => const MainTabView()));
     } else {
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => const LoginSignUp()));

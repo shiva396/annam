@@ -66,6 +66,7 @@ class RoundTitleTextfield extends StatelessWidget {
   final bool obscureText;
   final Color? bgColor;
   final Widget? left;
+  final bool? readOnly;
 
   const RoundTitleTextfield(
       {super.key,
@@ -75,7 +76,8 @@ class RoundTitleTextfield extends StatelessWidget {
       this.keyboardType,
       this.bgColor,
       this.left,
-      this.obscureText = false});
+      this.obscureText = false,
+      this.readOnly});
 
   @override
   Widget build(BuildContext context) {
@@ -98,9 +100,12 @@ class RoundTitleTextfield extends StatelessWidget {
               children: [
                 Container(
                   height: 55,
-                  margin: const EdgeInsets.only(top: 8,),
+                  margin: const EdgeInsets.only(
+                    top: 8,
+                  ),
                   alignment: Alignment.topLeft,
                   child: TextField(
+                    readOnly: readOnly!,
                     autocorrect: false,
                     controller: controller,
                     obscureText: obscureText,

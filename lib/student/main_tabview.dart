@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:projrect_annam/common/color_extension.dart';
 import 'package:projrect_annam/common_widget/tab_button.dart';
 
-import '../home/home_view.dart';
-import '../menu/menu_view.dart';
-import '../more/more_view.dart';
-import '../offer/offer_view.dart';
-import '../profile/profile_view.dart';
+import '../view/home/home_view.dart';
+import '../view/menu/menu_view.dart';
+import '../view/more/more_view.dart';
+import '../view/offer/offer_view.dart';
+import 'profile_view.dart';
 
 class MainTabView extends StatefulWidget {
-  const MainTabView({super.key});
+  const MainTabView({super.key, required this.role});
+  final String role;
 
   @override
   State<MainTabView> createState() => _MainTabViewState();
@@ -96,7 +97,9 @@ class _MainTabViewState extends State<MainTabView> {
                   onTap: () {
                     if (selctTab != 3) {
                       selctTab = 3;
-                      selectPageView = const ProfileView();
+                      selectPageView = ProfileView(
+                        role: widget.role,
+                      );
                     }
                     if (mounted) {
                       setState(() {});
