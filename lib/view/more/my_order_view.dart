@@ -12,6 +12,7 @@ class MyOrderView extends StatefulWidget {
 }
 
 class _MyOrderViewState extends State<MyOrderView> {
+  int totalAmount = 0;
   List itemArr = [
     {"name": "Beef Burger", "qty": "1", "price": 16.0},
     {"name": "Classic Burger", "qty": "1", "price": 14.0},
