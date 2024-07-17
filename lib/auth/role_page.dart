@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:projrect_annam/Firebase/firebase_operations.dart';
-import 'package:projrect_annam/canteen_owner/canteen_owner.dart';
-import '../student/main_tabview.dart';
+import 'package:projrect_annam/canteen_owner/canteen_main_tab.dart';
+import '../student/student_main_tab.dart';
 
 class RoleSeperationPage extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -36,7 +36,7 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
     QuerySnapshot snapshot =
         await FirebaseOperations.firebaseInstance.collection('college').get();
     Set<DropdownMenuItem<String>> items = snapshot.docs.map((doc) {
-      print(doc.id);
+   
       return DropdownMenuItem<String>(
         value: doc.id,
         child: Text(doc.id),
@@ -367,20 +367,22 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                                 print(e.toString());
                               }
                               if (_selectedRole == 'canteen_owner') {
+                                Map<String, dynamic> user = {
+                                  FirebaseOperations.firebaseAuth.currentUser!
+                                      .uid: widget.userData
+                                };
                                 FirebaseOperations.firebaseInstance
                                     .collection('college')
                                     .doc(_selectedCollege)
-                                    .collection(_nameController.text.trim())
-                                    .doc(FirebaseOperations
-                                        .firebaseAuth.currentUser!.uid
-                                        .toString())
-                                    .set(widget.userData);
+                                    .set(user, SetOptions(merge: true));
                                 Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => CanteenOwner(
-                                              role: 'canteen_owner',
-                                            )));
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => CanteenOwner(
+                                      collegeName: _selectedCollege,
+                                    ),
+                                  ),
+                                );
                               } else {
                                 FirebaseOperations.firebaseInstance
                                     .collection(_selectedRole)

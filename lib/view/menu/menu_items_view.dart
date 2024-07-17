@@ -1,14 +1,22 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:projrect_annam/common/color_extension.dart';
 import 'package:projrect_annam/common_widget/round_textfield.dart';
 
+import '../../Firebase/firebase_operations.dart';
 import '../../common_widget/menu_item_row.dart';
 import '../more/my_order_view.dart';
 import 'item_details_view.dart';
 
 class MenuItemsView extends StatefulWidget {
+  final String selectedCategory;
+  final String selectedCanteen;
   final Map mObj;
-  const MenuItemsView({super.key, required this.mObj});
+  const MenuItemsView(
+      {super.key,
+      required this.mObj,
+      required this.selectedCategory,
+      required this.selectedCanteen});
 
   @override
   State<MenuItemsView> createState() => _MenuItemsViewState();
@@ -86,6 +94,7 @@ class _MenuItemsViewState extends State<MenuItemsView> {
 
   @override
   Widget build(BuildContext context) {
+    var media = MediaQuery.of(context).size;
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
@@ -156,25 +165,137 @@ class _MenuItemsViewState extends State<MenuItemsView> {
               const SizedBox(
                 height: 15,
               ),
-              ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                padding: EdgeInsets.zero,
-                itemCount: menuItemsArr.length,
-                itemBuilder: ((context, index) {
-                  var mObj = menuItemsArr[index] as Map? ?? {};
-                  return MenuItemRow(
-                    mObj: mObj,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ItemDetailsView()),
+              StreamBuilder<DocumentSnapshot>(
+                  stream: FirebaseOperations.firebaseInstance
+                      .collection('college')
+                      .doc('sairam')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!(snapshot.hasData))
+                      return Center(child: CircularProgressIndicator());
+
+                    List<String> items = [];
+                    Map<String, dynamic> obj =
+                        snapshot.data!.data() as Map<String, dynamic>;
+                    Map<String, dynamic> ref =
+                        obj[(widget.selectedCanteen)]['categories'] ?? {};
+                    if (ref.isNotEmpty) {
+                      Map<String, dynamic> data = ref[widget.selectedCategory];
+                      print(data);
+                      items.addAll(data.keys.toList());
+                      return ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero,
+                        itemCount: items.length,
+                        itemBuilder: ((context, index) {
+                          var mObj = menuItemsArr[index] as Map? ?? {};
+
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ItemDetailsView(
+                                    itemName: data[items[index]]['name'],
+                                    price: data[items[index]]['price'],
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Stack(
+                              alignment: Alignment.centerRight,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(
+                                      top: 15, bottom: 8, right: 20),
+                                  width: media.width - 100,
+                                  height: 90,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(25),
+                                        bottomLeft: Radius.circular(25),
+                                        topRight: Radius.circular(10),
+                                        bottomRight: Radius.circular(10)),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black12,
+                                        blurRadius: 7,
+                                        offset: Offset(0, 4),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      mObj["image"].toString(),
+                                      width: 80,
+                                      height: 80,
+                                      fit: BoxFit.contain,
+                                    ),
+                                    const SizedBox(
+                                      width: 15,
+                                    ),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            data[items[index]]['name'],
+                                            style: TextStyle(
+                                                color: TColor.primaryText,
+                                                fontSize: 22,
+                                                fontWeight: FontWeight.w700),
+                                          ),
+                                          const SizedBox(
+                                            height: 4,
+                                          ),
+                                          Text(
+                                            data[items[index]]['price'] +
+                                                "  Rs",
+                                            style: TextStyle(
+                                                color: TColor.secondaryText,
+                                                fontSize: 11),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 35,
+                                      height: 35,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(17.5),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                                color: Colors.black12,
+                                                blurRadius: 4,
+                                                offset: Offset(0, 2))
+                                          ]),
+                                      alignment: Alignment.center,
+                                      child: Image.asset(
+                                        "assets/img/btn_next.png",
+                                        width: 15,
+                                        height: 15,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
                       );
-                    },
-                  );
-                }),
-              ),
+                    } else {
+                      return Text('NO ITEMS');
+                    }
+                  }),
             ],
           ),
         ),

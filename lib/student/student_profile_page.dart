@@ -11,15 +11,16 @@ import '../common/color_extension.dart';
 import '../common_widget/round_textfield.dart';
 import '../view/more/my_order_view.dart';
 
-class ProfileView extends StatefulWidget {
-  final String role;
-  const ProfileView({super.key, required this.role});
+class StudentProfilePage extends StatefulWidget {
+  const StudentProfilePage({
+    super.key,
+  });
 
   @override
-  State<ProfileView> createState() => _ProfileViewState();
+  State<StudentProfilePage> createState() => _StudentProfilePageState();
 }
 
-class _ProfileViewState extends State<ProfileView> {
+class _StudentProfilePageState extends State<StudentProfilePage> {
   final ImagePicker picker = ImagePicker();
   XFile? image;
 
@@ -52,7 +53,7 @@ class _ProfileViewState extends State<ProfileView> {
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: StreamBuilder<Object>(
             stream: FirebaseOperations.firebaseInstance
-                .collection(widget.role)
+                .collection('student')
                 .doc(FirebaseOperations.firebaseAuth.currentUser!.uid)
                 .snapshots(),
             builder: (context, snapshot) {
@@ -271,7 +272,7 @@ class _ProfileViewState extends State<ProfileView> {
                                   }
                                   // Editing data
                                   FirebaseOperations.firebaseInstance
-                                      .collection(widget.role)
+                                      .collection('student')
                                       .doc(FirebaseOperations
                                           .firebaseAuth.currentUser!.uid)
                                       .update(data);

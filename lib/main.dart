@@ -12,7 +12,7 @@ import 'package:projrect_annam/firebase_options.dart';
 import 'package:projrect_annam/view/on_boarding/startup_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'common/globs.dart';
+import 'common/globs.dart'; 
 import 'common/my_http_overrides.dart';
 
 SharedPreferences? prefs;

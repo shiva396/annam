@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:projrect_annam/student/main_tabview.dart';
+import 'package:projrect_annam/Firebase/firebase_operations.dart';
+import 'package:projrect_annam/canteen_owner/canteen_main_tab.dart';
+import 'package:projrect_annam/student/student_main_tab.dart';
 import 'role_page.dart';
 
 class LoginSignUp extends StatefulWidget {
@@ -169,6 +171,13 @@ class _EmailBarState extends State<EmailBar> {
   TextEditingController passwordController = TextEditingController();
 
   @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -220,9 +229,13 @@ class _EmailBarState extends State<EmailBar> {
           ),
           onPressed: () async {
             if (emailController.text.trim().toLowerCase().isNotEmpty) {
+              await FirebaseOperations.firebaseAuth.signInWithEmailAndPassword(
+                email: emailController.text.trim(),
+                password: passwordController.text.trim(),
+              );
               DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
                   .collection('role')
-                  .doc('role') // Replace with the actual document ID
+                  .doc('role')
                   .get();
               Map<String, dynamic> res = (docSnapshot.get('role'));
               if (res.containsKey(emailController.text.trim().toLowerCase())) {
@@ -231,10 +244,43 @@ class _EmailBarState extends State<EmailBar> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MainTabView(role: role,),
+                      builder: (context) => MainTabView(
+                        role: role,
+                      ),
                     ),
                   );
-                } else if (role == 'canteen_owner') {}
+                } else if (role == 'canteen_owner') {
+                  try {
+                    String collegeName = "";
+                    CollectionReference collegeCollection =
+                        FirebaseFirestore.instance.collection('college');
+
+                    QuerySnapshot collegeSnapshot =
+                        await collegeCollection.get();
+
+                    collegeSnapshot.docs.forEach((v) {
+                      Map<String, dynamic> abc =
+                          v.data() as Map<String, dynamic>;
+                      if (abc.containsKey(
+                          FirebaseOperations.firebaseAuth.currentUser!.uid)) {
+                        collegeName = v.id;
+                      }
+                    });
+                    if (collegeName.isNotEmpty) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  CanteenOwner(collegeName: collegeName)));
+                    } else {
+                      print("Collge not found");
+                    }
+
+                    // Iterate through each document in the "college" collection
+                  } catch (e) {
+                    print('Error checking documents: $e');
+                  }
+                }
               } else {
                 print("Account not found");
               }

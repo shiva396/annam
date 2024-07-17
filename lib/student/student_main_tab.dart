@@ -1,28 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:projrect_annam/canteen_owner/canteen_history.dart';
-import 'package:projrect_annam/canteen_owner/canteen_main_page.dart';
-import 'package:projrect_annam/canteen_owner/creation.dart';
 import 'package:projrect_annam/common/color_extension.dart';
 import 'package:projrect_annam/common_widget/tab_button.dart';
-import 'package:projrect_annam/view/more/more_view.dart';
-import 'package:projrect_annam/student/profile_view.dart';
 
-class CanteenOwner extends StatefulWidget {
-  const CanteenOwner({super.key, required this.role});
+import '../view/home/home_view.dart';
+import '../view/menu/menu_view.dart';
+import '../view/more/more_view.dart';
+import '../view/offer/offer_view.dart';
+import 'student_profile_page.dart';
+
+class MainTabView extends StatefulWidget {
+  const MainTabView({super.key, required this.role});
   final String role;
 
   @override
-  State<CanteenOwner> createState() => _CanteenOwnerState();
+  State<MainTabView> createState() => _MainTabViewState();
 }
 
-class _CanteenOwnerState extends State<CanteenOwner> {
+class _MainTabViewState extends State<MainTabView> {
   int selctTab = 2;
-  Widget selectPageView = const CanteenMainPage();
   PageStorageBucket storageBucket = PageStorageBucket();
+  Widget selectPageView = const HomeView();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageStorage(bucket: storageBucket, child: selectPageView),
+      backgroundColor: const Color(0xfff5f5f5),
       floatingActionButtonLocation:
           FloatingActionButtonLocation.miniCenterDocked,
       floatingActionButton: SizedBox(
@@ -32,7 +35,7 @@ class _CanteenOwnerState extends State<CanteenOwner> {
           onPressed: () {
             if (selctTab != 2) {
               selctTab = 2;
-              selectPageView = const CanteenMainPage();
+              selectPageView = const HomeView();
             }
             if (mounted) {
               setState(() {});
@@ -64,7 +67,7 @@ class _CanteenOwnerState extends State<CanteenOwner> {
                   onTap: () {
                     if (selctTab != 0) {
                       selctTab = 0;
-                      selectPageView = const Creation();
+                      selectPageView = const MenuView();
                     }
                     if (mounted) {
                       setState(() {});
@@ -72,12 +75,12 @@ class _CanteenOwnerState extends State<CanteenOwner> {
                   },
                   isSelected: selctTab == 0),
               TabButton(
-                  title: "History",
+                  title: "Offer",
                   icon: "assets/img/tab_offer.png",
                   onTap: () {
                     if (selctTab != 1) {
                       selctTab = 1;
-                      selectPageView = const CanteenHistory();
+                      selectPageView = const OfferView();
                     }
                     if (mounted) {
                       setState(() {});
@@ -94,9 +97,7 @@ class _CanteenOwnerState extends State<CanteenOwner> {
                   onTap: () {
                     if (selctTab != 3) {
                       selctTab = 3;
-                      selectPageView = ProfileView(
-                        role: widget.role,
-                      );
+                      selectPageView = StudentProfilePage();
                     }
                     if (mounted) {
                       setState(() {});
