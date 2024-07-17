@@ -48,7 +48,7 @@ class _StarupViewState extends State<StartupView> {
             fit: BoxFit.cover,
           ),
           Image.asset(
-            "assets/img/app_logo.png",
+            "assets/img/logo.png",
             width: media.width * 0.55,
             height: media.width * 0.55,
             fit: BoxFit.contain,
