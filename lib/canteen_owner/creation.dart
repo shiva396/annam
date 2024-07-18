@@ -10,12 +10,18 @@ class Creation extends StatefulWidget {
 }
 
 class _CreationState extends State<Creation> {
-  void _editItem(String itemName, String categoryName) {
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void _editItem(String itemName, String categoryName, bool data) {
     TextEditingController nameController =
         TextEditingController(text: tabs[categoryName][itemName]['name']);
     TextEditingController priceController =
         TextEditingController(text: tabs[categoryName][itemName]['price']);
-
+    final bool selected = data;
+    bool stateData = selected;
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -33,6 +39,21 @@ class _CreationState extends State<Creation> {
               TextField(
                 controller: priceController,
                 decoration: InputDecoration(labelText: 'Price'),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Stock in Hand"),
+                  Switch(
+                    onChanged: (v) {
+                      setState(() {
+                        stateData = !stateData;
+                      });
+                      print(stateData);
+                    },
+                    value: stateData,
+                  ),
+                ],
               ),
             ],
           ),
@@ -53,6 +74,7 @@ class _CreationState extends State<Creation> {
                   priceController.text.trim(),
                   'itemImageUrl',
                   itemName,
+                  stateData,
                 ).whenComplete(
                   () => Navigator.pop(context),
                 );
@@ -331,10 +353,14 @@ class _CreationState extends State<Creation> {
                             IconButton(
                               icon: Icon(Icons.edit),
                               onPressed: () {
+                                bool data = tabs[selectedCategory]
+                                    [itemValue[index]]['stockInHand'];
+                                ;
                                 _editItem(
                                     tabs[selectedCategory][itemValue[index]]
                                         ['name'],
-                                    selectedCategory);
+                                    selectedCategory,
+                                    data);
                               },
                             ),
                             IconButton(

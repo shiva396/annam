@@ -48,7 +48,8 @@ class FirebaseOperations {
       String newitemName,
       String itemPrice,
       String itemImageUrl,
-      String olditemName) async {
+      String olditemName,
+      bool stockInHand) async {
     DocumentSnapshot<Map<String, dynamic>> data =
         await firebaseInstance.collection('college').doc(collegeName).get();
     Map<String, dynamic> obj = data.data() as Map<String, dynamic>;
@@ -59,7 +60,7 @@ class FirebaseOperations {
       "name": newitemName,
       "price": itemPrice,
       "imageUrl": itemImageUrl,
-      "stockInHand": false,
+      "stockInHand": stockInHand,
     };
 
     await firebaseInstance.collection('college').doc(collegeName).set({
@@ -93,5 +94,57 @@ class FirebaseOperations {
         (obj[firebaseAuth.currentUser!.uid])['categories'];
 
     return update;
+  }
+
+  static Future<void> addCartItems(
+      {required String canteenName,
+      required String itemName,
+      required String price,
+      required String quantity}) async {
+    DocumentSnapshot<Map<String, dynamic>> obj = await firebaseInstance
+        .collection('student')
+        .doc(firebaseAuth.currentUser!.uid)
+        .collection('orders')
+        .doc(firebaseAuth.currentUser!.uid)
+        .get();
+    if (obj.data() != null) {
+      // obj.data()![canteenName];
+      Map<String, dynamic> data = obj.data()![canteenName];
+      data[itemName] = {
+        "name": itemName,
+        "price": price,
+        "quantity": quantity,
+      };
+      data['time'] = DateTime.now().toString();
+      firebaseInstance
+          .collection('student')
+          .doc(firebaseAuth.currentUser!.uid)
+          .collection('orders')
+          .doc(firebaseAuth.currentUser!.uid)
+          .set({
+        canteenName: data,
+      }, SetOptions(merge: true));
+    }
+  }
+
+  static Future<void> pushToHistory(
+      {required Map<String, dynamic> data, required String timeStamp}) async {
+    firebaseInstance
+        .collection('student')
+        .doc(firebaseAuth.currentUser!.uid)
+        .collection('history')
+        .doc(firebaseAuth.currentUser!.uid)
+        .set({timeStamp: data}, SetOptions(merge: true));
+  }
+
+  static Future<void> deleteOrders({
+    required String canteenId,
+  }) async {
+    firebaseInstance
+        .collection('student')
+        .doc(firebaseAuth.currentUser!.uid)
+        .collection('orders')
+        .doc(firebaseAuth.currentUser!.uid)
+        .update({canteenId: FieldValue.delete()});
   }
 }

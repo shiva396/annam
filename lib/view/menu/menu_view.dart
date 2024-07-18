@@ -94,9 +94,11 @@ class _MenuViewState extends State<MenuView> {
                   IconButton(
                     onPressed: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const MyOrderView()));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MyOrderView(),
+                        ),
+                      );
                     },
                     icon: Image.asset(
                       "assets/img/shopping_cart.png",

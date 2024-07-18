@@ -130,9 +130,11 @@ class _MenuItemsViewState extends State<MenuItemsView> {
                     IconButton(
                       onPressed: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const MyOrderView()));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const MyOrderView(),
+                          ),
+                        );
                       },
                       icon: Image.asset(
                         "assets/img/shopping_cart.png",
@@ -173,7 +175,7 @@ class _MenuItemsViewState extends State<MenuItemsView> {
                   builder: (context, snapshot) {
                     if (!(snapshot.hasData))
                       return Center(child: CircularProgressIndicator());
-
+                    List<String> stockInHand = [];
                     List<String> items = [];
                     Map<String, dynamic> obj =
                         snapshot.data!.data() as Map<String, dynamic>;
@@ -181,13 +183,20 @@ class _MenuItemsViewState extends State<MenuItemsView> {
                         obj[(widget.selectedCanteen)]['categories'] ?? {};
                     if (ref.isNotEmpty) {
                       Map<String, dynamic> data = ref[widget.selectedCategory];
-                      print(data);
+                      data.map((k, v) {
+                        print(data[k]['stockInHand']);
+                        if (data[k]['stockInHand'] == true) {
+                          stockInHand.add(k);
+                        }
+                        return MapEntry(k, v);
+                      });
+
                       items.addAll(data.keys.toList());
                       return ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         padding: EdgeInsets.zero,
-                        itemCount: items.length,
+                        itemCount: stockInHand.length,
                         itemBuilder: ((context, index) {
                           var mObj = menuItemsArr[index] as Map? ?? {};
 
@@ -197,8 +206,9 @@ class _MenuItemsViewState extends State<MenuItemsView> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ItemDetailsView(
-                                    itemName: data[items[index]]['name'],
-                                    price: data[items[index]]['price'],
+                                    selectedCanteen: widget.selectedCanteen,
+                                    itemName: data[stockInHand[index]]['name'],
+                                    price: data[stockInHand[index]]['price'],
                                   ),
                                 ),
                               );
@@ -246,7 +256,7 @@ class _MenuItemsViewState extends State<MenuItemsView> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            data[items[index]]['name'],
+                                            data[stockInHand[index]]['name'],
                                             style: TextStyle(
                                                 color: TColor.primaryText,
                                                 fontSize: 22,
@@ -256,7 +266,7 @@ class _MenuItemsViewState extends State<MenuItemsView> {
                                             height: 4,
                                           ),
                                           Text(
-                                            data[items[index]]['price'] +
+                                            data[stockInHand[index]]['price'] +
                                                 "  Rs",
                                             style: TextStyle(
                                                 color: TColor.secondaryText,
