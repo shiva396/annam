@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:projrect_annam/common/color_extension.dart';
 import 'package:projrect_annam/common/extension.dart';
 import 'package:projrect_annam/common_widget/round_button.dart';
+import 'package:projrect_annam/helper/helper.dart';
 import 'package:projrect_annam/view/login/new_password_view.dart';
 import 'package:otp_pin_field/otp_pin_field.dart';
 
@@ -190,12 +191,10 @@ class _OTPViewState extends State<OTPView> {
       Globs.hideHUD();
       if (responseObj[KKey.status] == "1") {
         var payloadObj = responseObj[KKey.payload] as Map? ?? {};
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => NewPasswordView(
+        context.push(NewPasswordView(
                       nObj: payloadObj,
-                    )));
+                    ));
+       
       } else {
         mdShowAlert(Globs.appName,
             responseObj[KKey.message] as String? ?? MSG.fail, () {});

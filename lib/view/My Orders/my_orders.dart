@@ -17,6 +17,12 @@ class _OfferViewState extends State<OfferView> {
   TextEditingController txtSearch = TextEditingController();
 
   @override
+  void dispose() {
+    txtSearch.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
     return Scaffold(

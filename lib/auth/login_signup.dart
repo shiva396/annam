@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projrect_annam/Firebase/firebase_operations.dart';
 import 'package:projrect_annam/canteen_owner/canteen_main_tab.dart';
+import 'package:projrect_annam/helper/helper.dart';
 import 'package:projrect_annam/student/student_main_tab.dart';
 import 'role_page.dart';
 
@@ -98,12 +99,9 @@ class SocialIcons extends StatelessWidget {
           iconSize: 30,
           onPressed: () {
             print("ds");
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const RoleSeperationPage(
-                          userData: {},
-                        )));
+            context.push(RoleSeperationPage(
+              userData: {},
+            ));
           },
         ),
         IconButton(
@@ -267,11 +265,7 @@ class _EmailBarState extends State<EmailBar> {
                       }
                     });
                     if (collegeName.isNotEmpty) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  CanteenOwner(collegeName: collegeName)));
+                      context.push(CanteenOwner(collegeName: collegeName));
                     } else {
                       print("Collge not found");
                     }
@@ -451,16 +445,13 @@ class _SignUpFieldsState extends State<SignUpFields> {
                 print("Error");
               } else {
                 // All correct
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => RoleSeperationPage(
-                              userData: {
-                                'email':
-                                    emailController.text.toLowerCase().trim(),
-                                'password': passwordController.text.trim()
-                              },
-                            )));
+                context.push(RoleSeperationPage(
+                  userData: {
+                    'email': emailController.text.toLowerCase().trim(),
+                    'password': passwordController.text.trim()
+                  },
+                ));
+               
               }
             } else {
               print("Error");

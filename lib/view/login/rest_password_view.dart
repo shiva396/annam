@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:projrect_annam/common/color_extension.dart';
 import 'package:projrect_annam/common/extension.dart';
 import 'package:projrect_annam/common_widget/round_button.dart';
+import 'package:projrect_annam/helper/helper.dart';
 import 'package:projrect_annam/view/login/otp_view.dart';
 import '../../common/globs.dart';
 import '../../common/service_call.dart';
@@ -16,6 +17,12 @@ class ResetPasswordView extends StatefulWidget {
 
 class _ResetPasswordViewState extends State<ResetPasswordView> {
   TextEditingController txtEmail = TextEditingController();
+
+  @override
+  void dispose() {
+    txtEmail.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,10 +98,8 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
         withSuccess: (responseObj) async {
       Globs.hideHUD();
       if (responseObj[KKey.status] == "1") {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => OTPView(email: txtEmail.text)));
+        context.push(OTPView(email: txtEmail.text));
+       
       } else {
         mdShowAlert(Globs.appName,
             responseObj[KKey.message] as String? ?? MSG.fail, () {});

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projrect_annam/common/color_extension.dart';
 import 'package:projrect_annam/common_widget/round_button.dart';
+import 'package:projrect_annam/helper/helper.dart';
 
 import 'change_address_view.dart';
 import 'checkout_message_view.dart';
@@ -92,12 +93,8 @@ class _CheckoutViewState extends State<CheckoutView> {
                         ),
                         TextButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ChangeAddressView()),
-                            );
+                            context.push(const ChangeAddressView());
+                            
                           },
                           child: Text(
                             "Change",

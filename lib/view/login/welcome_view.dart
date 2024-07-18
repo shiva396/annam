@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projrect_annam/helper/helper.dart';
 import 'package:projrect_annam/view/login/login_view.dart';
 import 'package:projrect_annam/view/login/sing_up_view.dart';
 
@@ -55,12 +56,7 @@ class _WelcomeViewState extends State<WelcomeView> {
               child: RoundButton(
                 title: "Login",
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const LoginView(),
-                    ),
-                  );
+                  context.push(const LoginView());
                 },
               ),
             ),
@@ -73,12 +69,8 @@ class _WelcomeViewState extends State<WelcomeView> {
                 title: "Create an Account",
                 type: RoundButtonType.textPrimary,
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SignUpView(),
-                    ),
-                  );
+                  context.push(SignUpView());
+                 
                 },
               ),
             ),

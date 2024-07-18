@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projrect_annam/common/color_extension.dart';
 import 'package:projrect_annam/common_widget/round_button.dart';
+import 'package:projrect_annam/helper/helper.dart';
 
 import 'checkout_view.dart';
 
@@ -341,12 +342,8 @@ class _MyOrderViewState extends State<MyOrderView> {
                     RoundButton(
                         title: "Checkout",
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const CheckoutView(),
-                            ),
-                          );
+                          context.push(const CheckoutView());
+                          
                         }),
                     const SizedBox(
                       height: 20,

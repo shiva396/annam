@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:projrect_annam/common/color_extension.dart';
 import 'package:projrect_annam/common_widget/round_textfield.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:projrect_annam/helper/helper.dart';
 
 import '../../common/globs.dart';
 import '../../common/service_call.dart';
@@ -21,6 +22,11 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   TextEditingController txtSearch = TextEditingController();
+
+  void dispose() {
+    txtSearch.dispose();
+    super.dispose();
+  }
 
   List catArr = [
     {"image": "assets/img/cat_offer.png", "name": "Veg Burger"},
@@ -133,11 +139,8 @@ class _HomeViewState extends State<HomeView> {
                           ),
                           IconButton(
                             onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const MyOrderView()));
+                              context.push(const MyOrderView());
+                              
                             },
                             icon: Image.asset(
                               "assets/img/shopping_cart.png",
@@ -218,7 +221,7 @@ class _HomeViewState extends State<HomeView> {
               const SizedBox(
                 height: 5,
               ),
-                  Padding(
+              Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: ViewAllTitleRow(
                   title: "Hot Deals",

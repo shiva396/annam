@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projrect_annam/common/color_extension.dart';
+import 'package:projrect_annam/helper/helper.dart';
 
 import 'my_order_view.dart';
 
@@ -13,7 +14,6 @@ class AboutUsView extends StatefulWidget {
 class _AboutUsViewState extends State<AboutUsView> {
   List aboutTextArr = [
     "Project Annam is an initative that is working towards reducing malnutrition and making access to healthy food easier for children",
-
   ];
 
   @override
@@ -53,10 +53,8 @@ class _AboutUsViewState extends State<AboutUsView> {
                     ),
                     IconButton(
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const MyOrderView()));
+                        context.push(const MyOrderView());
+                        
                       },
                       icon: Image.asset(
                         "assets/img/shopping_cart.png",

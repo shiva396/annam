@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projrect_annam/common/color_extension.dart';
+import 'package:projrect_annam/helper/helper.dart';
 
 import 'my_order_view.dart';
 
@@ -111,10 +112,8 @@ class _InboxViewState extends State<InboxView> {
                     ),
                     IconButton(
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const MyOrderView()));
+                        context.push(const MyOrderView());
+                       
                       },
                       icon: Image.asset(
                         "assets/img/shopping_cart.png",
