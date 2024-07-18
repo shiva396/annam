@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projrect_annam/common/color_extension.dart';
 import 'package:projrect_annam/common_widget/round_button.dart';
+import 'package:projrect_annam/helper/snackbar.dart';
 import 'package:projrect_annam/view/My%20Orders/orders_card.dart';
 
 import '../../common_widget/popular_resutaurant_row.dart';
@@ -43,20 +44,6 @@ class _OfferViewState extends State<OfferView> {
               SizedBox(
                 height: 20,
               ),
-              SizedBox(
-                height: 800,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      MyOrdersCard(),
-                      MyOrdersCard(),
-                      MyOrdersCard(),
-                      MyOrdersCard(),
-                      MyOrdersCard(),
-                    ],
-                  ),
-                ),
-              )
             ],
           ),
         )

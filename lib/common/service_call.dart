@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:projrect_annam/common/globs.dart';
 import 'package:projrect_annam/common/locator.dart';
 import 'package:http/http.dart' as http;
+import 'package:projrect_annam/helper/snackbar.dart';
 
 typedef ResSuccess = Future<void> Function(Map<String, dynamic>);
 typedef ResFailure = Future<void> Function(dynamic);
@@ -27,6 +28,7 @@ class ServiceCall {
             .post(Uri.parse(path), body: parameter, headers: headers)
             .then((value) {
           if (kDebugMode) {
+      
             print(value.body);
           }
           try {
