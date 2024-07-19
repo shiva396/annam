@@ -99,6 +99,7 @@ class FirebaseOperations {
   static Future<void> addCartItems(
       {required String canteenName,
       required String itemName,
+      required String collegeName,
       required String price,
       required String quantity}) async {
     DocumentSnapshot<Map<String, dynamic>> obj = await firebaseInstance
@@ -107,7 +108,8 @@ class FirebaseOperations {
         .collection('orders')
         .doc(firebaseAuth.currentUser!.uid)
         .get();
-    if (obj.data() != null) {
+
+    if (obj.data()!.containsKey(canteenName)) {
       // obj.data()![canteenName];
       Map<String, dynamic> data = obj.data()![canteenName];
       data[itemName] = {
@@ -124,6 +126,36 @@ class FirebaseOperations {
           .set({
         canteenName: data,
       }, SetOptions(merge: true));
+    } else {
+      Map<String, dynamic> data = {};
+      data[itemName] = {
+        "name": itemName,
+        "price": price,
+        "quantity": quantity,
+      };
+      data['time'] = DateTime.now().toString();
+      firebaseInstance
+          .collection('student')
+          .doc(firebaseAuth.currentUser!.uid)
+          .collection('orders')
+          .doc(firebaseAuth.currentUser!.uid)
+          .set(
+        {
+          canteenName: data,
+        },
+      ).then((v) async {
+        DocumentSnapshot<Map<String, dynamic>> collegeData =
+            await firebaseInstance.collection('college').doc(collegeName).get();
+        Map<String, dynamic> obj = collegeData.data() as Map<String, dynamic>;
+
+        Map<String, dynamic> update = (obj[canteenName]);
+        update['todayOrders'] =
+            FieldValue.arrayUnion([firebaseAuth.currentUser!.uid]);
+        firebaseInstance
+            .collection('college')
+            .doc(collegeName)
+            .set({canteenName: update}, SetOptions(merge: true));
+      });
     }
   }
 

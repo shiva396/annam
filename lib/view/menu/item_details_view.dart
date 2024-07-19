@@ -10,11 +10,13 @@ class ItemDetailsView extends StatefulWidget {
   final String itemName;
   final String price;
   final String selectedCanteen;
+  final String collegeName;
   const ItemDetailsView(
       {super.key,
       required this.itemName,
       required this.price,
-      required this.selectedCanteen});
+      required this.selectedCanteen,
+      required this.collegeName});
 
   @override
   State<ItemDetailsView> createState() => _ItemDetailsViewState();
@@ -356,6 +358,8 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                                                         onPressed: () {
                                                           // Adding Orders
                                                           FirebaseOperations.addCartItems(
+                                                              collegeName: widget
+                                                                  .collegeName,
                                                               canteenName: widget
                                                                   .selectedCanteen,
                                                               itemName: widget
