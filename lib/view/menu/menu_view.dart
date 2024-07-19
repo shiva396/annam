@@ -100,7 +100,9 @@ class _MenuViewState extends State<MenuView> {
                   ),
                   IconButton(
                     onPressed: () {
+
                       context.push(MyOrderView());
+
                     },
                     icon: Image.asset(
                       "assets/img/shopping_cart.png",

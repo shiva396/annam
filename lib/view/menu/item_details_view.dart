@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:projrect_annam/Firebase/firebase_operations.dart';
 import 'package:projrect_annam/common_widget/round_icon_button.dart';
 import 'package:projrect_annam/helper/helper.dart';
 
@@ -9,8 +10,12 @@ import '../more/my_order_view.dart';
 class ItemDetailsView extends StatefulWidget {
   final String itemName;
   final String price;
+  final String selectedCanteen;
   const ItemDetailsView(
-      {super.key, required this.itemName, required this.price});
+      {super.key,
+      required this.itemName,
+      required this.price,
+      required this.selectedCanteen});
 
   @override
   State<ItemDetailsView> createState() => _ItemDetailsViewState();
@@ -349,7 +354,18 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                                                         icon:
                                                             "assets/img/shopping_add.png",
                                                         color: TColor.primary,
-                                                        onPressed: () {}),
+                                                        onPressed: () {
+                                                          // Adding Orders
+                                                          FirebaseOperations.addCartItems(
+                                                              canteenName: widget
+                                                                  .selectedCanteen,
+                                                              itemName: widget
+                                                                  .itemName,
+                                                              price:
+                                                                  widget.price,
+                                                              quantity: qty
+                                                                  .toString());
+                                                        }),
                                                   )
                                                 ],
                                               )),

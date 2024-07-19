@@ -4,7 +4,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projrect_annam/Firebase/firebase_operations.dart';
 import 'package:projrect_annam/canteen_owner/canteen_main_tab.dart';
 import 'package:projrect_annam/helper/helper.dart';
+
 import 'package:projrect_annam/helper/snackbar.dart';
+
 import 'package:projrect_annam/student/student_main_tab.dart';
 import 'role_page.dart';
 
@@ -267,7 +269,9 @@ class _EmailBarState extends State<EmailBar> {
                       }
                     });
                     if (collegeName.isNotEmpty) {
+
                       context.push(CanteenOwner(collegeName: collegeName));
+
                     } else {
                       showSnackBar(context, "Collge not found");
                     }
