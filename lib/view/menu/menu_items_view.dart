@@ -136,9 +136,7 @@ class _MenuItemsViewState extends State<MenuItemsView> {
                     ),
                     IconButton(
                       onPressed: () {
-
                         context.push(const MyOrderView());
-
                       },
                       icon: Image.asset(
                         "assets/img/shopping_cart.png",
@@ -215,111 +213,119 @@ class _MenuItemsViewState extends State<MenuItemsView> {
                               itemBuilder: ((context, index) {
                                 var mObj = menuItemsArr[index] as Map? ?? {};
 
-                          return GestureDetector(
-                            onTap: () {
-                              context.push(
-                                ItemDetailsView(
-                                    collegeName: collegName,
-                                    selectedCanteen: widget.selectedCanteen,
-                                    itemName: data[stockInHand[index]]['name'],
-                                    price: data[stockInHand[index]]['price'],
-                                  ),
-                                
-                              );
-                            },
-                            child: Stack(
-                              alignment: Alignment.centerRight,
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.only(
-                                      top: 15, bottom: 8, right: 20),
-                                  width: media.width - 100,
-                                  height: 90,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(25),
-                                        bottomLeft: Radius.circular(25),
-                                        topRight: Radius.circular(10),
-                                        bottomRight: Radius.circular(10)),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black12,
-                                        blurRadius: 7,
-                                        offset: Offset(0, 4),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Image.asset(
-                                      mObj["image"].toString(),
-                                      width: 80,
-                                      height: 80,
-                                      fit: BoxFit.contain,
-                                    ),
-                                    const SizedBox(
-                                      width: 15,
-                                    ),
-                                    Expanded(
-                                      child: Column(
+                                return GestureDetector(
+                                  onTap: () {
+                                    context.push(
+                                      ItemDetailsView(
+                                        collegeName: collegName,
+                                        selectedCanteen: widget.selectedCanteen,
+                                        itemName: data[stockInHand[index]]
+                                            ['name'],
+                                        price: data[stockInHand[index]]
+                                            ['price'],
+                                      ),
+                                    );
+                                  },
+                                  child: Stack(
+                                    alignment: Alignment.centerRight,
+                                    children: [
+                                      Container(
+                                        margin: const EdgeInsets.only(
+                                            top: 15, bottom: 8, right: 20),
+                                        width: media.width - 100,
+                                        height: 90,
+                                        decoration: const BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(25),
+                                              bottomLeft: Radius.circular(25),
+                                              topRight: Radius.circular(10),
+                                              bottomRight: Radius.circular(10)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black12,
+                                              blurRadius: 7,
+                                              offset: Offset(0, 4),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                            CrossAxisAlignment.center,
                                         children: [
-                                          Text(
-                                            data[stockInHand[index]]['name'],
-                                            style: TextStyle(
-                                                color: TColor.primaryText,
-                                                fontSize: 22,
-                                                fontWeight: FontWeight.w700),
+                                          Image.asset(
+                                            mObj["image"].toString(),
+                                            width: 80,
+                                            height: 80,
+                                            fit: BoxFit.contain,
                                           ),
                                           const SizedBox(
-                                            height: 4,
+                                            width: 15,
                                           ),
-                                          Text(
-                                            data[stockInHand[index]]['price'] +
-                                                "  Rs",
-                                            style: TextStyle(
-                                                color: TColor.secondaryText,
-                                                fontSize: 11),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  data[stockInHand[index]]
+                                                      ['name'],
+                                                  style: TextStyle(
+                                                      color: TColor.primaryText,
+                                                      fontSize: 22,
+                                                      fontWeight:
+                                                          FontWeight.w700),
+                                                ),
+                                                const SizedBox(
+                                                  height: 4,
+                                                ),
+                                                Text(
+                                                  data[stockInHand[index]]
+                                                          ['price'] +
+                                                      "  Rs",
+                                                  style: TextStyle(
+                                                      color:
+                                                          TColor.secondaryText,
+                                                      fontSize: 11),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Container(
+                                            width: 35,
+                                            height: 35,
+                                            decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(17.5),
+                                                boxShadow: const [
+                                                  BoxShadow(
+                                                      color: Colors.black12,
+                                                      blurRadius: 4,
+                                                      offset: Offset(0, 2))
+                                                ]),
+                                            alignment: Alignment.center,
+                                            child: Image.asset(
+                                              "assets/img/btn_next.png",
+                                              width: 15,
+                                              height: 15,
+                                            ),
                                           ),
                                         ],
                                       ),
-                                    ),
-                                    Container(
-                                      width: 35,
-                                      height: 35,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(17.5),
-                                          boxShadow: const [
-                                            BoxShadow(
-                                                color: Colors.black12,
-                                                blurRadius: 4,
-                                                offset: Offset(0, 2))
-                                          ]),
-                                      alignment: Alignment.center,
-                                      child: Image.asset(
-                                        "assets/img/btn_next.png",
-                                        width: 15,
-                                        height: 15,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          );
-                        }),
-                      );
-                    } else {
-                      return Text('NO ITEMS');
-                    }
-                  }),
+                                    ],
+                                  ),
+                                );
+                              }),
+                            );
+                          } else {
+                            return Text('NO ITEMS');
+                          }
+                        });
+                  })
             ],
           ),
         ),
