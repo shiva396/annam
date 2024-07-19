@@ -4,6 +4,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projrect_annam/Firebase/firebase_operations.dart';
 import 'package:projrect_annam/canteen_owner/canteen_main_tab.dart';
 import 'package:projrect_annam/helper/helper.dart';
+
+import 'package:projrect_annam/helper/snackbar.dart';
+
 import 'package:projrect_annam/student/student_main_tab.dart';
 import 'role_page.dart';
 
@@ -98,13 +101,11 @@ class SocialIcons extends StatelessWidget {
           icon: const FaIcon(FontAwesomeIcons.facebook), // facebook icon
           iconSize: 30,
           onPressed: () {
-            print("ds");
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const RoleSeperationPage(
-                          userData: {},
-                        )));
+            showSnackBar(context, "ds");
+
+            context.push(RoleSeperationPage(
+              userData: {},
+            ));
           },
         ),
         IconButton(
@@ -268,26 +269,23 @@ class _EmailBarState extends State<EmailBar> {
                       }
                     });
                     if (collegeName.isNotEmpty) {
-                     
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  CanteenOwner(collegeName: collegeName)));
+
+                      context.push(CanteenOwner(collegeName: collegeName));
+
                     } else {
-                      print("Collge not found");
+                      showSnackBar(context, "Collge not found");
                     }
 
                     // Iterate through each document in the "college" collection
                   } catch (e) {
-                    print('Error checking documents: $e');
+                    showSnackBar(context, 'Error checking documents: $e');
                   }
                 }
               } else {
-                print("Account not found");
+                showSnackBar(context, "Account not found");
               }
             } else {
-              print("Error");
+              showSnackBar(context, "Error");
             }
           },
           child: const Text(
@@ -450,22 +448,19 @@ class _SignUpFieldsState extends State<SignUpFields> {
                 passwordController.text.isNotEmpty &&
                 retypedPasswordController.text.isNotEmpty) {
               if (passwordController.text != retypedPasswordController.text) {
-                print("Error");
+                showSnackBar(context, "Error");
               } else {
                 // All correct
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => RoleSeperationPage(
-                              userData: {
-                                'email':
-                                    emailController.text.toLowerCase().trim(),
-                                'password': passwordController.text.trim()
-                              },
-                            )));
+                context.push(RoleSeperationPage(
+                  userData: {
+                    'email': emailController.text.toLowerCase().trim(),
+                    'password': passwordController.text.trim()
+                  },
+                ));
               }
             } else {
-              print("Error");
+              showSnackBar(context, "Error");
+            
             }
           },
           child: const Text('Sign Up', style: TextStyle(fontSize: 18)),

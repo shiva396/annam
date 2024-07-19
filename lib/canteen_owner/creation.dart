@@ -6,6 +6,9 @@ class Creation extends StatefulWidget {
   const Creation({super.key, required this.collegeName});
 
   @override
+  void initState() {}
+
+  @override
   State<Creation> createState() => _CreationState();
 }
 
@@ -20,8 +23,19 @@ class _CreationState extends State<Creation> {
         TextEditingController(text: tabs[categoryName][itemName]['name']);
     TextEditingController priceController =
         TextEditingController(text: tabs[categoryName][itemName]['price']);
+
+
+    @override
+    void dispose() {
+      nameController.dispose();
+      priceController.dispose();
+      super.dispose();
+    }
+
+
     final bool selected = data;
     bool stateData = selected;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -91,6 +105,13 @@ class _CreationState extends State<Creation> {
   ) {
     TextEditingController nameController = TextEditingController();
     TextEditingController priceController = TextEditingController();
+
+    @override
+    void dispose() {
+      nameController.dispose();
+      priceController.dispose();
+      super.dispose();
+    }
 
     showDialog(
       context: context,

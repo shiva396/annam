@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:projrect_annam/Firebase/firebase_operations.dart';
+import 'package:projrect_annam/helper/helper.dart';
 
 import '../../common/color_extension.dart';
 import '../../common_widget/round_textfield.dart';
@@ -43,6 +44,12 @@ class _MenuViewState extends State<MenuView> {
   TextEditingController txtSearch = TextEditingController();
   String _selectedCategory = "";
   int indexing = 0;
+
+  @override
+  void dispose() {
+    txtSearch.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -119,12 +126,9 @@ class _MenuViewState extends State<MenuView> {
                   ),
                   IconButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const MyOrderView(),
-                        ),
-                      );
+
+                      context.push(MyOrderView());
+
                     },
                     icon: Image.asset(
                       "assets/img/shopping_cart.png",

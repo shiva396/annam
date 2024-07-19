@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:projrect_annam/Firebase/firebase_operations.dart';
 import 'package:projrect_annam/common_widget/round_icon_button.dart';
+import 'package:projrect_annam/helper/helper.dart';
 
 import '../../common/color_extension.dart';
 import '../more/my_order_view.dart';
@@ -374,11 +375,7 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                                               )),
                                           InkWell(
                                             onTap: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          const MyOrderView()));
+                                              context.push(const MyOrderView());
                                             },
                                             child: Container(
                                               width: 45,
@@ -463,10 +460,8 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                       ),
                       IconButton(
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const MyOrderView()));
+                          context.push(const MyOrderView());
+                         
                         },
                         icon: Image.asset(
                           "assets/img/shopping_cart.png",

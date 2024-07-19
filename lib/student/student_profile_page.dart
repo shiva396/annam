@@ -6,6 +6,7 @@ import 'package:projrect_annam/Firebase/firebase_operations.dart';
 import 'package:projrect_annam/auth/login_signup.dart';
 import 'package:projrect_annam/common_widget/round_button.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:projrect_annam/helper/helper.dart';
 
 import '../common/color_extension.dart';
 import '../common_widget/round_textfield.dart';
@@ -84,11 +85,7 @@ class _StudentProfilePageState extends State<StudentProfilePage> {
                           ),
                           IconButton(
                             onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const MyOrderView()));
+                              context.push(const MyOrderView());
                             },
                             icon: Image.asset(
                               "assets/img/shopping_cart.png",

@@ -20,6 +20,13 @@ class _NewPasswordViewState extends State<NewPasswordView> {
   TextEditingController txtConfirmPassword = TextEditingController();
 
   @override
+  void dispose() {
+    txtPassword.dispose();
+    txtConfirmPassword.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(

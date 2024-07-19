@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:projrect_annam/common/color_extension.dart';
 import 'package:projrect_annam/common/extension.dart';
 import 'package:projrect_annam/common_widget/round_button.dart';
+import 'package:projrect_annam/helper/helper.dart';
 import 'package:projrect_annam/view/login/login_view.dart';
 
 import '../../common/globs.dart';
@@ -25,6 +26,17 @@ class _SignUpViewState extends State<SignUpView> {
   TextEditingController txtEmail = TextEditingController();
   TextEditingController txtPassword = TextEditingController();
   TextEditingController txtConfirmPassword = TextEditingController();
+
+  @override
+  void dispose() {
+    txtName.dispose();
+    txtMobile.dispose();
+    txtAddress.dispose();
+    txtEmail.dispose();
+    txtPassword.dispose();
+    txtConfirmPassword.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,12 +129,8 @@ class _SignUpViewState extends State<SignUpView> {
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const LoginView(),
-                    ),
-                  );
+                  context.push(const LoginView());
+                  
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,

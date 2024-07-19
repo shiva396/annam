@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projrect_annam/auth/authWrapper.dart';
 import 'package:projrect_annam/auth/login_signup.dart';
+import 'package:projrect_annam/helper/helper.dart';
 
 import '../../common/globs.dart';
 
@@ -25,12 +26,13 @@ class _StarupViewState extends State<StartupView> {
 
   void welcomePage() {
     if (Globs.udValueBool(Globs.userLogin)) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const AuthWrapper()));
+
+      context.push(const AuthWrapper());
+      
     } else {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const AuthWrapper()));
-    }
+      context.push(const AuthWrapper());
+   
+    } 
   }
 
   @override
