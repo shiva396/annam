@@ -3,6 +3,7 @@ import 'package:projrect_annam/common/color_extension.dart';
 import 'package:projrect_annam/common/extension.dart';
 import 'package:projrect_annam/common/globs.dart';
 import 'package:projrect_annam/common_widget/round_button.dart';
+import 'package:projrect_annam/helper/helper.dart';
 import 'package:projrect_annam/view/login/rest_password_view.dart';
 import 'package:projrect_annam/view/login/sing_up_view.dart';
 import 'package:projrect_annam/view/on_boarding/on_boarding_view.dart';
@@ -23,8 +24,14 @@ class _LoginViewState extends State<LoginView> {
   TextEditingController txtPassword = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
+  void dispose() {
+    txtEmail.dispose();
+    txtPassword.dispose();
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
@@ -78,12 +85,7 @@ class _LoginViewState extends State<LoginView> {
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ResetPasswordView(),
-                    ),
-                  );
+                  context.push(const ResetPasswordView());
                 },
                 child: Text(
                   "Forgot your password?",
@@ -126,12 +128,8 @@ class _LoginViewState extends State<LoginView> {
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SignUpView(),
-                    ),
-                  );
+                  context.push(const SignUpView());
+                 
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,

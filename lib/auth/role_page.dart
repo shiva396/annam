@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:projrect_annam/Firebase/firebase_operations.dart';
 import 'package:projrect_annam/canteen_owner/canteen_main_tab.dart';
+import 'package:projrect_annam/helper/snackbar.dart';
 import '../student/student_main_tab.dart';
 
 class RoleSeperationPage extends StatefulWidget {
@@ -36,7 +37,6 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
     QuerySnapshot snapshot =
         await FirebaseOperations.firebaseInstance.collection('college').get();
     Set<DropdownMenuItem<String>> items = snapshot.docs.map((doc) {
-   
       return DropdownMenuItem<String>(
         value: doc.id,
         child: Text(doc.id),
@@ -312,7 +312,7 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                                   'phoneNumber': _phoneController.text.trim()
                                 });
                               } else {
-                                print("Fill all");
+                                showSnackBar(context, "Fill all");
                               }
                             } else if (_selectedRole == 'canteen_owner') {
                               widget.userData.addAll({
@@ -351,7 +351,7 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                                       'role': roleMap,
                                     });
                                   } else {
-                                    print('Already exist');
+                                    showSnackBar(context, "Already exist");
                                   }
                                 } else {
                                   roleMap[widget.userData['email']] =
@@ -364,7 +364,8 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                                   });
                                 }
                               } catch (e) {
-                                print(e.toString());
+                                showSnackBar(context, e.toString());
+                              
                               }
                               if (_selectedRole == 'canteen_owner') {
                                 Map<String, dynamic> user = {

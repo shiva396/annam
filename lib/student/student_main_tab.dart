@@ -5,7 +5,7 @@ import 'package:projrect_annam/common_widget/tab_button.dart';
 import '../view/home/home_view.dart';
 import '../view/menu/menu_view.dart';
 import '../view/more/more_view.dart';
-import '../view/offer/offer_view.dart';
+import '../view/My Orders/my_orders.dart';
 import 'student_profile_page.dart';
 
 class MainTabView extends StatefulWidget {
@@ -75,7 +75,7 @@ class _MainTabViewState extends State<MainTabView> {
                   },
                   isSelected: selctTab == 0),
               TabButton(
-                  title: "Offer",
+                  title: "My Orders",
                   icon: "assets/img/tab_offer.png",
                   onTap: () {
                     if (selctTab != 1) {

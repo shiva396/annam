@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:projrect_annam/common/color_extension.dart';
 import 'package:projrect_annam/common_widget/round_textfield.dart';
+import 'package:projrect_annam/helper/helper.dart';
 
 import '../../Firebase/firebase_operations.dart';
 import '../../common_widget/menu_item_row.dart';
@@ -24,6 +25,12 @@ class MenuItemsView extends StatefulWidget {
 
 class _MenuItemsViewState extends State<MenuItemsView> {
   TextEditingController txtSearch = TextEditingController();
+
+  @override
+  void dispose() {
+    txtSearch.dispose();
+    super.dispose();
+  }
 
   List menuItemsArr = [
     {
@@ -129,12 +136,9 @@ class _MenuItemsViewState extends State<MenuItemsView> {
                     ),
                     IconButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const MyOrderView(),
-                          ),
-                        );
+
+                        context.push(const MyOrderView());
+
                       },
                       icon: Image.asset(
                         "assets/img/shopping_cart.png",
@@ -202,16 +206,14 @@ class _MenuItemsViewState extends State<MenuItemsView> {
 
                           return GestureDetector(
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ItemDetailsView(
-                                    selectedCanteen: widget.selectedCanteen,
-                                    itemName: data[stockInHand[index]]['name'],
-                                    price: data[stockInHand[index]]['price'],
-                                  ),
-                                ),
-                              );
+                           context.push(
+                                ItemDetailsView(
+                                  itemName: data[items[index]]['name'],
+                                  price: data[items[index]]['price'],
+                                     selectedCanteen: widget.selectedCanteen,)
+
+                             
+                              
                             },
                             child: Stack(
                               alignment: Alignment.centerRight,

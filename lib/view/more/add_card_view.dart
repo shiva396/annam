@@ -20,6 +20,17 @@ class _AddCardViewState extends State<AddCardView> {
   bool isAnyTime = false;
 
   @override
+  void dispose() {
+    txtCardNumber.dispose();
+    txtCardMonth.dispose();
+    txtCardYear.dispose();
+    txtCardCode.dispose();
+    txtFirstName.dispose();
+    txtLastName.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
     return Container(

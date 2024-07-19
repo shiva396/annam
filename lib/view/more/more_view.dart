@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projrect_annam/helper/helper.dart';
 import 'package:projrect_annam/view/more/about_us_view.dart';
 import 'package:projrect_annam/view/more/inbox_view.dart';
 import 'package:projrect_annam/view/more/payment_details_view.dart';
@@ -75,10 +76,7 @@ class _MoreViewState extends State<MoreView> {
                     ),
                     IconButton(
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const MyOrderView()));
+                        context.pop(const MyOrderView());
                       },
                       icon: Image.asset(
                         "assets/img/shopping_cart.png",
@@ -101,35 +99,22 @@ class _MoreViewState extends State<MoreView> {
                       onTap: () {
                         switch (mObj["index"].toString()) {
                           case "1":
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const PaymentDetailsView()));
+                            context.push(const PaymentDetailsView());
 
                             break;
 
                           case "2":
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const MyOrderView()));
+                            context.push(const MyOrderView());
+
                           case "3":
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const NotificationsView()));
+                            context.push(const NotificationsView());
+
                           case "4":
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const InboxView()));
+                            context.push(const InboxView());
+
                           case "5":
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const AboutUsView()));
+                            context.push(const AboutUsView());
+                            
                           case "6":
                             ServiceCall.logout();
 

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:projrect_annam/Firebase/firebase_operations.dart';
 import 'package:projrect_annam/common/color_extension.dart';
 import 'package:projrect_annam/common_widget/round_button.dart';
+import 'package:projrect_annam/helper/helper.dart';
 
 import 'checkout_view.dart';
 
@@ -61,9 +62,34 @@ class _MyOrderViewState extends State<MyOrderView> {
                               fontSize: 20,
                               fontWeight: FontWeight.w800),
                         ),
+
+                        Text(
+                          "\$70",
+                          style: TextStyle(
+                              color: TColor.primary,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w700),
+                        )
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    RoundButton(
+                        title: "Checkout",
+                        onPressed: () {
+                          context.push(const CheckoutView());
+                          
+                        }),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                  ],
+
                       ),
                     ],
                   ),
+
                 ),
                 StreamBuilder(
                     stream: FirebaseOperations.firebaseInstance
