@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:projrect_annam/auth/authWrapper.dart';
-import 'package:projrect_annam/auth/login_signup.dart';
 import 'package:projrect_annam/helper/helper.dart';
 
 import '../../common/globs.dart';

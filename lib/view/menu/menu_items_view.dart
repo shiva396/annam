@@ -5,7 +5,6 @@ import 'package:projrect_annam/common_widget/round_textfield.dart';
 import 'package:projrect_annam/helper/helper.dart';
 
 import '../../Firebase/firebase_operations.dart';
-import '../../common_widget/menu_item_row.dart';
 import '../more/my_order_view.dart';
 import 'item_details_view.dart';
 
