@@ -5,7 +5,6 @@ import 'package:projrect_annam/common_widget/round_textfield.dart';
 import 'package:projrect_annam/helper/helper.dart';
 
 import '../../Firebase/firebase_operations.dart';
-import '../../common_widget/menu_item_row.dart';
 import '../more/my_order_view.dart';
 import 'item_details_view.dart';
 
@@ -171,133 +170,161 @@ class _MenuItemsViewState extends State<MenuItemsView> {
               ),
               StreamBuilder<DocumentSnapshot>(
                   stream: FirebaseOperations.firebaseInstance
-                      .collection('college')
-                      .doc('sairam')
+                      .collection('student')
+                      .doc(FirebaseOperations.firebaseAuth.currentUser!.uid)
                       .snapshots(),
-                  builder: (context, snapshot) {
-                    if (!(snapshot.hasData))
-                      return Center(child: CircularProgressIndicator());
+                  builder: (context, outerSnapshot) {
+                    if (!outerSnapshot.hasData) CircularProgressIndicator();
+                    Map<String, dynamic> data =
+                        (outerSnapshot.data!.data() as Map<String, dynamic>);
+                    String collegName = data['collegeName'];
 
-                    List<String> items = [];
-                    Map<String, dynamic> obj =
-                        snapshot.data!.data() as Map<String, dynamic>;
-                    Map<String, dynamic> ref =
-                        obj[(widget.selectedCanteen)]['categories'] ?? {};
-                    if (ref.isNotEmpty) {
-                      Map<String, dynamic> data = ref[widget.selectedCategory];
-                      print(data);
-                      items.addAll(data.keys.toList());
-                      return ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        padding: EdgeInsets.zero,
-                        itemCount: items.length,
-                        itemBuilder: ((context, index) {
-                          var mObj = menuItemsArr[index] as Map? ?? {};
+                    return StreamBuilder<DocumentSnapshot>(
+                        stream: FirebaseOperations.firebaseInstance
+                            .collection('college')
+                            .doc(collegName)
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          if (!(snapshot.hasData))
+                            return Center(child: CircularProgressIndicator());
+                          List<String> stockInHand = [];
+                          List<String> items = [];
+                          Map<String, dynamic> obj =
+                              snapshot.data!.data() as Map<String, dynamic>;
+                          Map<String, dynamic> ref =
+                              obj[(widget.selectedCanteen)]['categories'] ?? {};
+                          if (ref.isNotEmpty) {
+                            Map<String, dynamic> data =
+                                ref[widget.selectedCategory];
+                            data.map((k, v) {
+                              if (data[k]['stockInHand'] == true) {
+                                stockInHand.add(k);
+                              }
+                              return MapEntry(k, v);
+                            });
 
-                          return GestureDetector(
-                            onTap: () {
-                              context.push(
-                                ItemDetailsView(
-                                  itemName: data[items[index]]['name'],
-                                  price: data[items[index]]['price'],
-                                ),
-                              );
-                              
-                            },
-                            child: Stack(
-                              alignment: Alignment.centerRight,
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.only(
-                                      top: 15, bottom: 8, right: 20),
-                                  width: media.width - 100,
-                                  height: 90,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(25),
-                                        bottomLeft: Radius.circular(25),
-                                        topRight: Radius.circular(10),
-                                        bottomRight: Radius.circular(10)),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black12,
-                                        blurRadius: 7,
-                                        offset: Offset(0, 4),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Image.asset(
-                                      mObj["image"].toString(),
-                                      width: 80,
-                                      height: 80,
-                                      fit: BoxFit.contain,
-                                    ),
-                                    const SizedBox(
-                                      width: 15,
-                                    ),
-                                    Expanded(
-                                      child: Column(
+                            items.addAll(data.keys.toList());
+                            return ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              padding: EdgeInsets.zero,
+                              itemCount: stockInHand.length,
+                              itemBuilder: ((context, index) {
+                                var mObj = menuItemsArr[index] as Map? ?? {};
+
+                                return GestureDetector(
+                                  onTap: () {
+                                    context.push(
+                                      ItemDetailsView(
+                                        collegeName: collegName,
+                                        selectedCanteen: widget.selectedCanteen,
+                                        itemName: data[stockInHand[index]]
+                                            ['name'],
+                                        price: data[stockInHand[index]]
+                                            ['price'],
+                                      ),
+                                    );
+                                  },
+                                  child: Stack(
+                                    alignment: Alignment.centerRight,
+                                    children: [
+                                      Container(
+                                        margin: const EdgeInsets.only(
+                                            top: 15, bottom: 8, right: 20),
+                                        width: media.width - 100,
+                                        height: 90,
+                                        decoration: const BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(25),
+                                              bottomLeft: Radius.circular(25),
+                                              topRight: Radius.circular(10),
+                                              bottomRight: Radius.circular(10)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black12,
+                                              blurRadius: 7,
+                                              offset: Offset(0, 4),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                            CrossAxisAlignment.center,
                                         children: [
-                                          Text(
-                                            data[items[index]]['name'],
-                                            style: TextStyle(
-                                                color: TColor.primaryText,
-                                                fontSize: 22,
-                                                fontWeight: FontWeight.w700),
+                                          Image.asset(
+                                            mObj["image"].toString(),
+                                            width: 80,
+                                            height: 80,
+                                            fit: BoxFit.contain,
                                           ),
                                           const SizedBox(
-                                            height: 4,
+                                            width: 15,
                                           ),
-                                          Text(
-                                            data[items[index]]['price'] +
-                                                "  Rs",
-                                            style: TextStyle(
-                                                color: TColor.secondaryText,
-                                                fontSize: 11),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  data[stockInHand[index]]
+                                                      ['name'],
+                                                  style: TextStyle(
+                                                      color: TColor.primaryText,
+                                                      fontSize: 22,
+                                                      fontWeight:
+                                                          FontWeight.w700),
+                                                ),
+                                                const SizedBox(
+                                                  height: 4,
+                                                ),
+                                                Text(
+                                                  data[stockInHand[index]]
+                                                          ['price'] +
+                                                      "  Rs",
+                                                  style: TextStyle(
+                                                      color:
+                                                          TColor.secondaryText,
+                                                      fontSize: 11),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Container(
+                                            width: 35,
+                                            height: 35,
+                                            decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(17.5),
+                                                boxShadow: const [
+                                                  BoxShadow(
+                                                      color: Colors.black12,
+                                                      blurRadius: 4,
+                                                      offset: Offset(0, 2))
+                                                ]),
+                                            alignment: Alignment.center,
+                                            child: Image.asset(
+                                              "assets/img/btn_next.png",
+                                              width: 15,
+                                              height: 15,
+                                            ),
                                           ),
                                         ],
                                       ),
-                                    ),
-                                    Container(
-                                      width: 35,
-                                      height: 35,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(17.5),
-                                          boxShadow: const [
-                                            BoxShadow(
-                                                color: Colors.black12,
-                                                blurRadius: 4,
-                                                offset: Offset(0, 2))
-                                          ]),
-                                      alignment: Alignment.center,
-                                      child: Image.asset(
-                                        "assets/img/btn_next.png",
-                                        width: 15,
-                                        height: 15,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          );
-                        }),
-                      );
-                    } else {
-                      return Text('NO ITEMS');
-                    }
-                  }),
+                                    ],
+                                  ),
+                                );
+                              }),
+                            );
+                          } else {
+                            return Text('NO ITEMS');
+                          }
+                        });
+                  })
             ],
           ),
         ),

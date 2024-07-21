@@ -6,36 +6,30 @@ import 'package:projrect_annam/Firebase/firebase_operations.dart';
 
 class Creation extends StatefulWidget {
   final String collegeName;
-  Creation({super.key, required this.collegeName});
-  final ImagePicker picker = ImagePicker();
+  const Creation({super.key, required this.collegeName});
+
 
   @override
   State<Creation> createState() => _CreationState();
 }
 
 class _CreationState extends State<Creation> {
-  XFile? imageFile;
   @override
-  void initState() {
-    super.initState();
+  void dispose() {
+    super.dispose();
   }
 
-  selectFile() async {
-    XFile? file = await ImagePicker().pickImage(
-        source: ImageSource.gallery, maxHeight: 1800, maxWidth: 1800);
-
-    if (file!.name.isNotEmpty) {
-      setState(() {
-        imageFile = XFile(file.path);
-      });
-    }
-  }
-
-  void _editItem(String itemName, String categoryName) {
+  void _editItem(String itemName, String categoryName, bool data) {
     TextEditingController nameController =
         TextEditingController(text: tabs[categoryName][itemName]['name']);
     TextEditingController priceController =
         TextEditingController(text: tabs[categoryName][itemName]['price']);
+
+
+
+
+    final bool selected = data;
+    bool stateData = selected;
 
     showDialog(
       context: context,
@@ -54,6 +48,21 @@ class _CreationState extends State<Creation> {
               TextField(
                 controller: priceController,
                 decoration: InputDecoration(labelText: 'Price'),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Stock in Hand"),
+                  Switch(
+                    onChanged: (v) {
+                      setState(() {
+                        stateData = !stateData;
+                      });
+                      print(stateData);
+                    },
+                    value: stateData,
+                  ),
+                ],
               ),
             ],
           ),
@@ -74,6 +83,7 @@ class _CreationState extends State<Creation> {
                   priceController.text.trim(),
                   'itemImageUrl',
                   itemName,
+                  stateData,
                 ).whenComplete(
                   () => Navigator.pop(context),
                 );
@@ -91,6 +101,7 @@ class _CreationState extends State<Creation> {
     TextEditingController nameController = TextEditingController();
     TextEditingController priceController = TextEditingController();
 
+   
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -380,10 +391,14 @@ class _CreationState extends State<Creation> {
                             IconButton(
                               icon: Icon(Icons.edit),
                               onPressed: () {
+                                bool data = tabs[selectedCategory]
+                                    [itemValue[index]]['stockInHand'];
+                                ;
                                 _editItem(
                                     tabs[selectedCategory][itemValue[index]]
                                         ['name'],
-                                    selectedCategory);
+                                    selectedCategory,
+                                    data);
                               },
                             ),
                             IconButton(

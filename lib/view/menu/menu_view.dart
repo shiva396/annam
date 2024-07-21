@@ -4,7 +4,6 @@ import 'package:projrect_annam/Firebase/firebase_operations.dart';
 import 'package:projrect_annam/helper/helper.dart';
 
 import '../../common/color_extension.dart';
-import '../../common_widget/round_textfield.dart';
 import '../more/my_order_view.dart';
 import 'menu_items_view.dart';
 
@@ -59,11 +58,37 @@ class _MenuViewState extends State<MenuView> {
   }
 
   Future<void> _fetchDropdownItems() async {
+    // StreamBuilder<DocumentSnapshot>(
+    //     stream: FirebaseOperations.firebaseInstance
+    //         .collection('student')
+    //         .doc(FirebaseOperations.firebaseAuth.currentUser!.uid)
+    //         .snapshots(),
+    //     builder: (context, snapshot) {
+    //       if (!snapshot.hasData) CircularProgressIndicator();
+    //       Map<String, dynamic> data =
+    //           (snapshot.data!.data() as Map<String, dynamic>);
+    //       String collegName = data['collegeName'];
+    //       return StreamBuilder<DocumentSnapshot>(
+    //         stream: FirebaseOperations.firebaseInstance
+    //             .collection('college')
+    //             .doc(collegName)
+    //             .snapshots(),
+    //         builder: (context, innerSnapshot) {
+    //           if (!innerSnapshot.hasData) return CircularProgressIndicator();
+    //           Map<String, dynamic> data =
+    //               (innerSnapshot.data!.data()) as Map<String, dynamic>;
+    //           _uniqueId.addAll(data.keys.toList());
+    //           return SizedBox();
+    //         },
+    //       );
+    //     });
+
     DocumentSnapshot snapshot = await FirebaseOperations.firebaseInstance
         .collection('college')
         .doc('sairam')
         .get();
     Map<String, dynamic> items = snapshot.data() as Map<String, dynamic>;
+
     _uniqueId.addAll(items.keys.toList());
 
     List<DropdownMenuItem<String>> ite = items.keys.map((doc) {
@@ -100,7 +125,9 @@ class _MenuViewState extends State<MenuView> {
                   ),
                   IconButton(
                     onPressed: () {
+
                       context.push(MyOrderView());
+
                     },
                     icon: Image.asset(
                       "assets/img/shopping_cart.png",
@@ -159,133 +186,172 @@ class _MenuViewState extends State<MenuView> {
                   ),
                 ),
                 StreamBuilder<DocumentSnapshot>(
-                  stream: FirebaseOperations.firebaseInstance
-                      .collection('college')
-                      .doc('sairam')
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (!(snapshot.hasData && _uniqueId.isNotEmpty))
-                      return Center(child: CircularProgressIndicator());
-                    List allCategories = [];
-                    Map<String, dynamic> obj =
-                        snapshot.data!.data() as Map<String, dynamic>;
-                    Map<String, dynamic>? categories =
-                        (obj[_uniqueId.elementAt(indexing)]['categories']);
+                    stream: FirebaseOperations.firebaseInstance
+                        .collection('student')
+                        .doc(FirebaseOperations.firebaseAuth.currentUser!.uid)
+                        .snapshots(),
+                    builder: (context, outerSnapshot) {
+                      if (!outerSnapshot.hasData && _uniqueId.isNotEmpty)
+                        CircularProgressIndicator();
+                      Map<String, dynamic> data =
+                          (outerSnapshot.data!.data() as Map<String, dynamic>);
+                      String collegeName = data['collegeName'];
+                      return StreamBuilder<DocumentSnapshot>(
+                        stream: FirebaseOperations.firebaseInstance
+                            .collection('college')
+                            .doc(collegeName)
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          if (!(snapshot.hasData && _uniqueId.isNotEmpty))
+                            return Center(child: CircularProgressIndicator());
+                          List allCategories = [];
+                          Map<String, dynamic> obj =
+                              snapshot.data!.data() as Map<String, dynamic>;
+                          Map<String, dynamic>? categories =
+                              (obj[_uniqueId.elementAt(indexing)]
+                                  ['categories']);
 
-                    if (categories != null) {
-                      allCategories.addAll(categories.keys.toList());
-                      return ListView.builder(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 30, horizontal: 20),
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: allCategories.length,
-                          itemBuilder: ((context, index) {
-                            var mObj = menuArr[index] as Map? ?? {};
-                            return GestureDetector(
-                              onTap: () {
-                                context.push(MenuItemsView(
-                                      selectedCanteen: _uniqueId[indexing],
-                                      selectedCategory: allCategories[index],
-                                      mObj: mObj,
-                                    ),);
-                               
-                              },
-                              child: Stack(
-                                alignment: Alignment.centerRight,
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(
-                                        top: 15, bottom: 8, right: 20),
-                                    width: media.width - 100,
-                                    height: 90,
-                                    decoration: const BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(25),
-                                            bottomLeft: Radius.circular(25),
-                                            topRight: Radius.circular(10),
-                                            bottomRight: Radius.circular(10)),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black12,
-                                            blurRadius: 7,
-                                            offset: Offset(0, 4),
-                                          )
-                                        ]),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        mObj["image"].toString(),
-                                        width: 80,
-                                        height: 80,
-                                        fit: BoxFit.contain,
-                                      ),
-                                      const SizedBox(
-                                        width: 15,
-                                      ),
-                                      Expanded(
-                                        child: Column(
+                          if (categories != null) {
+                            allCategories.addAll(categories.keys.toList());
+
+                            return ListView.builder(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 30, horizontal: 20),
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: allCategories.length,
+                                itemBuilder: ((context, index) {
+                                  var mObj = menuArr[index] as Map? ?? {};
+
+                                  categories[allCategories[index]].values;
+                                  List<String> stockInHand = [];
+
+                                  Map<String, dynamic> data =
+                                      categories[allCategories[index]];
+
+                                  data.map((k, v) {
+                                    if (data[k]['stockInHand'] == true) {
+                                      stockInHand.add(k);
+                                    }
+                                    return MapEntry(k, v);
+                                  });
+
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => MenuItemsView(
+                                            selectedCanteen:
+                                                _uniqueId[indexing],
+                                            selectedCategory:
+                                                allCategories[index],
+                                            mObj: mObj,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: Stack(
+                                      alignment: Alignment.centerRight,
+                                      children: [
+                                        Container(
+                                          margin: const EdgeInsets.only(
+                                              top: 15, bottom: 8, right: 20),
+                                          width: media.width - 100,
+                                          height: 90,
+                                          decoration: const BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(25),
+                                                  bottomLeft:
+                                                      Radius.circular(25),
+                                                  topRight: Radius.circular(10),
+                                                  bottomRight:
+                                                      Radius.circular(10)),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black12,
+                                                  blurRadius: 7,
+                                                  offset: Offset(0, 4),
+                                                )
+                                              ]),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                              CrossAxisAlignment.center,
                                           children: [
-                                            Text(
-                                              allCategories[index],
-                                              style: TextStyle(
-                                                  color: TColor.primaryText,
-                                                  fontSize: 22,
-                                                  fontWeight: FontWeight.w700),
+                                            Image.asset(
+                                              mObj["image"].toString(),
+                                              width: 80,
+                                              height: 80,
+                                              fit: BoxFit.contain,
                                             ),
                                             const SizedBox(
-                                              height: 4,
+                                              width: 15,
                                             ),
-                                            Text(
-                                              categories[allCategories[index]]
-                                                  .values
-                                                  .length
-                                                  .toString(),
-                                              style: TextStyle(
-                                                  color: TColor.secondaryText,
-                                                  fontSize: 11),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    allCategories[index],
+                                                    style: TextStyle(
+                                                        color:
+                                                            TColor.primaryText,
+                                                        fontSize: 22,
+                                                        fontWeight:
+                                                            FontWeight.w700),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 4,
+                                                  ),
+                                                  Text(
+                                                    stockInHand.length
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                        color: TColor
+                                                            .secondaryText,
+                                                        fontSize: 11),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
+                                              width: 35,
+                                              height: 35,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          17.5),
+                                                  boxShadow: const [
+                                                    BoxShadow(
+                                                        color: Colors.black12,
+                                                        blurRadius: 4,
+                                                        offset: Offset(0, 2))
+                                                  ]),
+                                              alignment: Alignment.center,
+                                              child: Image.asset(
+                                                "assets/img/btn_next.png",
+                                                width: 15,
+                                                height: 15,
+                                              ),
                                             ),
                                           ],
                                         ),
-                                      ),
-                                      Container(
-                                        width: 35,
-                                        height: 35,
-                                        decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(17.5),
-                                            boxShadow: const [
-                                              BoxShadow(
-                                                  color: Colors.black12,
-                                                  blurRadius: 4,
-                                                  offset: Offset(0, 2))
-                                            ]),
-                                        alignment: Alignment.center,
-                                        child: Image.asset(
-                                          "assets/img/btn_next.png",
-                                          width: 15,
-                                          height: 15,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            );
-                          }));
-                    } else {
-                      return SizedBox();
-                    }
-                  },
-                ),
+                                      ],
+                                    ),
+                                  );
+                                }));
+                          } else {
+                            return SizedBox();
+                          }
+                        },
+                      );
+                    })
               ],
             ),
           ],
