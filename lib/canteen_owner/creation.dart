@@ -1,30 +1,41 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:projrect_annam/Firebase/firebase_operations.dart';
 
 class Creation extends StatefulWidget {
   final String collegeName;
-  const Creation({super.key, required this.collegeName});
-
-  @override
-  void initState() {}
+  Creation({super.key, required this.collegeName});
+  final ImagePicker picker = ImagePicker();
 
   @override
   State<Creation> createState() => _CreationState();
 }
 
 class _CreationState extends State<Creation> {
+  XFile? imageFile;
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  selectFile() async {
+    XFile? file = await ImagePicker().pickImage(
+        source: ImageSource.gallery, maxHeight: 1800, maxWidth: 1800);
+
+    if (file!.name.isNotEmpty) {
+      setState(() {
+        imageFile = XFile(file.path);
+      });
+    }
+  }
+
   void _editItem(String itemName, String categoryName) {
     TextEditingController nameController =
         TextEditingController(text: tabs[categoryName][itemName]['name']);
     TextEditingController priceController =
         TextEditingController(text: tabs[categoryName][itemName]['price']);
-
-    @override
-    void dispose() {
-      nameController.dispose();
-      priceController.dispose();
-      super.dispose();
-    }
 
     showDialog(
       context: context,
@@ -80,13 +91,6 @@ class _CreationState extends State<Creation> {
     TextEditingController nameController = TextEditingController();
     TextEditingController priceController = TextEditingController();
 
-    @override
-    void dispose() {
-      nameController.dispose();
-      priceController.dispose();
-      super.dispose();
-    }
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -103,6 +107,40 @@ class _CreationState extends State<Creation> {
                 controller: priceController,
                 decoration: InputDecoration(labelText: 'Price'),
               ),
+              SizedBox(
+                height: 10,
+              ),
+              TextButton(
+                onPressed: () {
+                  selectFile();
+                },
+                child: Text("Add Image"),
+                style: TextButton.styleFrom(
+                    backgroundColor: Color.fromARGB(111, 207, 201, 214)),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              nameController.text.isNotEmpty
+                  ? Card(
+                      color: Color(0xFFE6E6E6),
+                      margin: EdgeInsets.all(10.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: ListTile(
+                        leading: imageFile!.name.isNotEmpty
+                            ? CircleAvatar(
+                                child: Image.file(
+                                  File(imageFile!.path),
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : CircleAvatar(),
+                        title: Text(nameController.text ?? " "),
+                        subtitle: Text(priceController.text ?? " "),
+                      ))
+                  : Text("Preview")
             ],
           ),
           actions: [
@@ -142,12 +180,6 @@ class _CreationState extends State<Creation> {
       }
     },
   };
-
-  void initState() {
-    fetchData();
-
-    super.initState();
-  }
 
   Future<void> fetchData() async {
     Map<String, dynamic> fetchedData =
