@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:projrect_annam/Firebase/firebase_operations.dart';
 
 class Creation extends StatefulWidget {
@@ -115,6 +118,40 @@ class _CreationState extends State<Creation> {
                 controller: priceController,
                 decoration: InputDecoration(labelText: 'Price'),
               ),
+              SizedBox(
+                height: 10,
+              ),
+              TextButton(
+                onPressed: () {
+                  selectFile();
+                },
+                child: Text("Add Image"),
+                style: TextButton.styleFrom(
+                    backgroundColor: Color.fromARGB(111, 207, 201, 214)),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              nameController.text.isNotEmpty
+                  ? Card(
+                      color: Color(0xFFE6E6E6),
+                      margin: EdgeInsets.all(10.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: ListTile(
+                        leading: imageFile!.name.isNotEmpty
+                            ? CircleAvatar(
+                                child: Image.file(
+                                  File(imageFile!.path),
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : CircleAvatar(),
+                        title: Text(nameController.text ?? " "),
+                        subtitle: Text(priceController.text ?? " "),
+                      ))
+                  : Text("Preview")
             ],
           ),
           actions: [
@@ -154,12 +191,6 @@ class _CreationState extends State<Creation> {
       }
     },
   };
-
-  void initState() {
-    fetchData();
-
-    super.initState();
-  }
 
   Future<void> fetchData() async {
     Map<String, dynamic> fetchedData =
