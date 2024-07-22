@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:projrect_annam/auth/authWrapper.dart';
 import 'package:projrect_annam/common/color_extension.dart';
 import 'package:projrect_annam/common_widget/round_button.dart';
+import 'package:projrect_annam/helper/helper.dart';
 
 class OnBoardingView extends StatefulWidget {
   const OnBoardingView({super.key});
@@ -35,7 +37,6 @@ class _OnBoardingViewState extends State<OnBoardingView> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     controller.addListener(() {
@@ -132,14 +133,7 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                     title: "Next",
                     onPressed: () {
                       if (selectPage >= 2) {
-                        // Home Screen
-
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => const MainTabView(role: ,),
-                        //   ),
-                        // );
+                        context.pushReplacement(AuthWrapper());
                       } else {
                         //Next Screen
 

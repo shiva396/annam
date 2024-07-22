@@ -15,28 +15,6 @@ class MenuView extends StatefulWidget {
 }
 
 class _MenuViewState extends State<MenuView> {
-  List menuArr = [
-    {
-      "name": "Food",
-      "image": "assets/img/menu_1.png",
-      "items_count": "120",
-    },
-    {
-      "name": "Beverages",
-      "image": "assets/img/menu_2.png",
-      "items_count": "220",
-    },
-    {
-      "name": "Desserts",
-      "image": "assets/img/menu_3.png",
-      "items_count": "155",
-    },
-    {
-      "name": "Promotions",
-      "image": "assets/img/menu_4.png",
-      "items_count": "25",
-    },
-  ];
   List<DropdownMenuItem<String>> _dropdownItems = [];
   List<String> _uniqueId = [];
   List<String> _name = [];
@@ -58,34 +36,13 @@ class _MenuViewState extends State<MenuView> {
   }
 
   Future<void> _fetchDropdownItems() async {
-    // StreamBuilder<DocumentSnapshot>(
-    //     stream: FirebaseOperations.firebaseInstance
-    //         .collection('student')
-    //         .doc(FirebaseOperations.firebaseAuth.currentUser!.uid)
-    //         .snapshots(),
-    //     builder: (context, snapshot) {
-    //       if (!snapshot.hasData) CircularProgressIndicator();
-    //       Map<String, dynamic> data =
-    //           (snapshot.data!.data() as Map<String, dynamic>);
-    //       String collegName = data['collegeName'];
-    //       return StreamBuilder<DocumentSnapshot>(
-    //         stream: FirebaseOperations.firebaseInstance
-    //             .collection('college')
-    //             .doc(collegName)
-    //             .snapshots(),
-    //         builder: (context, innerSnapshot) {
-    //           if (!innerSnapshot.hasData) return CircularProgressIndicator();
-    //           Map<String, dynamic> data =
-    //               (innerSnapshot.data!.data()) as Map<String, dynamic>;
-    //           _uniqueId.addAll(data.keys.toList());
-    //           return SizedBox();
-    //         },
-    //       );
-    //     });
-
+    DocumentSnapshot college = await FirebaseOperations.firebaseInstance
+        .doc(FirebaseOperations.firebaseAuth.currentUser!.email!)
+        .get();
+    String collegeName = college.get('collegeName');
     DocumentSnapshot snapshot = await FirebaseOperations.firebaseInstance
         .collection('college')
-        .doc('sairam')
+        .doc(collegeName)
         .get();
     Map<String, dynamic> items = snapshot.data() as Map<String, dynamic>;
 
@@ -125,9 +82,7 @@ class _MenuViewState extends State<MenuView> {
                   ),
                   IconButton(
                     onPressed: () {
-
                       context.push(MyOrderView());
-
                     },
                     icon: Image.asset(
                       "assets/img/shopping_cart.png",
@@ -221,8 +176,6 @@ class _MenuViewState extends State<MenuView> {
                                 shrinkWrap: true,
                                 itemCount: allCategories.length,
                                 itemBuilder: ((context, index) {
-                                  var mObj = menuArr[index] as Map? ?? {};
-
                                   categories[allCategories[index]].values;
                                   List<String> stockInHand = [];
 
@@ -246,7 +199,6 @@ class _MenuViewState extends State<MenuView> {
                                                 _uniqueId[indexing],
                                             selectedCategory:
                                                 allCategories[index],
-                                            mObj: mObj,
                                           ),
                                         ),
                                       );
@@ -283,7 +235,8 @@ class _MenuViewState extends State<MenuView> {
                                               CrossAxisAlignment.center,
                                           children: [
                                             Image.asset(
-                                              mObj["image"].toString(),
+                                              'assets/img/app_logo.png'
+                                                  .toString(),
                                               width: 80,
                                               height: 80,
                                               fit: BoxFit.contain,

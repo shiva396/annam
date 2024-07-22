@@ -11,10 +11,9 @@ import 'item_details_view.dart';
 class MenuItemsView extends StatefulWidget {
   final String selectedCategory;
   final String selectedCanteen;
-  final Map mObj;
+
   const MenuItemsView(
       {super.key,
-      required this.mObj,
       required this.selectedCategory,
       required this.selectedCanteen});
 
@@ -126,7 +125,7 @@ class _MenuItemsViewState extends State<MenuItemsView> {
                     ),
                     Expanded(
                       child: Text(
-                        widget.mObj["name"].toString(),
+                        ["name"].toString(),
                         style: TextStyle(
                             color: TColor.primaryText,
                             fontSize: 20,

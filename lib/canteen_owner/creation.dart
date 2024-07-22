@@ -244,7 +244,6 @@ class _CreationState extends State<Creation> {
   String selectedCategory = "Lunch";
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     List<String> keys = tabs.keys.toList();
     List<String> itemValue =

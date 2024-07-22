@@ -4,8 +4,6 @@ import 'package:projrect_annam/common_widget/round_textfield.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:projrect_annam/helper/helper.dart';
 
-import '../../common/globs.dart';
-import '../../common/service_call.dart';
 import '../../common_widget/category_cell.dart';
 import '../../common_widget/most_popular_cell.dart';
 import '../../common_widget/popular_resutaurant_row.dart';
@@ -131,7 +129,7 @@ class _HomeViewState extends State<HomeView> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Good morning ${ServiceCall.userPayload[KKey.name] ?? ""}!",
+                            "Good morning ",
                             style: TextStyle(
                                 color: TColor.primaryText,
                                 fontSize: 20,
@@ -140,7 +138,6 @@ class _HomeViewState extends State<HomeView> {
                           IconButton(
                             onPressed: () {
                               context.push(const MyOrderView());
-                              
                             },
                             icon: Image.asset(
                               "assets/img/shopping_cart.png",

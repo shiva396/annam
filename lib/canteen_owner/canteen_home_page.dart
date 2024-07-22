@@ -29,7 +29,7 @@ class _CanteenMainPageState extends State<CanteenMainPage> {
           ),
         ),
         SizedBox(
-          height: 720,
+          height: 700,
           child: SingleChildScrollView(
             child: StreamBuilder<DocumentSnapshot>(
                 stream: FirebaseOperations.firebaseInstance
