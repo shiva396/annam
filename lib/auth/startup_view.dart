@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:projrect_annam/auth/authWrapper.dart';
 import 'package:projrect_annam/helper/helper.dart';
-
-import '../../common/globs.dart';
+import 'package:projrect_annam/auth/on_boarding_view.dart';
 
 class StartupView extends StatefulWidget {
-  const StartupView({super.key});
+  final int? initScreen;
+  const StartupView({super.key, required this.initScreen});
 
   @override
   State<StartupView> createState() => _StarupViewState();
@@ -20,18 +20,11 @@ class _StarupViewState extends State<StartupView> {
 
   void goWelcomePage() async {
     await Future.delayed(const Duration(seconds: 3));
-    welcomePage();
-  }
 
-  void welcomePage() {
-    if (Globs.udValueBool(Globs.userLogin)) {
-
-      context.push(const AuthWrapper());
-      
-    } else {
-      context.push(const AuthWrapper());
-   
-    } 
+    context.pushReplacement(
+        (widget.initScreen == 0 || widget.initScreen == null)
+            ? OnBoardingView()
+            : AuthWrapper());
   }
 
   @override

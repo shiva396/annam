@@ -20,7 +20,6 @@ class _OfferViewState extends State<OfferView> {
 
   @override
   Widget build(BuildContext context) {
-    var media = MediaQuery.of(context).size;
     return Scaffold(
         body: SafeArea(
       child: Column(children: [

@@ -5,7 +5,6 @@ import 'package:projrect_annam/view/more/inbox_view.dart';
 import 'package:projrect_annam/view/more/payment_details_view.dart';
 
 import '../../common/color_extension.dart';
-import '../../common/service_call.dart';
 import 'my_order_view.dart';
 import 'notification_view.dart';
 
@@ -114,9 +113,6 @@ class _MoreViewState extends State<MoreView> {
 
                           case "5":
                             context.push(const AboutUsView());
-                            
-                          case "6":
-                            ServiceCall.logout();
 
                           default:
                         }
