@@ -4,7 +4,8 @@ import 'package:projrect_annam/Firebase/firebase_operations.dart';
 import 'package:projrect_annam/canteen_owner/expanded_card.dart';
 
 class CanteenMainPage extends StatefulWidget {
-  const CanteenMainPage({super.key});
+  final Map<String, dynamic> canteenOwnerData;
+  const CanteenMainPage({super.key, required this.canteenOwnerData});
 
   @override
   State<CanteenMainPage> createState() => _CanteenMainPageState();
@@ -34,7 +35,9 @@ class _CanteenMainPageState extends State<CanteenMainPage> {
             child: StreamBuilder<DocumentSnapshot>(
                 stream: FirebaseOperations.firebaseInstance
                     .collection('college')
-                    .doc('sairam')
+                    .doc(widget.canteenOwnerData['collegeName']
+                        .toString()
+                        .trim())
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData)
@@ -42,6 +45,7 @@ class _CanteenMainPageState extends State<CanteenMainPage> {
 
                   Map<String, dynamic> datas =
                       snapshot.data!.data() as Map<String, dynamic>;
+
                   List studentsOrder =
                       datas[FirebaseOperations.firebaseAuth.currentUser!.uid]
                               ['todayOrders'] ??
@@ -57,7 +61,7 @@ class _CanteenMainPageState extends State<CanteenMainPage> {
                       builder: (context, innerSnapshot) {
                         if (!innerSnapshot.hasData)
                           return CircularProgressIndicator();
-                        print(innerSnapshot.data!.data());
+
                         return Column(
                           children: [
                             ExpandableCard(),

@@ -9,8 +9,8 @@ extension FlutterNavigation on BuildContext {
 }
 
 extension Flutter on BuildContext {
-  void pop<T>(Widget route, [T? result]) {
-    return Navigator.of(this).pop<T>(result);
+  void pop<T>([T? result]) {
+    return Navigator.of(this).pop<T>();
   }
 }
 

@@ -18,7 +18,7 @@ class _StarupViewState extends State<StartupView> {
     goWelcomePage();
   }
 
-  void goWelcomePage() async {
+  Future<void> goWelcomePage() async {
     await Future.delayed(const Duration(seconds: 3));
 
     context.pushReplacement(

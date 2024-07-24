@@ -5,7 +5,7 @@ import 'package:projrect_annam/common_widget/round_textfield.dart';
 import 'package:projrect_annam/helper/helper.dart';
 
 import '../../Firebase/firebase_operations.dart';
-import '../more/my_order_view.dart';
+import '../../view/more/my_order_view.dart';
 import 'item_details_view.dart';
 
 class MenuItemsView extends StatefulWidget {
@@ -29,73 +29,6 @@ class _MenuItemsViewState extends State<MenuItemsView> {
     txtSearch.dispose();
     super.dispose();
   }
-
-  List menuItemsArr = [
-    {
-      "image": "assets/img/dess_1.png",
-      "name": "French Apple Pie",
-      "rate": "4.9",
-      "rating": "124",
-      "type": "Minute by tuk tuk",
-      "food_type": "Desserts"
-    },
-    {
-      "image": "assets/img/dess_2.png",
-      "name": "Dark Chocolate Cake",
-      "rate": "4.9",
-      "rating": "124",
-      "type": "Cakes by Tella",
-      "food_type": "Desserts"
-    },
-    {
-      "image": "assets/img/dess_3.png",
-      "name": "Street Shake",
-      "rate": "4.9",
-      "rating": "124",
-      "type": "Café Racer",
-      "food_type": "Desserts"
-    },
-    {
-      "image": "assets/img/dess_4.png",
-      "name": "Fudgy Chewy Brownies",
-      "rate": "4.9",
-      "rating": "124",
-      "type": "Minute by tuk tuk",
-      "food_type": "Desserts"
-    },
-    {
-      "image": "assets/img/dess_1.png",
-      "name": "French Apple Pie",
-      "rate": "4.9",
-      "rating": "124",
-      "type": "Minute by tuk tuk",
-      "food_type": "Desserts"
-    },
-    {
-      "image": "assets/img/dess_2.png",
-      "name": "Dark Chocolate Cake",
-      "rate": "4.9",
-      "rating": "124",
-      "type": "Cakes by Tella",
-      "food_type": "Desserts"
-    },
-    {
-      "image": "assets/img/dess_3.png",
-      "name": "Street Shake",
-      "rate": "4.9",
-      "rating": "124",
-      "type": "Café Racer",
-      "food_type": "Desserts"
-    },
-    {
-      "image": "assets/img/dess_4.png",
-      "name": "Fudgy Chewy Brownies",
-      "rate": "4.9",
-      "rating": "124",
-      "type": "Minute by tuk tuk",
-      "food_type": "Desserts"
-    },
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -209,8 +142,6 @@ class _MenuItemsViewState extends State<MenuItemsView> {
                               padding: EdgeInsets.zero,
                               itemCount: stockInHand.length,
                               itemBuilder: ((context, index) {
-                                var mObj = menuItemsArr[index] as Map? ?? {};
-
                                 return GestureDetector(
                                   onTap: () {
                                     context.push(
@@ -255,7 +186,7 @@ class _MenuItemsViewState extends State<MenuItemsView> {
                                             CrossAxisAlignment.center,
                                         children: [
                                           Image.asset(
-                                            mObj["image"].toString(),
+                                            "assets/img/add.png",
                                             width: 80,
                                             height: 80,
                                             fit: BoxFit.contain,

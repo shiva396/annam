@@ -5,7 +5,7 @@ import 'package:projrect_annam/Firebase/firebase_operations.dart';
 import 'package:projrect_annam/canteen_owner/canteen_main_tab.dart';
 import 'package:projrect_annam/helper/helper.dart';
 
-import 'package:projrect_annam/helper/snackbar.dart';
+import 'package:projrect_annam/helper/utils.dart';
 
 import 'package:projrect_annam/student/student_main_tab.dart';
 import 'role_page.dart';
@@ -101,8 +101,6 @@ class SocialIcons extends StatelessWidget {
           icon: const FaIcon(FontAwesomeIcons.facebook), // facebook icon
           iconSize: 30,
           onPressed: () {
-            showSnackBar(context, "ds");
-
             context.push(RoleSeperationPage(
               userData: {},
             ));
@@ -230,62 +228,69 @@ class _EmailBarState extends State<EmailBar> {
             foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
           ),
           onPressed: () async {
-            if (emailController.text.trim().toLowerCase().isNotEmpty) {
-              await FirebaseOperations.firebaseAuth.signInWithEmailAndPassword(
-                email: emailController.text.trim(),
-                password: passwordController.text.trim(),
-              );
-              DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
-                  .collection('role')
-                  .doc('role')
-                  .get();
-              Map<String, dynamic> res = (docSnapshot.get('role'));
-              if (res.containsKey(emailController.text.trim().toLowerCase())) {
-                String role = res[emailController.text.trim().toLowerCase()];
-                if (role == 'student') {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MainTabView(
-                        role: role,
+            if (emailController.text.trim().toLowerCase().isNotEmpty &&
+                passwordController.text.trim().toLowerCase().isNotEmpty) {
+              try {
+                await FirebaseOperations.firebaseAuth
+                    .signInWithEmailAndPassword(
+                  email: emailController.text.trim(),
+                  password: passwordController.text.trim(),
+                );
+                DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
+                    .collection('role')
+                    .doc('role')
+                    .get();
+                Map<String, dynamic> res = (docSnapshot.get('role'));
+                if (res
+                    .containsKey(emailController.text.trim().toLowerCase())) {
+                  String role = res[emailController.text.trim().toLowerCase()];
+                  if (role == 'student') {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MainTabView(
+                          role: role,
+                        ),
                       ),
-                    ),
-                  );
-                } else if (role == 'canteen_owner') {
-                  try {
-                    String collegeName = "";
-                    CollectionReference collegeCollection =
-                        FirebaseFirestore.instance.collection('college');
+                    );
+                  } else if (role == 'canteen_owner') {
+                    try {
+                      String collegeName = "";
+                      CollectionReference collegeCollection =
+                          FirebaseFirestore.instance.collection('college');
 
-                    QuerySnapshot collegeSnapshot =
-                        await collegeCollection.get();
+                      QuerySnapshot collegeSnapshot =
+                          await collegeCollection.get();
 
-                    collegeSnapshot.docs.forEach((v) {
-                      Map<String, dynamic> abc =
-                          v.data() as Map<String, dynamic>;
-                      if (abc.containsKey(
-                          FirebaseOperations.firebaseAuth.currentUser!.uid)) {
-                        collegeName = v.id;
+                      collegeSnapshot.docs.forEach((v) {
+                        Map<String, dynamic> abc =
+                            v.data() as Map<String, dynamic>;
+                        if (abc.containsKey(
+                            FirebaseOperations.firebaseAuth.currentUser!.uid)) {
+                          collegeName = v.id;
+                        }
+                      });
+                      if (collegeName.isNotEmpty) {
+                        context.push(CanteenOwner(collegeName: collegeName));
+                      } else {
+                        customBar(context: context, text: "Collge not found");
                       }
-                    });
-                    if (collegeName.isNotEmpty) {
 
-                      context.push(CanteenOwner(collegeName: collegeName));
-
-                    } else {
-                      showSnackBar(context, "Collge not found");
+                      // Iterate through each document in the "college" collection
+                    } catch (e) {
+                      customBar(
+                          context: context,
+                          text: 'Error checking documents: $e');
                     }
-
-                    // Iterate through each document in the "college" collection
-                  } catch (e) {
-                    showSnackBar(context, 'Error checking documents: $e');
                   }
+                } else {
+                  customBar(context: context, text: "Account not found");
                 }
-              } else {
-                showSnackBar(context, "Account not found");
+              } catch (e) {
+                customBar(context: context, text: e.toString());
               }
             } else {
-              showSnackBar(context, "Error");
+              customBar(context: context, text: "Please Fill all details");
             }
           },
           child: const Text(
@@ -448,7 +453,7 @@ class _SignUpFieldsState extends State<SignUpFields> {
                 passwordController.text.isNotEmpty &&
                 retypedPasswordController.text.isNotEmpty) {
               if (passwordController.text != retypedPasswordController.text) {
-                showSnackBar(context, "Error");
+                customBar(context: context, text: "The re- entered password did n't match");
               } else {
                 // All correct
                 context.push(RoleSeperationPage(
@@ -459,8 +464,7 @@ class _SignUpFieldsState extends State<SignUpFields> {
                 ));
               }
             } else {
-              showSnackBar(context, "Error");
-            
+              customBar(context: context, text: "Enter All the Fields");
             }
           },
           child: const Text('Sign Up', style: TextStyle(fontSize: 18)),

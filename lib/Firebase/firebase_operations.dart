@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 
 class FirebaseOperations {
   static final FirebaseFirestore firebaseInstance = FirebaseFirestore.instance;
@@ -8,31 +11,44 @@ class FirebaseOperations {
   static final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
   static Future<void> addCategories(
-      String categoryName, String collegeName) async {
+      {required String categoryName, required String collegeName}) async {
     DocumentSnapshot<Map<String, dynamic>> data =
         await firebaseInstance.collection('college').doc(collegeName).get();
     Map<String, dynamic> obj = data.data() as Map<String, dynamic>;
     Map<String, dynamic> update = (obj[firebaseAuth.currentUser!.uid]);
     obj[firebaseAuth.currentUser!.uid]['categories'] = {categoryName: {}};
-    // print({firebaseAuth.currentUser!.uid: update});
+
     await firebaseInstance
         .collection('college')
         .doc(collegeName)
         .set({firebaseAuth.currentUser!.uid: update}, SetOptions(merge: true));
   }
 
-  static Future<void> addItems(String categoryName, String collegeName,
-      String itemName, String itemPrice, String itemImageUrl) async {
+  static Future<void> addItems(
+      {required String categoryName,
+      required String itemName,
+      required String itemPrice,
+      required String collegeName,
+      required XFile itemImageUrl}) async {
     DocumentSnapshot<Map<String, dynamic>> data =
         await firebaseInstance.collection('college').doc(collegeName).get();
     Map<String, dynamic> obj = data.data() as Map<String, dynamic>;
     Map<String, dynamic> update = obj[firebaseAuth.currentUser!.uid]
         ['categories'][categoryName] as Map<String, dynamic>;
+    String? imagePath;
+    try {
+      Reference reference = firebaseStorage.ref();
+      Reference ref = reference.child(
+          "canteenOwner/${firebaseAuth.currentUser!.uid}/${categoryName}/${itemName}");
+      UploadTask uploadTask = ref.putFile(File(itemImageUrl.path));
+      TaskSnapshot onCompleted = await uploadTask.whenComplete(() {});
+      imagePath = await onCompleted.ref.getDownloadURL();
+    } catch (r) {}
     update[itemName] = {
       "name": itemName,
       "price": itemPrice,
-      "imageUrl": itemImageUrl,
-      "stockInHand": false,
+      "imageUrl": imagePath != null ? imagePath : "empty",
+      "stockInHand": true,
     };
 
     await firebaseInstance.collection('college').doc(collegeName).set({
@@ -43,13 +59,13 @@ class FirebaseOperations {
   }
 
   static Future<void> editItems(
-      String categoryName,
-      String collegeName,
-      String newitemName,
-      String itemPrice,
-      String itemImageUrl,
-      String olditemName,
-      bool stockInHand) async {
+      {required String categoryName,
+      required String collegeName,
+      required String newitemName,
+      required String itemPrice,
+      required String itemImageUrl,
+      required String olditemName,
+      required bool stockInHand}) async {
     DocumentSnapshot<Map<String, dynamic>> data =
         await firebaseInstance.collection('college').doc(collegeName).get();
     Map<String, dynamic> obj = data.data() as Map<String, dynamic>;
@@ -71,7 +87,9 @@ class FirebaseOperations {
   }
 
   static Future<void> removeItems(
-      String categoryName, String collegeName, String itemName) async {
+      {required String categoryName,
+      required String collegeName,
+      required String itemName}) async {
     DocumentSnapshot<Map<String, dynamic>> data =
         await firebaseInstance.collection('college').doc(collegeName).get();
     Map<String, dynamic> obj = data.data() as Map<String, dynamic>;
@@ -84,16 +102,6 @@ class FirebaseOperations {
         'categories': {categoryName: update}
       }
     }, SetOptions(merge: true));
-  }
-
-  static Future<Map> fetchData(String collegeName) async {
-    DocumentSnapshot<Map<String, dynamic>> data =
-        await firebaseInstance.collection('college').doc(collegeName).get();
-    Map<String, dynamic> obj = data.data() as Map<String, dynamic>;
-    Map<String, dynamic> update =
-        (obj[firebaseAuth.currentUser!.uid])['categories'];
-
-    return update;
   }
 
   static Future<void> addCartItems(

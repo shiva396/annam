@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:projrect_annam/helper/helper.dart';
 import 'package:projrect_annam/view/more/about_us_view.dart';
-import 'package:projrect_annam/view/more/inbox_view.dart';
 import 'package:projrect_annam/view/more/payment_details_view.dart';
 
 import '../../common/color_extension.dart';
 import 'my_order_view.dart';
-import 'notification_view.dart';
 
 class MoreView extends StatefulWidget {
   const MoreView({super.key});
@@ -31,18 +29,6 @@ class _MoreViewState extends State<MoreView> {
     },
     {
       "index": "3",
-      "name": "Notifications",
-      "image": "assets/img/more_notification.png",
-      "base": 15
-    },
-    {
-      "index": "4",
-      "name": "Inbox",
-      "image": "assets/img/more_inbox.png",
-      "base": 0
-    },
-    {
-      "index": "5",
       "name": "About Us",
       "image": "assets/img/more_info.png",
       "base": 0
@@ -104,17 +90,15 @@ class _MoreViewState extends State<MoreView> {
 
                           case "2":
                             context.push(const MyOrderView());
+                            break;
 
                           case "3":
-                            context.push(const NotificationsView());
-
-                          case "4":
-                            context.push(const InboxView());
-
-                          case "5":
                             context.push(const AboutUsView());
+                            break;
 
                           default:
+                            context.push(const PaymentDetailsView());
+                            break;
                         }
                       },
                       child: Container(

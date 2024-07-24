@@ -5,7 +5,7 @@ import 'package:projrect_annam/common_widget/round_icon_button.dart';
 import 'package:projrect_annam/helper/helper.dart';
 
 import '../../common/color_extension.dart';
-import '../more/my_order_view.dart';
+import '../../view/more/my_order_view.dart';
 
 class ItemDetailsView extends StatefulWidget {
   final String itemName;

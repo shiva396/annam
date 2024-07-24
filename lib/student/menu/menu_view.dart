@@ -4,11 +4,11 @@ import 'package:projrect_annam/Firebase/firebase_operations.dart';
 import 'package:projrect_annam/helper/helper.dart';
 
 import '../../common/color_extension.dart';
-import '../more/my_order_view.dart';
+import '../../view/more/my_order_view.dart';
 import 'menu_items_view.dart';
 
 class MenuView extends StatefulWidget {
-  const MenuView({super.key});
+  const  MenuView({super.key});
 
   @override
   State<MenuView> createState() => _MenuViewState();
@@ -52,7 +52,9 @@ class _MenuViewState extends State<MenuView> {
       _name.add(items[doc]['name']);
       return DropdownMenuItem<String>(
         value: items[doc]['name'],
-        child: Text(items[doc]['name']),
+        child: Text(
+          items[doc]['name'],
+        ),
       );
     }).toList();
 
@@ -111,7 +113,7 @@ class _MenuViewState extends State<MenuView> {
                 ),
 
                 dropdownColor: const Color.fromARGB(
-                    255, 197, 196, 194), // Color when dropdown is open
+                    255, 197, 196, 194), 
 
                 onChanged: (value) {
                   setState(() {

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:projrect_annam/Firebase/firebase_operations.dart';
 import 'package:projrect_annam/canteen_owner/canteen_main_tab.dart';
-import 'package:projrect_annam/helper/snackbar.dart';
+import 'package:projrect_annam/helper/utils.dart';
 import '../student/student_main_tab.dart';
 
 class RoleSeperationPage extends StatefulWidget {
@@ -17,7 +17,6 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
   String _selectedRole = 'student';
   String _selectedCollege = '';
   TextEditingController _nameController = TextEditingController();
-  TextEditingController _collegeController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
   TextEditingController _cityController = TextEditingController();
@@ -34,8 +33,9 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
   }
 
   Future<void> _fetchDropdownItems() async {
-    QuerySnapshot snapshot =
-        await FirebaseOperations.firebaseInstance.collection('college').get();
+    QuerySnapshot snapshot = await FirebaseOperations.firebaseInstance
+        .collection('institutions')
+        .get();
     Set<DropdownMenuItem<String>> items = snapshot.docs.map((doc) {
       return DropdownMenuItem<String>(
         value: doc.id,
@@ -51,7 +51,6 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
   @override
   void dispose() {
     _nameController.dispose();
-    _collegeController.dispose();
     _phoneController.dispose();
     _addressController.dispose();
     _cityController.dispose();
@@ -64,8 +63,7 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.orange, // fallback background color
-
+      backgroundColor: Colors.orange,
       body: Stack(
         children: [
           Container(
@@ -151,13 +149,34 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                             ),
                           ),
                           const SizedBox(height: 10),
-                          TextField(
-                            controller: _collegeController,
-                            decoration: const InputDecoration(
-                              labelText: 'College Name',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
+                          DropdownButtonFormField<String>(
+                              isExpanded: true,
+                              style: TextStyle(
+                                  overflow: TextOverflow.ellipsis,
+                                  fontSize: 16,
+                                  color: Colors.black),
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                ),
+                                hintText: 'Choose College',
+                                filled: true,
+                                fillColor: Colors.grey[200],
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide:
+                                        BorderSide(color: Colors.black)),
+                              ),
+                              dropdownColor: Colors.orange[100],
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedCollege = value!;
+                                });
+                              },
+                              items: _dropdownItems),
                           const SizedBox(height: 10),
                           TextField(
                             controller: _phoneController,
@@ -226,6 +245,11 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                           ),
                           const SizedBox(height: 10),
                           DropdownButtonFormField<String>(
+                              isExpanded: true,
+                              style: TextStyle(
+                                  overflow: TextOverflow.ellipsis,
+                                  fontSize: 16,
+                                  color: Colors.black),
                               decoration: InputDecoration(
                                 contentPadding:
                                     const EdgeInsets.symmetric(horizontal: 20),
@@ -304,15 +328,16 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
 
                             if (_selectedRole == 'student') {
                               if (_nameController.text.trim().isNotEmpty &&
-                                  _collegeController.text.trim().isNotEmpty &&
+                                  _selectedCollege.isNotEmpty &&
                                   _phoneController.text.trim().isNotEmpty) {
                                 widget.userData.addAll({
                                   'name': _nameController.text.trim(),
-                                  'collegeName': _collegeController.text.trim(),
-                                  'phoneNumber': _phoneController.text.trim()
+                                  'collegeName': _selectedCollege,
+                                  'phoneNumber': _phoneController.text.trim(),
+                                  'image': ""
                                 });
                               } else {
-                                showSnackBar(context, "Fill all");
+                                customBar(context: context, text: "Fill all");
                               }
                             } else if (_selectedRole == 'canteen_owner') {
                               widget.userData.addAll({
@@ -321,10 +346,13 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                                 'phoneNumber': _phoneController.text.trim(),
                                 'address': _addressController.text.trim(),
                                 'city': _cityController.text.trim(),
-                                'state': _stateController.text.trim()
+                                'state': _stateController.text.trim(),
+                                'image': "",
+                                'categories': {},
+                                'todayOrders': []
                               });
-                            } else if (_selectedRole == '') {
-                            } else if (_selectedRole == '') {
+                            } else if (_selectedRole == 'cattle_owner') {
+                            } else if (_selectedRole == 'ngo') {
                             } else {}
 
                             FirebaseOperations.firebaseAuth
@@ -351,7 +379,9 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                                       'role': roleMap,
                                     });
                                   } else {
-                                    showSnackBar(context, "Already exist");
+                                    customBar(
+                                        context: context,
+                                        text: "Already exist");
                                   }
                                 } else {
                                   roleMap[widget.userData['email']] =
@@ -364,8 +394,7 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                                   });
                                 }
                               } catch (e) {
-                                showSnackBar(context, e.toString());
-                              
+                                customBar(context: context, text: e.toString());
                               }
                               if (_selectedRole == 'canteen_owner') {
                                 Map<String, dynamic> user = {
@@ -374,7 +403,7 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                                 };
                                 FirebaseOperations.firebaseInstance
                                     .collection('college')
-                                    .doc(_selectedCollege)
+                                    .doc(_selectedCollege.trim())
                                     .set(user, SetOptions(merge: true));
                                 Navigator.pushReplacement(
                                   context,
@@ -389,7 +418,7 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                                     .collection(_selectedRole)
                                     .doc(FirebaseOperations
                                         .firebaseAuth.currentUser!.uid
-                                        .toString())
+                                        .trim())
                                     .set(widget.userData)
                                     .whenComplete(() {
                                   if (_selectedRole == 'student') {

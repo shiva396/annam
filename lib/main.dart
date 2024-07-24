@@ -8,17 +8,25 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  SystemChrome.setPreferredOrientations(
+    [
+      DeviceOrientation.portraitUp,
+    ],
+  );
   SharedPreferences prefs = await SharedPreferences.getInstance();
   int? initScreen = prefs.getInt("initScreen");
   await prefs.setInt("initScreen", 1);
 
-  runApp(MyApp(
-    defaultHome: StartupView(
-      initScreen: initScreen,
+  runApp(
+    MyApp(
+      defaultHome: StartupView(
+        initScreen: initScreen,
+      ),
     ),
-  ));
+  );
 }
 
 class MyApp extends StatefulWidget {

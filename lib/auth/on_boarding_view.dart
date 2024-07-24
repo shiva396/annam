@@ -47,6 +47,13 @@ class _OnBoardingViewState extends State<OnBoardingView> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+
+    controller.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
 
@@ -135,8 +142,6 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                       if (selectPage >= 2) {
                         context.pushReplacement(AuthWrapper());
                       } else {
-                        //Next Screen
-
                         setState(() {
                           selectPage = selectPage + 1;
                           controller.animateToPage(selectPage,
