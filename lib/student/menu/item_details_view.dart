@@ -5,7 +5,7 @@ import 'package:projrect_annam/common_widget/round_icon_button.dart';
 import 'package:projrect_annam/helper/helper.dart';
 
 import '../../common/color_extension.dart';
-import '../../view/more/my_order_view.dart';
+import '../more/my_order_view.dart';
 
 class ItemDetailsView extends StatefulWidget {
   final String itemName;
@@ -357,7 +357,6 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                                                             "assets/img/shopping_add.png",
                                                         color: TColor.primary,
                                                         onPressed: () {
-                                                          // Adding Orders
                                                           FirebaseOperations.addCartItems(
                                                               collegeName: widget
                                                                   .collegeName,
@@ -375,7 +374,9 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                                               )),
                                           InkWell(
                                             onTap: () {
-                                              context.push(const MyOrderView());
+                                              context.push(MyOrderView(
+                                                
+                                              ));
                                             },
                                             child: Container(
                                               width: 45,
@@ -460,8 +461,9 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                       ),
                       IconButton(
                         onPressed: () {
-                          context.push(const MyOrderView());
-                         
+                          context.push(MyOrderView(
+                           
+                          ));
                         },
                         icon: Image.asset(
                           "assets/img/shopping_cart.png",

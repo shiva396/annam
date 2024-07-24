@@ -7,7 +7,7 @@ import 'package:projrect_annam/canteen_owner/canteen_profile_page.dart';
 import 'package:projrect_annam/canteen_owner/creation.dart';
 import 'package:projrect_annam/common/color_extension.dart';
 import 'package:projrect_annam/common_widget/tab_button.dart';
-import 'package:projrect_annam/view/more/more_view.dart';
+import 'package:projrect_annam/student/more/more_view.dart';
 
 class CanteenOwner extends StatefulWidget {
   const CanteenOwner({

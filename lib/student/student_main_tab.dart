@@ -5,8 +5,8 @@ import 'package:projrect_annam/common/color_extension.dart';
 import 'package:projrect_annam/common_widget/tab_button.dart';
 
 import 'menu/menu_view.dart';
-import '../view/more/more_view.dart';
-import 'My Orders/my_orders.dart';
+import 'more/more_view.dart';
+import 'My Orders/order_history.dart';
 import 'student_profile_page.dart';
 
 class MainTabView extends StatefulWidget {
@@ -79,7 +79,9 @@ class _MainTabViewState extends State<MainTabView> {
                         onTap: () {
                           if (selctTab != 3) {
                             selctTab = 3;
-                            selectPageView = StudentProfilePage(studentData: studentData,);
+                            selectPageView = StudentProfilePage(
+                              studentData: studentData,
+                            );
                           }
                           if (mounted) {
                             setState(() {});

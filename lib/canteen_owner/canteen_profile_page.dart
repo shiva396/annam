@@ -11,7 +11,7 @@ import 'package:projrect_annam/helper/helper.dart';
 
 import '../common/color_extension.dart';
 import '../common_widget/round_textfield.dart';
-import '../view/more/my_order_view.dart';
+import '../student/more/my_order_view.dart';
 
 class CanteenProfilePage extends StatefulWidget {
   const CanteenProfilePage({
@@ -75,6 +75,7 @@ class _CanteenProfilePageState extends State<CanteenProfilePage> {
                   ),
                   IconButton(
                     onPressed: () {
+                      // canteen owners have no cart
                       context.push(const MyOrderView());
                     },
                     icon: Image.asset(

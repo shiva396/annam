@@ -5,17 +5,20 @@ import 'package:projrect_annam/common_widget/round_textfield.dart';
 import 'package:projrect_annam/helper/helper.dart';
 
 import '../../Firebase/firebase_operations.dart';
-import '../../view/more/my_order_view.dart';
+import '../more/my_order_view.dart';
 import 'item_details_view.dart';
 
 class MenuItemsView extends StatefulWidget {
-  final String selectedCategory;
+  final Map<String, dynamic> canteenData;
+  final String collegeName;
   final String selectedCanteen;
-
+  final String selectedCategory;
   const MenuItemsView(
       {super.key,
-      required this.selectedCategory,
-      required this.selectedCanteen});
+      required this.canteenData,
+      required this.selectedCanteen,
+      required this.collegeName,
+      required this.selectedCategory});
 
   @override
   State<MenuItemsView> createState() => _MenuItemsViewState();
@@ -23,16 +26,34 @@ class MenuItemsView extends StatefulWidget {
 
 class _MenuItemsViewState extends State<MenuItemsView> {
   TextEditingController txtSearch = TextEditingController();
-
+  List<String> items = [];
   @override
   void dispose() {
     txtSearch.dispose();
+
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    function();
+  }
+
+  void function() {
+    Map<String, dynamic> abc = widget.canteenData;
+    abc.map((k, v) {
+      if (v['stockInHand'] == true) {
+        items.add(k);
+      }
+      return MapEntry(k, v);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
@@ -58,7 +79,7 @@ class _MenuItemsViewState extends State<MenuItemsView> {
                     ),
                     Expanded(
                       child: Text(
-                        ["name"].toString(),
+                        widget.selectedCategory.toString(),
                         style: TextStyle(
                             color: TColor.primaryText,
                             fontSize: 20,
@@ -67,7 +88,9 @@ class _MenuItemsViewState extends State<MenuItemsView> {
                     ),
                     IconButton(
                       onPressed: () {
-                        context.push(const MyOrderView());
+                        context.push(MyOrderView(
+                        
+                        ));
                       },
                       icon: Image.asset(
                         "assets/img/shopping_cart.png",
@@ -100,161 +123,111 @@ class _MenuItemsViewState extends State<MenuItemsView> {
               const SizedBox(
                 height: 15,
               ),
-              StreamBuilder<DocumentSnapshot>(
-                  stream: FirebaseOperations.firebaseInstance
-                      .collection('student')
-                      .doc(FirebaseOperations.firebaseAuth.currentUser!.uid)
-                      .snapshots(),
-                  builder: (context, outerSnapshot) {
-                    if (!outerSnapshot.hasData) CircularProgressIndicator();
-                    Map<String, dynamic> data =
-                        (outerSnapshot.data!.data() as Map<String, dynamic>);
-                    String collegName = data['collegeName'];
-
-                    return StreamBuilder<DocumentSnapshot>(
-                        stream: FirebaseOperations.firebaseInstance
-                            .collection('college')
-                            .doc(collegName)
-                            .snapshots(),
-                        builder: (context, snapshot) {
-                          if (!(snapshot.hasData))
-                            return Center(child: CircularProgressIndicator());
-                          List<String> stockInHand = [];
-                          List<String> items = [];
-                          Map<String, dynamic> obj =
-                              snapshot.data!.data() as Map<String, dynamic>;
-                          Map<String, dynamic> ref =
-                              obj[(widget.selectedCanteen)]['categories'] ?? {};
-                          if (ref.isNotEmpty) {
-                            Map<String, dynamic> data =
-                                ref[widget.selectedCategory];
-                            data.map((k, v) {
-                              if (data[k]['stockInHand'] == true) {
-                                stockInHand.add(k);
-                              }
-                              return MapEntry(k, v);
-                            });
-
-                            items.addAll(data.keys.toList());
-                            return ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              padding: EdgeInsets.zero,
-                              itemCount: stockInHand.length,
-                              itemBuilder: ((context, index) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    context.push(
-                                      ItemDetailsView(
-                                        collegeName: collegName,
-                                        selectedCanteen: widget.selectedCanteen,
-                                        itemName: data[stockInHand[index]]
-                                            ['name'],
-                                        price: data[stockInHand[index]]
-                                            ['price'],
-                                      ),
-                                    );
-                                  },
-                                  child: Stack(
-                                    alignment: Alignment.centerRight,
-                                    children: [
-                                      Container(
-                                        margin: const EdgeInsets.only(
-                                            top: 15, bottom: 8, right: 20),
-                                        width: media.width - 100,
-                                        height: 90,
-                                        decoration: const BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(25),
-                                              bottomLeft: Radius.circular(25),
-                                              topRight: Radius.circular(10),
-                                              bottomRight: Radius.circular(10)),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.black12,
-                                              blurRadius: 7,
-                                              offset: Offset(0, 4),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Image.asset(
-                                            "assets/img/add.png",
-                                            width: 80,
-                                            height: 80,
-                                            fit: BoxFit.contain,
-                                          ),
-                                          const SizedBox(
-                                            width: 15,
-                                          ),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  data[stockInHand[index]]
-                                                      ['name'],
-                                                  style: TextStyle(
-                                                      color: TColor.primaryText,
-                                                      fontSize: 22,
-                                                      fontWeight:
-                                                          FontWeight.w700),
-                                                ),
-                                                const SizedBox(
-                                                  height: 4,
-                                                ),
-                                                Text(
-                                                  data[stockInHand[index]]
-                                                          ['price'] +
-                                                      "  Rs",
-                                                  style: TextStyle(
-                                                      color:
-                                                          TColor.secondaryText,
-                                                      fontSize: 11),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Container(
-                                            width: 35,
-                                            height: 35,
-                                            decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(17.5),
-                                                boxShadow: const [
-                                                  BoxShadow(
-                                                      color: Colors.black12,
-                                                      blurRadius: 4,
-                                                      offset: Offset(0, 2))
-                                                ]),
-                                            alignment: Alignment.center,
-                                            child: Image.asset(
-                                              "assets/img/btn_next.png",
-                                              width: 15,
-                                              height: 15,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+              ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
+                itemCount: items.length,
+                itemBuilder: ((context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      context.push(
+                        ItemDetailsView(
+                          collegeName: widget.collegeName,
+                          selectedCanteen: widget.selectedCanteen,
+                          itemName: widget.canteenData[items[index]]['name'],
+                          price: widget.canteenData[items[index]]['price'],
+                        ),
+                      );
+                    },
+                    child: Stack(
+                      alignment: Alignment.centerRight,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(
+                              top: 15, bottom: 8, right: 20),
+                          width: media.width - 100,
+                          height: 90,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(25),
+                                bottomLeft: Radius.circular(25),
+                                topRight: Radius.circular(10),
+                                bottomRight: Radius.circular(10)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 7,
+                                offset: Offset(0, 4),
+                              )
+                            ],
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CircleAvatar(
+                                radius: 40,
+                                backgroundImage: NetworkImage(widget
+                                    .canteenData[items[index]]['imageUrl']),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 15,
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    widget.canteenData[items[index]]['name'],
+                                    style: TextStyle(
+                                        color: TColor.primaryText,
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w700),
                                   ),
-                                );
-                              }),
-                            );
-                          } else {
-                            return Text('NO ITEMS');
-                          }
-                        });
-                  })
+                                  const SizedBox(
+                                    height: 4,
+                                  ),
+                                  Text(
+                                    widget.canteenData[items[index]]['price'],
+                                    style: TextStyle(
+                                        color: TColor.secondaryText,
+                                        fontSize: 11),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              width: 35,
+                              height: 35,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(17.5),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                        color: Colors.black12,
+                                        blurRadius: 4,
+                                        offset: Offset(0, 2))
+                                  ]),
+                              alignment: Alignment.center,
+                              child: Image.asset(
+                                "assets/img/btn_next.png",
+                                width: 15,
+                                height: 15,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+              )
             ],
           ),
         ),

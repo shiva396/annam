@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:projrect_annam/student/menu/item_details_view.dart';
 
 class FirebaseOperations {
   static final FirebaseFirestore firebaseInstance = FirebaseFirestore.instance;
@@ -110,48 +111,61 @@ class FirebaseOperations {
       required String collegeName,
       required String price,
       required String quantity}) async {
-    DocumentSnapshot<Map<String, dynamic>> obj = await firebaseInstance
+    Map<String, dynamic> itemdata = {};
+    itemdata[itemName] = {
+      "name": itemName,
+      "price": price,
+      "quantity": quantity,
+    };
+    itemdata['time'] = DateTime.now().toString();
+    itemdata['checkOut'] = false;
+    QuerySnapshot<Map<String, dynamic>> obj = await firebaseInstance
         .collection('student')
         .doc(firebaseAuth.currentUser!.uid)
         .collection('orders')
-        .doc(firebaseAuth.currentUser!.uid)
         .get();
+    if (obj.docs.isNotEmpty) {
+      if (obj.docs.first.data().containsKey(canteenName)) {
+        firebaseInstance
+            .collection('student')
+            .doc(firebaseAuth.currentUser!.uid)
+            .collection('orders')
+            .doc(firebaseAuth.currentUser!.uid)
+            .set({
+          canteenName: itemdata,
+        }, SetOptions(merge: true));
+      } else {
+        firebaseInstance
+            .collection('student')
+            .doc(firebaseAuth.currentUser!.uid)
+            .collection('orders')
+            .doc(firebaseAuth.currentUser!.uid)
+            .set({
+          canteenName: itemdata,
+        }, SetOptions(merge: true)).then((v) async {
+          DocumentSnapshot<Map<String, dynamic>> collegeData =
+              await firebaseInstance
+                  .collection('college')
+                  .doc(collegeName)
+                  .get();
+          Map<String, dynamic> obj = collegeData.data() as Map<String, dynamic>;
 
-    if (obj.data()!.containsKey(canteenName)) {
-      // obj.data()![canteenName];
-      Map<String, dynamic> data = obj.data()![canteenName];
-      data[itemName] = {
-        "name": itemName,
-        "price": price,
-        "quantity": quantity,
-      };
-      data['time'] = DateTime.now().toString();
-      firebaseInstance
-          .collection('student')
-          .doc(firebaseAuth.currentUser!.uid)
-          .collection('orders')
-          .doc(firebaseAuth.currentUser!.uid)
-          .set({
-        canteenName: data,
-      }, SetOptions(merge: true));
+          Map<String, dynamic> update = (obj[canteenName]);
+          update['todayOrders'] =
+              FieldValue.arrayUnion([firebaseAuth.currentUser!.uid]);
+          firebaseInstance
+              .collection('college')
+              .doc(collegeName)
+              .set({canteenName: update}, SetOptions(merge: true));
+        });
+      }
     } else {
-      Map<String, dynamic> data = {};
-      data[itemName] = {
-        "name": itemName,
-        "price": price,
-        "quantity": quantity,
-      };
-      data['time'] = DateTime.now().toString();
       firebaseInstance
           .collection('student')
           .doc(firebaseAuth.currentUser!.uid)
           .collection('orders')
           .doc(firebaseAuth.currentUser!.uid)
-          .set(
-        {
-          canteenName: data,
-        },
-      ).then((v) async {
+          .set({canteenName: itemdata}).then((v) async {
         DocumentSnapshot<Map<String, dynamic>> collegeData =
             await firebaseInstance.collection('college').doc(collegeName).get();
         Map<String, dynamic> obj = collegeData.data() as Map<String, dynamic>;
@@ -165,6 +179,16 @@ class FirebaseOperations {
             .set({canteenName: update}, SetOptions(merge: true));
       });
     }
+  }
+
+  static Future<void> checkOutItems({required String canteenId}) async {
+    DocumentSnapshot<Map<String, dynamic>> data = await firebaseInstance
+        .collection('student')
+        .doc(firebaseAuth.currentUser!.uid)
+        .collection('orders')
+        .doc(firebaseAuth.currentUser!.uid)
+        .get();
+    print(data.data()![canteenId]);
   }
 
   static Future<void> pushToHistory(

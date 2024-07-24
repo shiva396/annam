@@ -11,7 +11,7 @@ import 'package:projrect_annam/helper/helper.dart';
 
 import '../common/color_extension.dart';
 import '../common_widget/round_textfield.dart';
-import '../view/more/my_order_view.dart';
+import 'more/my_order_view.dart';
 
 class StudentProfilePage extends StatefulWidget {
   const StudentProfilePage({
@@ -77,7 +77,9 @@ class _StudentProfilePageState extends State<StudentProfilePage> {
                         ),
                         IconButton(
                           onPressed: () {
-                            context.push(const MyOrderView());
+                            context.push(MyOrderView(
+                              
+                            ));
                           },
                           icon: Image.asset(
                             "assets/img/shopping_cart.png",

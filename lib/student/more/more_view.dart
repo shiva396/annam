@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projrect_annam/helper/helper.dart';
-import 'package:projrect_annam/view/more/about_us_view.dart';
-import 'package:projrect_annam/view/more/payment_details_view.dart';
+import 'package:projrect_annam/student/more/about_us_view.dart';
+import 'package:projrect_annam/student/more/payment_details_view.dart';
 
 import '../../common/color_extension.dart';
 import 'my_order_view.dart';
@@ -61,7 +61,7 @@ class _MoreViewState extends State<MoreView> {
                     ),
                     IconButton(
                       onPressed: () {
-                        context.pop(const MyOrderView());
+                        context.push(const MyOrderView());
                       },
                       icon: Image.asset(
                         "assets/img/shopping_cart.png",

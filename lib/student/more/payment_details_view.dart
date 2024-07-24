@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:projrect_annam/common/color_extension.dart';
 import 'package:projrect_annam/common_widget/round_icon_button.dart';
 import 'package:projrect_annam/helper/helper.dart';
-import 'package:projrect_annam/view/more/add_card_view.dart';
+import 'package:projrect_annam/student/more/add_card_view.dart';
 
 import '../../common_widget/round_button.dart';
 import 'my_order_view.dart';
