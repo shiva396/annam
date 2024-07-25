@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:projrect_annam/Firebase/firebase_operations.dart';
 import 'package:projrect_annam/common/color_extension.dart';
 
 class ExpandableCard extends StatefulWidget {
-  const ExpandableCard({super.key});
+  const ExpandableCard(
+      {super.key,
+      required this.orderedData,
+      required this.studentName,
+      required this.studentId});
+  final Map<String, dynamic> orderedData;
+  final String studentName;
+  final String studentId;
 
   @override
   ExpandableCardState createState() => ExpandableCardState();
@@ -106,6 +114,9 @@ class ExpandableCardState extends State<ExpandableCard> {
                                   setState(() {
                                     checked = true;
                                   });
+                                  FirebaseOperations.checkOutItems(
+                                    studentId: widget.studentId,
+                                  );
                                 }
                               },
                               style: OutlinedButton.styleFrom(

@@ -358,25 +358,29 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                                                         color: TColor.primary,
                                                         onPressed: () {
                                                           FirebaseOperations.addCartItems(
-                                                              collegeName: widget
-                                                                  .collegeName,
-                                                              canteenName: widget
-                                                                  .selectedCanteen,
-                                                              itemName: widget
-                                                                  .itemName,
-                                                              price:
-                                                                  widget.price,
-                                                              quantity: qty
-                                                                  .toString());
+                                                                  collegeName:
+                                                                      widget
+                                                                          .collegeName,
+                                                                  canteenName:
+                                                                      widget
+                                                                          .selectedCanteen,
+                                                                  itemName: widget
+                                                                      .itemName,
+                                                                  price: widget
+                                                                      .price,
+                                                                  quantity: qty
+                                                                      .toString())
+                                                              .whenComplete(() {
+                                                            context.pop();
+                                                            context.pop();
+                                                          });
                                                         }),
                                                   )
                                                 ],
                                               )),
                                           InkWell(
                                             onTap: () {
-                                              context.push(MyOrderView(
-                                                
-                                              ));
+                                              context.push(MyOrderView());
                                             },
                                             child: Container(
                                               width: 45,
@@ -461,9 +465,7 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                       ),
                       IconButton(
                         onPressed: () {
-                          context.push(MyOrderView(
-                           
-                          ));
+                          context.push(MyOrderView());
                         },
                         icon: Image.asset(
                           "assets/img/shopping_cart.png",

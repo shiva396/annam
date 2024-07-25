@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:projrect_annam/student/menu/item_details_view.dart';
 
 class FirebaseOperations {
   static final FirebaseFirestore firebaseInstance = FirebaseFirestore.instance;
@@ -18,6 +17,7 @@ class FirebaseOperations {
     Map<String, dynamic> obj = data.data() as Map<String, dynamic>;
     Map<String, dynamic> update = (obj[firebaseAuth.currentUser!.uid]);
     obj[firebaseAuth.currentUser!.uid]['categories'] = {categoryName: {}};
+    //  TODO : Check for existing categories Name
 
     await firebaseInstance
         .collection('college')
@@ -36,6 +36,7 @@ class FirebaseOperations {
     Map<String, dynamic> obj = data.data() as Map<String, dynamic>;
     Map<String, dynamic> update = obj[firebaseAuth.currentUser!.uid]
         ['categories'][categoryName] as Map<String, dynamic>;
+         //  TODO : Check for existing item Name
     String? imagePath;
     try {
       Reference reference = firebaseStorage.ref();
@@ -119,6 +120,8 @@ class FirebaseOperations {
     };
     itemdata['time'] = DateTime.now().toString();
     itemdata['checkOut'] = false;
+    itemdata['totalAmount'] =
+        FieldValue.increment(int.parse(price) * int.parse(quantity));
     QuerySnapshot<Map<String, dynamic>> obj = await firebaseInstance
         .collection('student')
         .doc(firebaseAuth.currentUser!.uid)
@@ -181,21 +184,41 @@ class FirebaseOperations {
     }
   }
 
-  static Future<void> checkOutItems({required String canteenId}) async {
+  static Future<void> checkOutItems({required String studentId}) async {
     DocumentSnapshot<Map<String, dynamic>> data = await firebaseInstance
         .collection('student')
-        .doc(firebaseAuth.currentUser!.uid)
+        .doc(studentId)
         .collection('orders')
-        .doc(firebaseAuth.currentUser!.uid)
+        .doc(studentId)
         .get();
-    print(data.data()![canteenId]);
-  }
+    Map<String, dynamic> orderedItems =
+        data.data()![firebaseAuth.currentUser!.uid];
+    orderedItems['checkOut'] = true;
+    orderedItems['canteenId'] = firebaseAuth.currentUser!.uid;
 
-  static Future<void> pushToHistory(
-      {required Map<String, dynamic> data, required String timeStamp}) async {
     firebaseInstance
         .collection('student')
-        .doc(firebaseAuth.currentUser!.uid)
+        .doc(studentId)
+        .collection('history')
+        .doc(studentId)
+        .set({DateTime.now().toString(): orderedItems},
+            SetOptions(merge: true)).then((v) {
+      firebaseInstance
+          .collection('student')
+          .doc(studentId)
+          .collection('orders')
+          .doc(studentId)
+          .set({firebaseAuth.currentUser!.uid: FieldValue.delete()},
+              SetOptions(merge: true));
+    });
+  }
+
+  static Future<void> pushToHistoryForCanteenOwners(
+      {required String userName,
+      required Map<String, dynamic> data,
+      required String timeStamp}) async {
+    data['studentName'] = userName;
+    firebaseInstance
         .collection('history')
         .doc(firebaseAuth.currentUser!.uid)
         .set({timeStamp: data}, SetOptions(merge: true));
@@ -210,5 +233,20 @@ class FirebaseOperations {
         .collection('orders')
         .doc(firebaseAuth.currentUser!.uid)
         .update({canteenId: FieldValue.delete()});
+  }
+
+  static Future<void> studentLikes(
+      {required bool like,
+      required String categoryName,
+      required String itemName,
+      required String canteenId}) async {
+    Map<String, dynamic> data = {};
+    data[categoryName] = {itemName: like};
+    firebaseInstance
+        .collection('student')
+        .doc(firebaseAuth.currentUser!.uid)
+        .collection('likes')
+        .doc(canteenId)
+        .set(data, SetOptions(merge: true));
   }
 }

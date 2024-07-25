@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:projrect_annam/Firebase/firebase_operations.dart';
 import 'package:projrect_annam/common/color_extension.dart';
 import 'package:projrect_annam/common_widget/round_button.dart';
-import 'package:projrect_annam/helper/helper.dart';
 
-import 'checkout_view.dart';
 
 class MyOrderView extends StatefulWidget {
   const MyOrderView({
@@ -18,8 +16,6 @@ class MyOrderView extends StatefulWidget {
 }
 
 class _MyOrderViewState extends State<MyOrderView> {
-  int totalAmount = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,19 +50,6 @@ class _MyOrderViewState extends State<MyOrderView> {
                           fontSize: 20,
                           fontWeight: FontWeight.w800),
                     ),
-                  ),
-                  Text(
-                    "\$70",
-                    style: TextStyle(
-                        color: TColor.primary,
-                        fontSize: 22,
-                        fontWeight: FontWeight.w700),
-                  ),
-                  const SizedBox(
-                    height: 25,
-                  ),
-                  const SizedBox(
-                    height: 20,
                   ),
                 ],
               ),
@@ -127,7 +110,9 @@ class _MyOrderViewState extends State<MyOrderView> {
 
                                       Map<String, dynamic> finalData = {};
                                       items.map((k, v) {
-                                        if (k != "time" && k != "checkOut") {
+                                        if (k != "time" &&
+                                            k != "checkOut" &&
+                                            k != "totalAmount") {
                                           finalData.addAll({k: v});
                                         }
                                         return MapEntry(k, v);
@@ -147,7 +132,8 @@ class _MyOrderViewState extends State<MyOrderView> {
 
                                       String time = items['time'];
                                       bool checkOut = items['checkOut'];
-                                      print(time);
+                                      int amount = int.parse(
+                                          items['totalAmount'].toString());
 
                                       return Padding(
                                         padding: const EdgeInsets.all(8.0),
@@ -333,7 +319,7 @@ class _MyOrderViewState extends State<MyOrderView> {
                                                                     .w700),
                                                       ),
                                                       Text(
-                                                        totalAmount.toString(),
+                                                        amount.toString(),
                                                         style: TextStyle(
                                                             color:
                                                                 TColor.primary,
@@ -364,29 +350,6 @@ class _MyOrderViewState extends State<MyOrderView> {
                                                               v;
                                                           return MapEntry(k, v);
                                                         });
-                                                        FirebaseOperations
-                                                            .checkOutItems(
-                                                                canteenId:
-                                                                    canteenName);
-
-                                                        // FirebaseOperations
-                                                        //     .pushToHistory(
-                                                        //   timeStamp: time,
-                                                        //   data: data,
-                                                        // ).whenComplete(() {
-                                                        //   FirebaseOperations
-                                                        //       .deleteOrders(
-                                                        //           canteenId:
-                                                        //               canteenOwners[
-                                                        //                   index]);
-                                                        // });
-                                                        // Navigator.push(
-                                                        //   context,
-                                                        //   MaterialPageRoute(
-                                                        //     builder: (context) =>
-                                                        //         const CheckoutView(),
-                                                        //   ),
-                                                        // );
                                                       }),
                                                   const SizedBox(
                                                     height: 20,

@@ -31,44 +31,63 @@ class _CanteenMainPageState extends State<CanteenMainPage> {
         ),
         SizedBox(
           height: 700,
-          child: SingleChildScrollView(
-            child: StreamBuilder<DocumentSnapshot>(
-                stream: FirebaseOperations.firebaseInstance
-                    .collection('college')
-                    .doc(widget.canteenOwnerData['collegeName']
-                        .toString()
-                        .trim())
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData)
-                    return Center(child: CircularProgressIndicator());
+          child: StreamBuilder<DocumentSnapshot>(
+            stream: FirebaseOperations.firebaseInstance
+                .collection('college')
+                .doc(widget.canteenOwnerData['collegeName'].toString().trim())
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData)
+                return Center(child: CircularProgressIndicator());
 
-                  Map<String, dynamic> datas =
-                      snapshot.data!.data() as Map<String, dynamic>;
+              Map<String, dynamic> datas =
+                  snapshot.data!.data() as Map<String, dynamic>;
 
-                  List studentsOrder =
-                      datas[FirebaseOperations.firebaseAuth.currentUser!.uid]
-                              ['todayOrders'] ??
-                          [];
+              List studentsOrder =
+                  datas[FirebaseOperations.firebaseAuth.currentUser!.uid]
+                          ['todayOrders'] ??
+                      [];
 
-                  return StreamBuilder<DocumentSnapshot>(
-                      stream: FirebaseOperations.firebaseInstance
-                          .collection('student')
-                          .doc(FirebaseOperations.firebaseAuth.currentUser!.uid)
-                          .collection('orders')
-                          .doc(FirebaseOperations.firebaseAuth.currentUser!.uid)
-                          .snapshots(),
-                      builder: (context, innerSnapshot) {
-                        if (!innerSnapshot.hasData)
-                          return CircularProgressIndicator();
+              return SizedBox(
+                height: 700,
+                child: ListView.builder(
+                    itemCount: studentsOrder.length,
+                    itemBuilder: (context, index) {
+                      return StreamBuilder<DocumentSnapshot>(
+                        stream: FirebaseOperations.firebaseInstance
+                            .collection('student')
+                            .doc(studentsOrder[index])
+                            .snapshots(),
+                        builder: (context, innerSnapshot) {
+                          if (!innerSnapshot.hasData)
+                            return CircularProgressIndicator();
+                          String studentName = innerSnapshot.data!.get('name');
 
-                        return Column(
-                          children: [
-                            ExpandableCard(),
-                          ],
-                        );
-                      });
-                }),
+                          return StreamBuilder<DocumentSnapshot>(
+                              stream: FirebaseOperations.firebaseInstance
+                                  .collection('student')
+                                  .doc(studentsOrder[index])
+                                  .collection('orders')
+                                  .doc(studentsOrder[index])
+                                  .snapshots(),
+                              builder: (context, mostinnersnapshot) {
+                                if (!mostinnersnapshot.hasData)
+                                  return CircularProgressIndicator();
+                                Map<String, dynamic> obj =
+                                    mostinnersnapshot.data!.data()
+                                        as Map<String, dynamic>;
+                                
+                                return  ExpandableCard(
+                                  studentId: studentsOrder[index],
+                                  studentName: studentName,
+                                  orderedData: obj,
+                                );
+                              });
+                        },
+                      );
+                    }),
+              );
+            },
           ),
         )
       ],

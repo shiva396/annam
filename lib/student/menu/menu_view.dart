@@ -68,9 +68,7 @@ class _MenuViewState extends State<MenuView> {
                   ),
                   IconButton(
                     onPressed: () {
-                      context.push(MyOrderView(
-                        
-                      ));
+                      context.push(MyOrderView());
                     },
                     icon: Image.asset(
                       "assets/img/shopping_cart.png",
@@ -141,6 +139,7 @@ class _MenuViewState extends State<MenuView> {
                                 _selectedCanteen = value!;
                                 _selectedCanteenId = allId.elementAt(
                                     allCanteenOwners.indexOf(_selectedCanteen));
+                                allCategories = [];
                                 allCategories.addAll(
                                     canteenOwnersId[_selectedCanteenId]
                                             ['categories']
@@ -174,7 +173,6 @@ class _MenuViewState extends State<MenuView> {
                                     ListView.builder(
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 30, horizontal: 20),
-                                      physics: NeverScrollableScrollPhysics(),
                                       itemCount: allCategories.length,
                                       itemBuilder: ((context, index) {
                                         return GestureDetector(
