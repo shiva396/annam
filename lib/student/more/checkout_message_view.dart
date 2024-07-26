@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projrect_annam/common_widget/round_button.dart';
+import 'package:projrect_annam/helper/image_const.dart';
 
 import '../../common/color_extension.dart';
 
@@ -43,7 +44,7 @@ class _CheckoutMessageViewState extends State<CheckoutMessageView> {
             ],
           ),
           Image.asset(
-            "assets/img/thank_you.png",
+            ImageConst.thankYou,
             width: media.width * 0.55,
           ),
           const SizedBox(

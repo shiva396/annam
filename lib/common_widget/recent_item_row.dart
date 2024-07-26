@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../common/color_extension.dart';
+import '../helper/image_const.dart';
 
 class RecentItemRow extends StatelessWidget {
   final Map rObj;
@@ -77,7 +78,7 @@ class RecentItemRow extends StatelessWidget {
                       
                      
                       Image.asset(
-                        "assets/img/rate.png",
+                        ImageConst.ratingsImage,
                         width: 10,
                         height: 10,
                         fit: BoxFit.cover,

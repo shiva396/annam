@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:projrect_annam/Firebase/firebase_operations.dart';
 import 'package:projrect_annam/canteen_owner/canteen_main_tab.dart';
+import 'package:projrect_annam/helper/image_const.dart';
 import 'package:projrect_annam/helper/utils.dart';
 import '../student/student_main_tab.dart';
 
@@ -62,396 +63,398 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.orange,
-      body: Stack(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/img/bg.jpg"),
-                fit: BoxFit.cover,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.orange,
+        body: Stack(
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(ImageConst.backgroundImage),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-          Center(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset('assets/img/logo.png'), // logo
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    margin: const EdgeInsets.all(10),
-                    width: MediaQuery.of(context).size.width *
-                        0.8, // Adjusted width for responsiveness
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: const BorderRadius.all(Radius.circular(20)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 5,
-                          blurRadius: 7,
-                          offset: const Offset(0, 3),
-                        )
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        DropdownButtonFormField<String>(
-                          decoration: InputDecoration(
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 20),
-                            hintText: 'Choose a role',
-                            filled: true,
-                            fillColor: Colors.grey[200],
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide.none,
+            Center(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(ImageConst.logo), // logo
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      margin: const EdgeInsets.all(10),
+                      width: MediaQuery.of(context).size.width *
+                          0.8, // Adjusted width for responsiveness
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: const BorderRadius.all(Radius.circular(20)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 5,
+                            blurRadius: 7,
+                            offset: const Offset(0, 3),
+                          )
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                              contentPadding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              hintText: 'Choose a role',
+                              filled: true,
+                              fillColor: Colors.grey[200],
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide.none,
+                              ),
                             ),
+                            dropdownColor:
+                                Colors.orange[100], // Color when dropdown is open
+                            value: _selectedRole,
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedRole = value!;
+                              });
+                            },
+                            items: [
+                              DropdownMenuItem(
+                                value: 'student',
+                                child: Text('Student'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'cattle_owner',
+                                child: Text('Cattle Owner'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'canteen_owner',
+                                child: Text('Canteen Owner'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'ngo',
+                                child: Text('NGO'),
+                              ),
+                            ],
                           ),
-                          dropdownColor:
-                              Colors.orange[100], // Color when dropdown is open
-                          value: _selectedRole,
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedRole = value!;
-                            });
-                          },
-                          items: [
-                            DropdownMenuItem(
-                              value: 'student',
-                              child: Text('Student'),
+                          const SizedBox(height: 10),
+                          if (_selectedRole == 'student') ...[
+                            TextField(
+                              controller: _nameController,
+                              decoration: const InputDecoration(
+                                labelText: 'Name',
+                                border: OutlineInputBorder(),
+                              ),
                             ),
-                            DropdownMenuItem(
-                              value: 'cattle_owner',
-                              child: Text('Cattle Owner'),
-                            ),
-                            DropdownMenuItem(
-                              value: 'canteen_owner',
-                              child: Text('Canteen Owner'),
-                            ),
-                            DropdownMenuItem(
-                              value: 'ngo',
-                              child: Text('NGO'),
+                            const SizedBox(height: 10),
+                            DropdownButtonFormField<String>(
+                                isExpanded: true,
+                                style: TextStyle(
+                                    overflow: TextOverflow.ellipsis,
+                                    fontSize: 16,
+                                    color: Colors.black),
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                  ),
+                                  hintText: 'Choose College',
+                                  filled: true,
+                                  fillColor: Colors.grey[200],
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide:
+                                          BorderSide(color: Colors.black)),
+                                ),
+                                dropdownColor: Colors.orange[100],
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedCollege = value!;
+                                  });
+                                },
+                                items: _dropdownItems),
+                            const SizedBox(height: 10),
+                            TextField(
+                              controller: _phoneController,
+                              decoration: const InputDecoration(
+                                labelText: 'Phone Number',
+                                border: OutlineInputBorder(),
+                              ),
                             ),
                           ],
-                        ),
-                        const SizedBox(height: 10),
-                        if (_selectedRole == 'student') ...[
-                          TextField(
-                            controller: _nameController,
-                            decoration: const InputDecoration(
-                              labelText: 'Name',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          DropdownButtonFormField<String>(
-                              isExpanded: true,
-                              style: TextStyle(
-                                  overflow: TextOverflow.ellipsis,
-                                  fontSize: 16,
-                                  color: Colors.black),
-                              decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                ),
-                                hintText: 'Choose College',
-                                filled: true,
-                                fillColor: Colors.grey[200],
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide:
-                                        BorderSide(color: Colors.black)),
+                          if (_selectedRole == 'cattle_owner') ...[
+                            TextField(
+                              controller: _nameController,
+                              decoration: const InputDecoration(
+                                labelText: 'Name',
+                                border: OutlineInputBorder(),
                               ),
-                              dropdownColor: Colors.orange[100],
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedCollege = value!;
-                                });
-                              },
-                              items: _dropdownItems),
-                          const SizedBox(height: 10),
-                          TextField(
-                            controller: _phoneController,
-                            decoration: const InputDecoration(
-                              labelText: 'Phone Number',
-                              border: OutlineInputBorder(),
                             ),
-                          ),
-                        ],
-                        if (_selectedRole == 'cattle_owner') ...[
-                          TextField(
-                            controller: _nameController,
-                            decoration: const InputDecoration(
-                              labelText: 'Name',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          TextField(
-                            controller: _phoneController,
-                            decoration: const InputDecoration(
-                              labelText: 'Phone Number',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          TextField(
-                            controller: _addressController,
-                            decoration: const InputDecoration(
-                              labelText: 'Address',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          TextField(
-                            controller: _cityController,
-                            decoration: const InputDecoration(
-                              labelText: 'City',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          TextField(
-                            controller: _stateController,
-                            decoration: const InputDecoration(
-                              labelText: 'State',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                        ],
-                        if (_selectedRole == 'canteen_owner') ...[
-                          TextField(
-                            controller: _nameController,
-                            decoration: const InputDecoration(
-                              labelText: 'Canteen Name',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          TextField(
-                            controller: _phoneController,
-                            decoration: const InputDecoration(
-                              labelText: 'Phone Number',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          DropdownButtonFormField<String>(
-                              isExpanded: true,
-                              style: TextStyle(
-                                  overflow: TextOverflow.ellipsis,
-                                  fontSize: 16,
-                                  color: Colors.black),
-                              decoration: InputDecoration(
-                                contentPadding:
-                                    const EdgeInsets.symmetric(horizontal: 20),
-                                hintText: 'Choose College',
-                                filled: true,
-                                fillColor: Colors.grey[200],
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide:
-                                        BorderSide(color: Colors.black)),
+                            const SizedBox(height: 10),
+                            TextField(
+                              controller: _phoneController,
+                              decoration: const InputDecoration(
+                                labelText: 'Phone Number',
+                                border: OutlineInputBorder(),
                               ),
-                              dropdownColor: Colors.orange[100],
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedCollege = value!;
-                                });
-                              },
-                              items: _dropdownItems),
-                          const SizedBox(height: 10),
-                          TextField(
-                            controller: _addressController,
-                            decoration: const InputDecoration(
-                              labelText: 'Address',
-                              border: OutlineInputBorder(),
                             ),
-                          ),
-                          const SizedBox(height: 10),
-                          TextField(
-                            controller: _cityController,
-                            decoration: const InputDecoration(
-                              labelText: 'City',
-                              border: OutlineInputBorder(),
+                            const SizedBox(height: 10),
+                            TextField(
+                              controller: _addressController,
+                              decoration: const InputDecoration(
+                                labelText: 'Address',
+                                border: OutlineInputBorder(),
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 10),
-                          TextField(
-                            controller: _stateController,
-                            decoration: const InputDecoration(
-                              labelText: 'State',
-                              border: OutlineInputBorder(),
+                            const SizedBox(height: 10),
+                            TextField(
+                              controller: _cityController,
+                              decoration: const InputDecoration(
+                                labelText: 'City',
+                                border: OutlineInputBorder(),
+                              ),
                             ),
-                          ),
-                        ],
-                        if (_selectedRole == 'ngo') ...[
-                          TextField(
-                            controller: _organizationController,
-                            decoration: const InputDecoration(
-                              labelText: 'Name of Organization',
-                              border: OutlineInputBorder(),
+                            const SizedBox(height: 10),
+                            TextField(
+                              controller: _stateController,
+                              decoration: const InputDecoration(
+                                labelText: 'State',
+                                border: OutlineInputBorder(),
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 10),
-                          TextField(
-                            controller: _phoneController,
-                            decoration: const InputDecoration(
-                              labelText: 'Phone Number',
-                              border: OutlineInputBorder(),
+                          ],
+                          if (_selectedRole == 'canteen_owner') ...[
+                            TextField(
+                              controller: _nameController,
+                              decoration: const InputDecoration(
+                                labelText: 'Canteen Name',
+                                border: OutlineInputBorder(),
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 10),
-                          TextField(
-                            controller: _coordinatorController,
-                            decoration: const InputDecoration(
-                              labelText: 'Coordinator Number',
-                              border: OutlineInputBorder(),
+                            const SizedBox(height: 10),
+                            TextField(
+                              controller: _phoneController,
+                              decoration: const InputDecoration(
+                                labelText: 'Phone Number',
+                                border: OutlineInputBorder(),
+                              ),
                             ),
-                          ),
-                        ],
-                        const SizedBox(height: 20), // Added space at the bottom
-                        ElevatedButton(
-                          onPressed: () async {
-                            // Data store to firebase
-
-                            if (_selectedRole == 'student') {
-                              if (_nameController.text.trim().isNotEmpty &&
-                                  _selectedCollege.isNotEmpty &&
-                                  _phoneController.text.trim().isNotEmpty) {
+                            const SizedBox(height: 10),
+                            DropdownButtonFormField<String>(
+                                isExpanded: true,
+                                style: TextStyle(
+                                    overflow: TextOverflow.ellipsis,
+                                    fontSize: 16,
+                                    color: Colors.black),
+                                decoration: InputDecoration(
+                                  contentPadding:
+                                      const EdgeInsets.symmetric(horizontal: 20),
+                                  hintText: 'Choose College',
+                                  filled: true,
+                                  fillColor: Colors.grey[200],
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide:
+                                          BorderSide(color: Colors.black)),
+                                ),
+                                dropdownColor: Colors.orange[100],
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedCollege = value!;
+                                  });
+                                },
+                                items: _dropdownItems),
+                            const SizedBox(height: 10),
+                            TextField(
+                              controller: _addressController,
+                              decoration: const InputDecoration(
+                                labelText: 'Address',
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            TextField(
+                              controller: _cityController,
+                              decoration: const InputDecoration(
+                                labelText: 'City',
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            TextField(
+                              controller: _stateController,
+                              decoration: const InputDecoration(
+                                labelText: 'State',
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                          ],
+                          if (_selectedRole == 'ngo') ...[
+                            TextField(
+                              controller: _organizationController,
+                              decoration: const InputDecoration(
+                                labelText: 'Name of Organization',
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            TextField(
+                              controller: _phoneController,
+                              decoration: const InputDecoration(
+                                labelText: 'Phone Number',
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            TextField(
+                              controller: _coordinatorController,
+                              decoration: const InputDecoration(
+                                labelText: 'Coordinator Number',
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                          ],
+                          const SizedBox(height: 20), // Added space at the bottom
+                          ElevatedButton(
+                            onPressed: () async {
+                              // Data store to firebase
+      
+                              if (_selectedRole == 'student') {
+                                if (_nameController.text.trim().isNotEmpty &&
+                                    _selectedCollege.isNotEmpty &&
+                                    _phoneController.text.trim().isNotEmpty) {
+                                  widget.userData.addAll({
+                                    'name': _nameController.text.trim(),
+                                    'collegeName': _selectedCollege,
+                                    'phoneNumber': _phoneController.text.trim(),
+                                    'image': ""
+                                  });
+                                } else {
+                                  customBar(context: context, text: "Fill all");
+                                }
+                              } else if (_selectedRole == 'canteen_owner') {
                                 widget.userData.addAll({
                                   'name': _nameController.text.trim(),
                                   'collegeName': _selectedCollege,
                                   'phoneNumber': _phoneController.text.trim(),
-                                  'image': ""
+                                  'address': _addressController.text.trim(),
+                                  'city': _cityController.text.trim(),
+                                  'state': _stateController.text.trim(),
+                                  'image': "",
+                                  'categories': {},
+                                  'todayOrders': []
                                 });
-                              } else {
-                                customBar(context: context, text: "Fill all");
-                              }
-                            } else if (_selectedRole == 'canteen_owner') {
-                              widget.userData.addAll({
-                                'name': _nameController.text.trim(),
-                                'collegeName': _selectedCollege,
-                                'phoneNumber': _phoneController.text.trim(),
-                                'address': _addressController.text.trim(),
-                                'city': _cityController.text.trim(),
-                                'state': _stateController.text.trim(),
-                                'image': "",
-                                'categories': {},
-                                'todayOrders': []
-                              });
-                            } else if (_selectedRole == 'cattle_owner') {
-                            } else if (_selectedRole == 'ngo') {
-                            } else {}
-
-                            FirebaseOperations.firebaseAuth
-                                .createUserWithEmailAndPassword(
-                                    email: widget.userData['email'],
-                                    password: widget.userData['password'])
-                                .then((v) async {
-                              try {
-                                DocumentReference docRef = FirebaseFirestore
-                                    .instance
-                                    .collection('role')
-                                    .doc('role');
-                                DocumentSnapshot docSnapshot =
-                                    await docRef.get();
-                                Map<String, dynamic> roleMap =
-                                    docSnapshot.get('role') ?? {};
-                                if (docSnapshot.exists) {
-                                  if (!roleMap
-                                      .containsKey(widget.userData['email'])) {
+                              } else if (_selectedRole == 'cattle_owner') {
+                              } else if (_selectedRole == 'ngo') {
+                              } else {}
+      
+                              FirebaseOperations.firebaseAuth
+                                  .createUserWithEmailAndPassword(
+                                      email: widget.userData['email'],
+                                      password: widget.userData['password'])
+                                  .then((v) async {
+                                try {
+                                  DocumentReference docRef = FirebaseFirestore
+                                      .instance
+                                      .collection('role')
+                                      .doc('role');
+                                  DocumentSnapshot docSnapshot =
+                                      await docRef.get();
+                                  Map<String, dynamic> roleMap =
+                                      docSnapshot.get('role') ?? {};
+                                  if (docSnapshot.exists) {
+                                    if (!roleMap
+                                        .containsKey(widget.userData['email'])) {
+                                      roleMap[widget.userData['email']] =
+                                          _selectedRole;
+      
+                                      await docRef.update({
+                                        'role': roleMap,
+                                      });
+                                    } else {
+                                      customBar(
+                                          context: context,
+                                          text: "Already exist");
+                                    }
+                                  } else {
                                     roleMap[widget.userData['email']] =
                                         _selectedRole;
-
-                                    await docRef.update({
+                                    FirebaseFirestore.instance
+                                        .collection('role')
+                                        .doc('role')
+                                        .set({
                                       'role': roleMap,
                                     });
-                                  } else {
-                                    customBar(
-                                        context: context,
-                                        text: "Already exist");
                                   }
+                                } catch (e) {
+                                  customBar(context: context, text: e.toString());
+                                }
+                                if (_selectedRole == 'canteen_owner') {
+                                  Map<String, dynamic> user = {
+                                    FirebaseOperations.firebaseAuth.currentUser!
+                                        .uid: widget.userData
+                                  };
+                                  FirebaseOperations.firebaseInstance
+                                      .collection('college')
+                                      .doc(_selectedCollege.trim())
+                                      .set(user, SetOptions(merge: true));
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => CanteenOwner(
+                                        collegeName: _selectedCollege,
+                                      ),
+                                    ),
+                                  );
                                 } else {
-                                  roleMap[widget.userData['email']] =
-                                      _selectedRole;
-                                  FirebaseFirestore.instance
-                                      .collection('role')
-                                      .doc('role')
-                                      .set({
-                                    'role': roleMap,
+                                  FirebaseOperations.firebaseInstance
+                                      .collection(_selectedRole)
+                                      .doc(FirebaseOperations
+                                          .firebaseAuth.currentUser!.uid
+                                          .trim())
+                                      .set(widget.userData)
+                                      .whenComplete(() {
+                                    if (_selectedRole == 'student') {
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => MainTabView(
+                                            role: 'student',
+                                          ),
+                                        ),
+                                      );
+                                    } else {}
                                   });
                                 }
-                              } catch (e) {
-                                customBar(context: context, text: e.toString());
-                              }
-                              if (_selectedRole == 'canteen_owner') {
-                                Map<String, dynamic> user = {
-                                  FirebaseOperations.firebaseAuth.currentUser!
-                                      .uid: widget.userData
-                                };
-                                FirebaseOperations.firebaseInstance
-                                    .collection('college')
-                                    .doc(_selectedCollege.trim())
-                                    .set(user, SetOptions(merge: true));
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => CanteenOwner(
-                                      collegeName: _selectedCollege,
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                FirebaseOperations.firebaseInstance
-                                    .collection(_selectedRole)
-                                    .doc(FirebaseOperations
-                                        .firebaseAuth.currentUser!.uid
-                                        .trim())
-                                    .set(widget.userData)
-                                    .whenComplete(() {
-                                  if (_selectedRole == 'student') {
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => MainTabView(
-                                          role: 'student',
-                                        ),
-                                      ),
-                                    );
-                                  } else {}
-                                });
-                              }
-                            });
-                          },
-                          style: ButtonStyle(
-                            backgroundColor:
-                                WidgetStateProperty.all(Colors.orange),
+                              });
+                            },
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  WidgetStateProperty.all(Colors.orange),
+                            ),
+                            child: const Text(
+                              'Save',
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ),
-                          child: const Text(
-                            'Save',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

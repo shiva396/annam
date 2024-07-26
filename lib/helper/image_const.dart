@@ -1,1 +1,34 @@
-class ImageConst {}
+class ImageConst {
+  static const String loginsignUp = "assets/img/bg.jpg";
+  static const String onboarding1 = "assets/img/on_boarding_1.png";
+  static const String onboarding2 = "assets/img/on_boarding_2.png";
+  static const String logo = "assets/img/logo.png";
+  static const String onboarding3 = "assets/img/on_boarding_3.png";
+  static const String backgroundImage = "assets/img/bg.jpg";
+  static const String splashImage = "assets/img/splash_bg.png";
+  static const String hometab = "assets/img/tab_home.png";
+  static const String menutab = "assets/img/tab_menu.png";
+  static const String offertab = "assets/img/tab_offer.png";
+  static const String profiletab = "assets/img/tab_profile.png";
+  static const String moretab = "assets/img/tab_more.png";
+  static const String shoppingCart = "assets/img/shopping_cart.png";
+  static const String ratingsImage = "assets/img/rate.png";
+  static const String detailImage = "assets/img/detail_top.png";
+  static const String shoppingAdd = "assets/img/shopping_add.png";
+  static const String favorite = "assets/img/favorites_btn.png";
+  static const String unfavorite = "assets/img/favorites_btn_2.png";
+  static const String backButton = "assets/img/btn_back.png";
+  static const String search = "assets/img/search.png";
+  static const String backNext = "assets/img/btn_next.png";
+  static const String addCard = "assets/img/add.png";
+  static const String thankYou = "assets/img/thank_you.png";
+  static const String cash = "assets/img/cash.png";
+  static const String visa = "assets/img/visa_icon.png";
+  static const String more_notification = "assets/img/more_notification.png";
+  static const String paypal = "assets/img/paypal.png";
+  static const String more_pay = "assets/img/more_payment.png";
+  static const String myOrders = "assets/img/more_my_order.png";
+  static const String aboutUs = "assets/img/more_info.png";
+  static const String check = "assets/img/check.png";
+
+}

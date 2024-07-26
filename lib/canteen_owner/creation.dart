@@ -237,228 +237,230 @@ class _CreationState extends State<Creation> {
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-        body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  height: 30,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          "Welcome to,\nProducts gallery",
-                          style: TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.bold),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            showAddCategoryDialog(context);
-                          },
-                          child: Container(
-                            height: 20,
-                            width: 100,
-                            child: const Text(
-                              "Add Category",
-                              style: TextStyle(
-                                color: Color.fromARGB(255, 2, 93, 150),
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+    return SafeArea(
+      child: Scaffold(
+          body: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 30,
                   ),
-                ),
-                StreamBuilder<DocumentSnapshot>(
-                    stream: FirebaseOperations.firebaseInstance
-                        .collection('college')
-                        .doc(widget.collegeName)
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) return CircularProgressIndicator();
-                      Map<String, dynamic> data = snapshot.data!.get(
-                          FirebaseOperations.firebaseAuth.currentUser!
-                              .uid)['categories'] as Map<String, dynamic>;
-
-                      List<String> categories = data.keys.toList();
-                      if (categories.isNotEmpty) {
-                        return Column(
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 9),
-                              child: SizedBox(
-                                width: width,
-                                height: 50,
-                                child: ListView.builder(
-                                  physics: const BouncingScrollPhysics(),
-                                  itemCount: categories.length,
-                                  scrollDirection: Axis.horizontal,
-                                  itemBuilder: (ctx, index) {
-                                    return Column(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              current = index;
-                                              selectedCategory =
-                                                  categories[index];
-                                            });
-                                          },
-                                          child: AnimatedContainer(
-                                            color: Colors.transparent,
-                                            duration: const Duration(
-                                                milliseconds: 300),
-                                            margin: const EdgeInsets.all(5),
-                                            width: 100,
-                                            height: 30,
-                                            child: Center(
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    categories[index]
-                                                        .toString(),
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontSize: current == index
-                                                          ? 16
-                                                          : 12,
-                                                      color: current == index
-                                                          ? Colors.black
-                                                          : Colors.black54,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Visibility(
-                                          visible: selectedCategory ==
-                                              categories[index],
-                                          child: Container(
-                                            width: 5,
-                                            height: 5,
-                                            decoration: const BoxDecoration(
-                                                color: Colors.deepPurpleAccent,
-                                                shape: BoxShape.circle),
-                                          ),
-                                        )
-                                      ],
-                                    );
-                                  },
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "Welcome to,\nProducts gallery",
+                            style: TextStyle(
+                                fontSize: 22, fontWeight: FontWeight.bold),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              showAddCategoryDialog(context);
+                            },
+                            child: Container(
+                              height: 20,
+                              width: 100,
+                              child: const Text(
+                                "Add Category",
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 2, 93, 150),
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ),
-                            ListView.builder(
-                              itemCount: data[categories[current]].length + 1,
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                List<String> items =
-                                    data[categories[current]].keys.toList();
-
-                                if (index + 1 ==
-                                    data[categories[current]].length + 1) {
-                                  return Card(
-                                    color: Color(0xFFE6E6E6),
-                                    margin: EdgeInsets.all(10.0),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    child: ListTile(
-                                      leading: Icon(Icons.add),
-                                      title: Text('Add New Item'),
-                                      onTap: () => _addItem(
-                                          categoryName: selectedCategory),
-                                    ),
-                                  );
-                                } else {
-                                  return Card(
-                                    color: Color(0xFFE6E6E6),
-                                    margin: EdgeInsets.all(10.0),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    child: ListTile(
-                                      leading: CircleAvatar(
-                                        radius: 30,
-                                        backgroundImage:
-                                            data[categories[current]]
-                                                            [items[index]]
-                                                        ['imageUrl'] !=
-                                                    "empty"
-                                                ? NetworkImage(
-                                                    data[categories[current]]
-                                                            [items[index]]
-                                                        ['imageUrl'])
-                                                : null,
-                                      ),
-                                      title: Text(data[categories[current]]
-                                          [items[index]]['name']),
-                                      subtitle: Text(data[categories[current]]
-                                          [items[index]]['price']),
-                                      trailing: Row(
-                                        mainAxisSize: MainAxisSize.min,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  StreamBuilder<DocumentSnapshot>(
+                      stream: FirebaseOperations.firebaseInstance
+                          .collection('college')
+                          .doc(widget.collegeName)
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) return CircularProgressIndicator();
+                        Map<String, dynamic> data = snapshot.data!.get(
+                            FirebaseOperations.firebaseAuth.currentUser!
+                                .uid)['categories'] as Map<String, dynamic>;
+      
+                        List<String> categories = data.keys.toList();
+                        if (categories.isNotEmpty) {
+                          return Column(
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 9),
+                                child: SizedBox(
+                                  width: width,
+                                  height: 50,
+                                  child: ListView.builder(
+                                    physics: const BouncingScrollPhysics(),
+                                    itemCount: categories.length,
+                                    scrollDirection: Axis.horizontal,
+                                    itemBuilder: (ctx, index) {
+                                      return Column(
                                         children: [
-                                          IconButton(
-                                            icon: Icon(Icons.edit),
-                                            onPressed: () {
-                                              bool stockData =
-                                                  data[categories[current]]
-                                                          [items[index]]
-                                                      ['stockInHand'];
-
-                                              _editItem(
-                                                  itemName:
+                                          GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                current = index;
+                                                selectedCategory =
+                                                    categories[index];
+                                              });
+                                            },
+                                            child: AnimatedContainer(
+                                              color: Colors.transparent,
+                                              duration: const Duration(
+                                                  milliseconds: 300),
+                                              margin: const EdgeInsets.all(5),
+                                              width: 100,
+                                              height: 30,
+                                              child: Center(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      categories[index]
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontSize: current == index
+                                                            ? 16
+                                                            : 12,
+                                                        color: current == index
+                                                            ? Colors.black
+                                                            : Colors.black54,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Visibility(
+                                            visible: selectedCategory ==
+                                                categories[index],
+                                            child: Container(
+                                              width: 5,
+                                              height: 5,
+                                              decoration: const BoxDecoration(
+                                                  color: Colors.deepPurpleAccent,
+                                                  shape: BoxShape.circle),
+                                            ),
+                                          )
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                              ListView.builder(
+                                itemCount: data[categories[current]].length + 1,
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  List<String> items =
+                                      data[categories[current]].keys.toList();
+      
+                                  if (index + 1 ==
+                                      data[categories[current]].length + 1) {
+                                    return Card(
+                                      color: Color(0xFFE6E6E6),
+                                      margin: EdgeInsets.all(10.0),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                      ),
+                                      child: ListTile(
+                                        leading: Icon(Icons.add),
+                                        title: Text('Add New Item'),
+                                        onTap: () => _addItem(
+                                            categoryName: selectedCategory),
+                                      ),
+                                    );
+                                  } else {
+                                    return Card(
+                                      color: Color(0xFFE6E6E6),
+                                      margin: EdgeInsets.all(10.0),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                      ),
+                                      child: ListTile(
+                                        leading: CircleAvatar(
+                                          radius: 30,
+                                          backgroundImage:
+                                              data[categories[current]]
+                                                              [items[index]]
+                                                          ['imageUrl'] !=
+                                                      "empty"
+                                                  ? NetworkImage(
                                                       data[categories[current]]
                                                               [items[index]]
-                                                          ['name'],
-                                                  categoryName:
-                                                      selectedCategory,
-                                                  data: stockData);
-                                            },
-                                          ),
-                                          IconButton(
-                                            icon: Icon(Icons.delete),
-                                            onPressed: () {
-                                              FirebaseOperations.removeItems(
-                                                categoryName: selectedCategory,
-                                                collegeName: widget.collegeName,
-                                                itemName:
+                                                          ['imageUrl'])
+                                                  : null,
+                                        ),
+                                        title: Text(data[categories[current]]
+                                            [items[index]]['name']),
+                                        subtitle: Text(data[categories[current]]
+                                            [items[index]]['price']),
+                                        trailing: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              icon: Icon(Icons.edit),
+                                              onPressed: () {
+                                                bool stockData =
                                                     data[categories[current]]
-                                                        [items[index]]['name'],
-                                              );
-                                            },
-                                          ),
-                                        ],
+                                                            [items[index]]
+                                                        ['stockInHand'];
+      
+                                                _editItem(
+                                                    itemName:
+                                                        data[categories[current]]
+                                                                [items[index]]
+                                                            ['name'],
+                                                    categoryName:
+                                                        selectedCategory,
+                                                    data: stockData);
+                                              },
+                                            ),
+                                            IconButton(
+                                              icon: Icon(Icons.delete),
+                                              onPressed: () {
+                                                FirebaseOperations.removeItems(
+                                                  categoryName: selectedCategory,
+                                                  collegeName: widget.collegeName,
+                                                  itemName:
+                                                      data[categories[current]]
+                                                          [items[index]]['name'],
+                                                );
+                                              },
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
-                          ],
-                        );
-                      } else {
-                        return Center(
-                          child: Text("No categories"),
-                        );
-                      }
-                    })
-              ],
-            )));
+                                    );
+                                  }
+                                },
+                              ),
+                            ],
+                          );
+                        } else {
+                          return Center(
+                            child: Text("No categories"),
+                          );
+                        }
+                      })
+                ],
+              ))),
+    );
   }
 }

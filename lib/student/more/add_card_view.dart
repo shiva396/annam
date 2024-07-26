@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:projrect_annam/common/color_extension.dart';
 import 'package:projrect_annam/common_widget/round_icon_button.dart';
 import 'package:projrect_annam/common_widget/round_textfield.dart';
+import 'package:projrect_annam/helper/image_const.dart';
 
 class AddCardView extends StatefulWidget {
   const AddCardView({super.key});
@@ -158,7 +159,7 @@ class _AddCardViewState extends State<AddCardView> {
           ),
           RoundIconButton(
               title: "Add Card",
-              icon: "assets/img/add.png",
+              icon: ImageConst.addCard,
               color: TColor.primary,
               fontSize: 16,
               fontWeight: FontWeight.w600,

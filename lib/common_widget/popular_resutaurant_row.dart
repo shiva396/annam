@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../common/color_extension.dart';
+import '../helper/image_const.dart';
 
 class PopularRestaurantRow extends StatelessWidget {
   final Map pObj;
@@ -51,7 +52,7 @@ class PopularRestaurantRow extends StatelessWidget {
                       children: [
 
                         Image.asset(
-                        "assets/img/rate.png",
+                        ImageConst.ratingsImage,
                         width: 10,
                         height: 10,
                         fit: BoxFit.cover,

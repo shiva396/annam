@@ -11,8 +11,10 @@ class CanteenHistory extends StatefulWidget {
 class _CanteenHistoryState extends State<CanteenHistory> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: CalandarPicker(),
+    return SafeArea(
+      child: const Scaffold(
+        body: CalandarPicker(),
+      ),
     );
   }
 }

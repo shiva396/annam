@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:projrect_annam/auth/authWrapper.dart';
 import 'package:projrect_annam/helper/helper.dart';
 import 'package:projrect_annam/auth/on_boarding_view.dart';
+import 'package:projrect_annam/helper/image_const.dart';
 
 class StartupView extends StatefulWidget {
   final int? initScreen;
@@ -31,23 +32,25 @@ class _StarupViewState extends State<StartupView> {
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
 
-    return Scaffold(
-      body: Stack(
-        alignment: Alignment.center,
-        children: [
-          Image.asset(
-            "assets/img/splash_bg.png",
-            width: media.width,
-            height: media.height,
-            fit: BoxFit.cover,
-          ),
-          Image.asset(
-            "assets/img/logo.png",
-            width: media.width * 0.55,
-            height: media.width * 0.55,
-            fit: BoxFit.contain,
-          ),
-        ],
+    return SafeArea(
+      child: Scaffold(
+        body: Stack(
+          alignment: Alignment.center,
+          children: [
+            Image.asset(
+              ImageConst.splashImage,
+              width: media.width,
+              height: media.height,
+              fit: BoxFit.cover,
+            ),
+            Image.asset(
+             ImageConst.logo,
+              width: media.width * 0.55,
+              height: media.width * 0.55,
+              fit: BoxFit.contain,
+            ),
+          ],
+        ),
       ),
     );
   }
