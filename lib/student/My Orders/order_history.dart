@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projrect_annam/common/color_extension.dart';
+import 'package:projrect_annam/helper/utils.dart';
 import 'package:rive/rive.dart' as rive;
 
 class OfferView extends StatefulWidget {
@@ -52,24 +53,9 @@ class _OfferViewState extends State<OfferView> {
                   Text("Name"),
                   ElevatedButton(
                     onPressed: () {
-                      showDialog(
-                          barrierColor: Colors.transparent,
+                      loadingImage(
                           context: context,
-                          builder: (context) => Container(
-                                height: 500,
-                                width: 500,
-                                child: rive.RiveAnimation.asset(
-                                    stateMachines: [
-                                      "home",
-                                      "network",
-                                      "jobs",
-                                      "messaging",
-                                      "notifications"
-                                    ],
-                                    behavior:
-                                        rive.RiveHitTestBehavior.translucent,
-                                    'assets/rive/linkedin_animated_icons.riv'),
-                              ));
+                          imagePath: "assets/rive/spiral.riv");
                     },
                     child: Text("Edt"),
                     style: ElevatedButton.styleFrom(

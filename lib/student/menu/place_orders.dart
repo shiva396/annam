@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:projrect_annam/Firebase/firebase_operations.dart';
 import 'package:projrect_annam/helper/helper.dart';
 import 'package:projrect_annam/helper/image_const.dart';
+import 'package:projrect_annam/helper/utils.dart';
 
 import '../../common/color_extension.dart';
 import '../more/my_order_view.dart';
@@ -26,9 +27,16 @@ class _MenuViewState extends State<MenuView> {
     super.dispose();
   }
 
+  bool _showLoading = true;
   @override
   void initState() {
     super.initState();
+    // Set a delay of 2 seconds before allowing the main content to show
+    Future.delayed(Duration(seconds: 2), () {
+      setState(() {
+        _showLoading = false;
+      });
+    });
   }
 
   List<String> allId = [];
@@ -79,7 +87,10 @@ class _MenuViewState extends State<MenuView> {
                     .doc(FirebaseOperations.firebaseAuth.currentUser!.uid)
                     .snapshots(),
                 builder: (context, snapshot) {
-                  if (!snapshot.hasData) return CircularProgressIndicator();
+                  if (!snapshot.hasData || _showLoading)
+                    return overlayContent(
+                        context: context, imagePath: "assets/rive/loading.riv");
+
                   Map<String, dynamic> data =
                       (snapshot.data!.data() as Map<String, dynamic>);
                   String collegeName = data['collegeName'];
@@ -91,7 +102,9 @@ class _MenuViewState extends State<MenuView> {
                         .snapshots(),
                     builder: (context, innersnapshot) {
                       if (!innersnapshot.hasData)
-                        return CircularProgressIndicator();
+                        return overlayContent(
+                            context: context,
+                            imagePath: "assets/rive/loading.riv");
 
                       Map<String, dynamic> canteenOwnersId =
                           innersnapshot.data!.data() as Map<String, dynamic>;

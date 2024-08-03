@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:projrect_annam/helper/helper.dart';
+import 'package:rive/rive.dart';
 
 // snackbar
 ScaffoldFeatureController<SnackBar, SnackBarClosedReason> customBar(
@@ -16,13 +19,40 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> customBar(
   );
 }
 
-// toCamelCase
-
-String toTitle({required String text}) {
-  return text.substring(0).toUpperCase() +
-      text.substring(1, text.length).toLowerCase();
+// Show loading
+Future<void> loadingImage(
+    {required BuildContext context, required String imagePath}) async {
+  return context.push(await showDialog(
+    barrierColor: Colors.transparent,
+    context: context,
+    builder: (context) => Container(
+      height: 500,
+      width: 500,
+      child: RiveAnimation.asset(
+        behavior: RiveHitTestBehavior.translucent,
+        imagePath,
+      ),
+    ),
+  ));
 }
 
-String toLowerString({required String text}) {
-  return text.toLowerCase();
+Widget overlayContent(
+    {required BuildContext context, required String imagePath}) {
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+     
+      Container(
+        height: 500,
+        width: 500,
+        child: RiveAnimation.asset(
+          behavior: RiveHitTestBehavior.translucent,
+          imagePath,
+        ),
+      ),
+    ],
+  );
+  
 }
+

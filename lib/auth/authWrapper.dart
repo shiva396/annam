@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:projrect_annam/Firebase/firebase_operations.dart';
 import 'package:projrect_annam/auth/login_signup.dart';
 import 'package:projrect_annam/canteen_owner/canteen_main_tab.dart';
+import 'package:projrect_annam/helper/helper.dart';
 import 'package:projrect_annam/helper/utils.dart';
 import 'package:projrect_annam/student/student_main_tab.dart';
 
@@ -16,8 +17,8 @@ class AuthWrapper extends StatelessWidget {
       stream: FirebaseOperations.firebaseAuth.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
-            child: const CircularProgressIndicator(),
+          return Overlay(
+            
           );
         } else if (snapshot.hasData && snapshot.data is User) {
           return StreamBuilder<DocumentSnapshot>(

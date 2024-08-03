@@ -8,10 +8,10 @@ class ImageConst {
   static const String splashImage = "assets/img/splash_bg.png";
   static const String hometab = "assets/img/tab_home.png";
   static const String menutab = "assets/img/tab_menu.png";
-  static const String offertab = "assets/img/tab_offer.png";
-  static const String profiletab = "assets/img/tab_profile.png";
-  static const String moretab = "assets/img/tab_more.png";
-  static const String shoppingCart = "assets/img/shopping_cart.png";
+  static const String offertab = "assets/images/history.png";
+  static const String profiletab = "assets/images/user_profile.png";
+  static const String moretab = "assets/images/more.png";
+  static const String shoppingCart = "assets/images/cart.png";
   static const String ratingsImage = "assets/img/rate.png";
   static const String detailImage = "assets/img/detail_top.png";
   static const String shoppingAdd = "assets/img/shopping_add.png";
@@ -30,5 +30,4 @@ class ImageConst {
   static const String myOrders = "assets/img/more_my_order.png";
   static const String aboutUs = "assets/img/more_info.png";
   static const String check = "assets/img/check.png";
-
 }

@@ -5,6 +5,7 @@ import 'package:projrect_annam/Firebase/firebase_operations.dart';
 import 'package:projrect_annam/common/color_extension.dart';
 import 'package:projrect_annam/common_widget/round_button.dart';
 import 'package:projrect_annam/helper/image_const.dart';
+import 'package:projrect_annam/helper/utils.dart';
 
 class MyOrderView extends StatefulWidget {
   const MyOrderView({
@@ -16,6 +17,18 @@ class MyOrderView extends StatefulWidget {
 }
 
 class _MyOrderViewState extends State<MyOrderView> {
+  bool _showLoading = true;
+  @override
+  void initState() {
+    super.initState();
+    // Set a delay of 2 seconds before allowing the main content to show
+    Future.delayed(Duration(seconds: 1), () {
+      setState(() {
+        _showLoading = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -61,8 +74,10 @@ class _MyOrderViewState extends State<MyOrderView> {
                       .doc(FirebaseAuth.instance.currentUser!.uid)
                       .snapshots(),
                   builder: (context, outersnapshot) {
-                    if (!outersnapshot.hasData)
-                      return CircularProgressIndicator();
+                    if (!outersnapshot.hasData || _showLoading)
+                      return overlayContent(
+                          context: context,
+                          imagePath: "assets/rive/loading.riv");
                     String collegeName = outersnapshot.data!.get('collegeName');
                     return StreamBuilder<QuerySnapshot>(
                         stream: FirebaseOperations.firebaseInstance
@@ -73,34 +88,41 @@ class _MyOrderViewState extends State<MyOrderView> {
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return Center(child: CircularProgressIndicator());
+                            return overlayContent(
+                                context: context,
+                                imagePath: "assets/rive/loading.riv");
                           }
-      
+
                           if (snapshot.hasError && collegeName.isNotEmpty) {
                             return Center(child: Text("An error occurred."));
                           }
-      
-                          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+
+                          if (!snapshot.hasData ||
+                              snapshot.data!.docs.isEmpty) {
                             return Center(child: Text("No orders found."));
                           }
                           Map<String, dynamic> canteenOrders =
                               snapshot.data!.docs.first.data()!
                                   as Map<String, dynamic>;
                           List canteenOwners = (canteenOrders.keys).toList();
-      
+
                           return SizedBox(
                             height: 750,
                             child: ListView.builder(
                                 itemCount: canteenOwners.length,
                                 itemBuilder: (context, index) {
                                   return StreamBuilder<DocumentSnapshot>(
-                                      stream: FirebaseOperations.firebaseInstance
+                                      stream: FirebaseOperations
+                                          .firebaseInstance
                                           .collection('college')
                                           .doc(collegeName)
                                           .snapshots(),
                                       builder: (context, innersnapshot) {
-                                        if (!innersnapshot.hasData)
-                                          return CircularProgressIndicator();
+                                        if (!innersnapshot.hasData )
+                                          return overlayContent(
+                                              context: context,
+                                              imagePath:
+                                                  "assets/rive/loading.riv");
                                         Map<String, dynamic> obj =
                                             innersnapshot.data!.data()
                                                 as Map<String, dynamic>;
@@ -108,7 +130,7 @@ class _MyOrderViewState extends State<MyOrderView> {
                                             obj[canteenOwners[index]]['name'];
                                         Map<String, dynamic> items =
                                             canteenOrders[canteenOwners[index]];
-      
+
                                         Map<String, dynamic> finalData = {};
                                         items.map((k, v) {
                                           if (k != "time" &&
@@ -119,23 +141,24 @@ class _MyOrderViewState extends State<MyOrderView> {
                                           return MapEntry(k, v);
                                         });
                                         print(finalData);
-      
+
                                         List itemElements =
                                             finalData.values.map((v) {
                                           return v;
                                         }).toList();
-      
+
                                         Map Ordereditems = Map.fromIterables(
-                                            List.generate(finalData.length, (v) {
+                                            List.generate(finalData.length,
+                                                (v) {
                                               return v;
                                             }),
                                             itemElements);
-      
+
                                         String time = items['time'];
                                         bool checkOut = items['checkOut'];
                                         int amount = int.parse(
                                             items['totalAmount'].toString());
-      
+
                                         return Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: Column(
@@ -148,7 +171,8 @@ class _MyOrderViewState extends State<MyOrderView> {
                                                 canteenName,
                                                 style: TextStyle(
                                                     fontSize: 17,
-                                                    fontWeight: FontWeight.bold),
+                                                    fontWeight:
+                                                        FontWeight.bold),
                                               ),
                                               const SizedBox(
                                                 height: 20,
@@ -161,18 +185,20 @@ class _MyOrderViewState extends State<MyOrderView> {
                                                       const NeverScrollableScrollPhysics(),
                                                   shrinkWrap: true,
                                                   padding: EdgeInsets.zero,
-                                                  itemCount: Ordereditems.length,
-                                                  separatorBuilder:
-                                                      ((context, index) =>
-                                                          Divider(
-                                                            indent: 25,
-                                                            endIndent: 25,
-                                                            color: TColor
-                                                                .secondaryText
-                                                                .withOpacity(0.5),
-                                                            height: 1,
-                                                          )),
-                                                  itemBuilder: ((context, index) {
+                                                  itemCount:
+                                                      Ordereditems.length,
+                                                  separatorBuilder: ((context,
+                                                          index) =>
+                                                      Divider(
+                                                        indent: 25,
+                                                        endIndent: 25,
+                                                        color: TColor
+                                                            .secondaryText
+                                                            .withOpacity(0.5),
+                                                        height: 1,
+                                                      )),
+                                                  itemBuilder:
+                                                      ((context, index) {
                                                     return Container(
                                                       padding: const EdgeInsets
                                                           .symmetric(
@@ -223,7 +249,8 @@ class _MyOrderViewState extends State<MyOrderView> {
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     Divider(
-                                                      color: TColor.secondaryText
+                                                      color: TColor
+                                                          .secondaryText
                                                           .withOpacity(0.5),
                                                       height: 1,
                                                     ),
@@ -250,8 +277,8 @@ class _MyOrderViewState extends State<MyOrderView> {
                                                         Text(
                                                           "68 \u{20B9}",
                                                           style: TextStyle(
-                                                              color:
-                                                                  TColor.primary,
+                                                              color: TColor
+                                                                  .primary,
                                                               fontSize: 13,
                                                               fontWeight:
                                                                   FontWeight
@@ -282,8 +309,8 @@ class _MyOrderViewState extends State<MyOrderView> {
                                                         Text(
                                                           "2 \u{20B9}",
                                                           style: TextStyle(
-                                                              color:
-                                                                  TColor.primary,
+                                                              color: TColor
+                                                                  .primary,
                                                               fontSize: 13,
                                                               fontWeight:
                                                                   FontWeight
@@ -295,7 +322,8 @@ class _MyOrderViewState extends State<MyOrderView> {
                                                       height: 15,
                                                     ),
                                                     Divider(
-                                                      color: TColor.secondaryText
+                                                      color: TColor
+                                                          .secondaryText
                                                           .withOpacity(0.5),
                                                       height: 1,
                                                     ),
@@ -323,8 +351,8 @@ class _MyOrderViewState extends State<MyOrderView> {
                                                           amount.toString() +
                                                               ' \u{20B9}',
                                                           style: TextStyle(
-                                                              color:
-                                                                  TColor.primary,
+                                                              color: TColor
+                                                                  .primary,
                                                               fontSize: 22,
                                                               fontWeight:
                                                                   FontWeight
@@ -343,14 +371,15 @@ class _MyOrderViewState extends State<MyOrderView> {
                                                             'canttenName':
                                                                 canteenName
                                                           });
-      
+
                                                           Map<String, dynamic>
                                                               data = {};
                                                           Ordereditems.map(
                                                               (k, v) {
                                                             data[k.toString()] =
                                                                 v;
-                                                            return MapEntry(k, v);
+                                                            return MapEntry(
+                                                                k, v);
                                                           });
                                                         }),
                                                     const SizedBox(
