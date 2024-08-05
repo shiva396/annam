@@ -7,10 +7,9 @@ import 'package:projrect_annam/student/more/add_card_view.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
 import 'package:projrect_annam/utils/extension_methods.dart';
 
-import '../../common_widget/round_button.dart';
 import '../../utils/color_data.dart';
 import '../../utils/size_data.dart';
-import 'my_order_view.dart';
+import '../../students/orders/my_order.dart';
 
 class PaymentDetailsView extends ConsumerStatefulWidget {
   const PaymentDetailsView({super.key});
@@ -37,46 +36,34 @@ class _PaymentDetailsViewState extends ConsumerState<PaymentDetailsView> {
 
     return SafeArea(
       child: Scaffold(
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20),
+        body: Container(
+          margin: EdgeInsets.only(
+            left: width * 0.04,
+            right: width * 0.04,
+            top: height * 0.02,
+          ),
+          child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(
-                  height: 46,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: Image.asset(ImageConst.backButton,
-                            width: 20, height: 20),
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: Image.asset(ImageConst.backButton,
+                          width: 20, height: 20),
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    Expanded(
+                      child: CustomText(
+                        text: "Payment Details",
                       ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      Expanded(
-                        child: CustomText(
-                          text: "Payment Details",
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          context.push(const MyOrderView());
-                        },
-                        icon: Image.asset(
-                          ImageConst.backButton,
-                          width: 25,
-                          height: 25,
-                        ),
-                      ),
-                    ],
-                  ),
+                    )
+                  ],
                 ),
                 Padding(
                   padding:
@@ -159,11 +146,12 @@ class _PaymentDetailsViewState extends ConsumerState<PaymentDetailsView> {
                                 SizedBox(
                                   width: 100,
                                   height: 28,
-                                  child: RoundButton(
-                                    title: 'Delete Card',
-                                    fontSize: 12,
+                                  child: ElevatedButton(
+                                    child:Text( 'Delete Card'),
+                                    
+                                    
                                     onPressed: () {},
-                                    type: RoundButtonType.textPrimary,
+                                    
                                   ),
                                 )
                               ],

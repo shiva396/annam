@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:projrect_annam/const/static_data.dart';
 import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/canteen/canteen_main_tab.dart';
 import 'package:projrect_annam/const/image_const.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
 import 'package:projrect_annam/utils/extension_methods.dart';
 import '../student/student_main_tab.dart';
+import '../utils/size_data.dart';
 
 class RoleSeperationPage extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -41,7 +44,7 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
     Set<DropdownMenuItem<String>> items = snapshot.docs.map((doc) {
       return DropdownMenuItem<String>(
         value: doc.id,
-        child: CustomText(text:  doc.id),
+        child: CustomText(text: doc.id),
       );
     }).toSet();
 
@@ -64,9 +67,11 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
 
   @override
   Widget build(BuildContext context) {
+    CustomSizeData sizeData = CustomSizeData.from(context);
+    double height = sizeData.height;
+    double width = sizeData.width;
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.orange,
         body: Stack(
           children: [
             Container(
@@ -82,15 +87,15 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset(ImageConst.logo), // logo
+                    Image.asset(ImageConst.logo),
                     Container(
                       padding: const EdgeInsets.all(20),
                       margin: const EdgeInsets.all(10),
-                      width: MediaQuery.of(context).size.width *
-                          0.8, // Adjusted width for responsiveness
+                      width: width * 0.8,
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: const BorderRadius.all(Radius.circular(20)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20)),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.grey.withOpacity(0.5),
@@ -115,8 +120,8 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                                 borderSide: BorderSide.none,
                               ),
                             ),
-                            dropdownColor:
-                                Colors.orange[100], // Color when dropdown is open
+                            dropdownColor: Colors
+                                .orange[100], // Color when dropdown is open
                             value: _selectedRole,
                             onChanged: (value) {
                               setState(() {
@@ -126,24 +131,24 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                             items: [
                               DropdownMenuItem(
                                 value: 'student',
-                                child: CustomText(text:'Student'),
+                                child: CustomText(text: 'Student'),
                               ),
                               DropdownMenuItem(
                                 value: 'cattle_owner',
-                                child: CustomText(text:'Cattle Owner'),
+                                child: CustomText(text: 'Cattle Owner'),
                               ),
                               DropdownMenuItem(
                                 value: 'canteen_owner',
-                                child: CustomText(text:'Canteen Owner'),
+                                child: CustomText(text: 'Canteen Owner'),
                               ),
                               DropdownMenuItem(
                                 value: 'ngo',
-                                child: CustomText(text:'NGO'),
+                                child: CustomText(text: 'NGO'),
                               ),
                             ],
                           ),
                           const SizedBox(height: 10),
-                          if (_selectedRole == 'student') ...[
+                          if (_selectedRole == UserRole.student.asString) ...[
                             TextField(
                               controller: _nameController,
                               decoration: const InputDecoration(
@@ -189,7 +194,8 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                               ),
                             ),
                           ],
-                          if (_selectedRole == 'cattle_owner') ...[
+                          if (_selectedRole ==
+                              UserRole.cattleOwner.asString) ...[
                             TextField(
                               controller: _nameController,
                               decoration: const InputDecoration(
@@ -230,7 +236,8 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                               ),
                             ),
                           ],
-                          if (_selectedRole == 'canteen_owner') ...[
+                          if (_selectedRole ==
+                              UserRole.canteenOwner.asString) ...[
                             TextField(
                               controller: _nameController,
                               decoration: const InputDecoration(
@@ -254,8 +261,8 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                                     fontSize: 16,
                                     color: Colors.black),
                                 decoration: InputDecoration(
-                                  contentPadding:
-                                      const EdgeInsets.symmetric(horizontal: 20),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 20),
                                   hintText: 'Choose College',
                                   filled: true,
                                   fillColor: Colors.grey[200],
@@ -299,7 +306,7 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                               ),
                             ),
                           ],
-                          if (_selectedRole == 'ngo') ...[
+                          if (_selectedRole == UserRole.ngo.asString) ...[
                             TextField(
                               controller: _organizationController,
                               decoration: const InputDecoration(
@@ -324,12 +331,13 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                               ),
                             ),
                           ],
-                          const SizedBox(height: 20), // Added space at the bottom
+                          const SizedBox(
+                              height: 20), // Added space at the bottom
                           ElevatedButton(
                             onPressed: () async {
                               // Data store to firebase
-      
-                              if (_selectedRole == 'student') {
+
+                              if (_selectedRole == UserRole.student.asString) {
                                 if (_nameController.text.trim().isNotEmpty &&
                                     _selectedCollege.isNotEmpty &&
                                     _phoneController.text.trim().isNotEmpty) {
@@ -340,9 +348,10 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                                     'image': ""
                                   });
                                 } else {
-                               context.showSnackBar( "Fill all");
+                                  context.showSnackBar("Fill all");
                                 }
-                              } else if (_selectedRole == 'canteen_owner') {
+                              } else if (_selectedRole ==
+                                  UserRole.canteenOwner.asString) {
                                 widget.userData.addAll({
                                   'name': _nameController.text.trim(),
                                   'collegeName': _selectedCollege,
@@ -354,10 +363,12 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                                   'categories': {},
                                   'todayOrders': []
                                 });
-                              } else if (_selectedRole == 'cattle_owner') {
-                              } else if (_selectedRole == 'ngo') {
+                              } else if (_selectedRole ==
+                                  UserRole.cattleOwner.asString) {
+                              } else if (_selectedRole ==
+                                  UserRole.ngo.asString) {
                               } else {}
-      
+
                               FirebaseOperations.firebaseAuth
                                   .createUserWithEmailAndPassword(
                                       email: widget.userData['email'],
@@ -373,17 +384,16 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                                   Map<String, dynamic> roleMap =
                                       docSnapshot.get('role') ?? {};
                                   if (docSnapshot.exists) {
-                                    if (!roleMap
-                                        .containsKey(widget.userData['email'])) {
+                                    if (!roleMap.containsKey(
+                                        widget.userData['email'])) {
                                       roleMap[widget.userData['email']] =
                                           _selectedRole;
-      
+
                                       await docRef.update({
                                         'role': roleMap,
                                       });
                                     } else {
-                                      context.showSnackBar(
-                                          "Already exist");
+                                      context.showSnackBar("Already exist");
                                     }
                                   } else {
                                     roleMap[widget.userData['email']] =
@@ -396,9 +406,11 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                                     });
                                   }
                                 } catch (e) {
-                                   context.showSnackBar( e.toString());
+                                  context.showSnackBar(e.toString());
                                 }
-                                if (_selectedRole == 'canteen_owner') {
+
+                                if (_selectedRole ==
+                                    UserRole.canteenOwner.asString) {
                                   Map<String, dynamic> user = {
                                     FirebaseOperations.firebaseAuth.currentUser!
                                         .uid: widget.userData
@@ -423,7 +435,8 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                                           .trim())
                                       .set(widget.userData)
                                       .whenComplete(() {
-                                    if (_selectedRole == 'student') {
+                                    if (_selectedRole ==
+                                        UserRole.student.asString) {
                                       Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
@@ -441,9 +454,9 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                               backgroundColor:
                                   WidgetStateProperty.all(Colors.orange),
                             ),
-                            child: const CustomText(text:
-                              'Save',
-                          
+                            child: const CustomText(
+                              text: 'Save',
+                              color: Colors.white,
                             ),
                           ),
                         ],

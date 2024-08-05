@@ -3,11 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projrect_annam/firebase/firebase_operations.dart';
-import 'package:projrect_annam/const/color_extension.dart';
-import 'package:projrect_annam/common_widget/round_button.dart';
 import 'package:projrect_annam/const/image_const.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
 import 'package:projrect_annam/utils/helper_methods.dart';
+import 'package:projrect_annam/utils/page_header.dart';
 
 import '../../utils/color_data.dart';
 import '../../utils/size_data.dart';
@@ -18,7 +17,7 @@ class MyOrderView extends ConsumerStatefulWidget {
   });
 
   @override
- ConsumerState<MyOrderView> createState() => _MyOrderViewState();
+  ConsumerState<MyOrderView> createState() => _MyOrderViewState();
 }
 
 class _MyOrderViewState extends ConsumerState<MyOrderView> {
@@ -26,7 +25,6 @@ class _MyOrderViewState extends ConsumerState<MyOrderView> {
   @override
   void initState() {
     super.initState();
-    // Set a delay of 2 seconds before allowing the main content to show
     Future.delayed(Duration(seconds: 1), () {
       setState(() {
         _showLoading = false;
@@ -36,7 +34,7 @@ class _MyOrderViewState extends ConsumerState<MyOrderView> {
 
   @override
   Widget build(BuildContext context) {
-     CustomSizeData sizeData = CustomSizeData.from(context);
+    CustomSizeData sizeData = CustomSizeData.from(context);
     CustomColorData colorData = CustomColorData.from(ref);
 
     double height = sizeData.height;
@@ -44,38 +42,16 @@ class _MyOrderViewState extends ConsumerState<MyOrderView> {
 
     return SafeArea(
       child: Scaffold(
-       
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20),
+        body: Container(
+          margin: EdgeInsets.only(
+            left: width * 0.04,
+            right: width * 0.04,
+            top: height * 0.02,
+          ),
+          child: SingleChildScrollView(
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const SizedBox(
-                height: 46,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: Image.asset(ImageConst.backButton,
-                          width: 20, height: 20),
-                    ),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    Expanded(
-                      child: CustomText(text: 
-                        "My Order",
-                      
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              PageHeader(title: "My Orders"),
               StreamBuilder<DocumentSnapshot>(
                   stream: FirebaseOperations.firebaseInstance
                       .collection('student')
@@ -102,12 +78,13 @@ class _MyOrderViewState extends ConsumerState<MyOrderView> {
                           }
 
                           if (snapshot.hasError && collegeName.isNotEmpty) {
-                            return Center(child: CustomText(text: "An error occurred."));
+                            return overlayContent(context: context, imagePath: "");
                           }
 
                           if (!snapshot.hasData ||
                               snapshot.data!.docs.isEmpty) {
-                            return Center(child: CustomText(text: "No orders found."));
+                            return Center(
+                                child: CustomText(text: "No orders found."));
                           }
                           Map<String, dynamic> canteenOrders =
                               snapshot.data!.docs.first.data()!
@@ -174,16 +151,16 @@ class _MyOrderViewState extends ConsumerState<MyOrderView> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              CustomText(text: 
-                                                canteenName,
-                                             
+                                              CustomText(
+                                                text: canteenName,
                                               ),
                                               const SizedBox(
                                                 height: 20,
                                               ),
                                               Container(
                                                 decoration: BoxDecoration(
-                                                    color:colorData.primaryColor(.6) ),
+                                                    color: colorData
+                                                        .primaryColor(.6)),
                                                 child: ListView.separated(
                                                   physics:
                                                       const NeverScrollableScrollPhysics(),
@@ -196,7 +173,8 @@ class _MyOrderViewState extends ConsumerState<MyOrderView> {
                                                       Divider(
                                                         indent: 25,
                                                         endIndent: 25,
-                                                        color: colorData.secondaryColor(.8),
+                                                        color: colorData
+                                                            .secondaryColor(.8),
                                                         height: 1,
                                                       )),
                                                   itemBuilder:
@@ -212,17 +190,17 @@ class _MyOrderViewState extends ConsumerState<MyOrderView> {
                                                                 .start,
                                                         children: [
                                                           Expanded(
-                                                            child: CustomText(text: 
-                                                              "${Ordereditems[index]["name"].toString()} x${Ordereditems[index]["quantity"].toString()}",
-                                                             
+                                                            child: CustomText(
+                                                              text:
+                                                                  "${Ordereditems[index]["name"].toString()} x${Ordereditems[index]["quantity"].toString()}",
                                                             ),
                                                           ),
                                                           const SizedBox(
                                                             width: 15,
                                                           ),
-                                                          CustomText(text: 
-                                                            "${Ordereditems[index]["price"].toString()} \u{20B9}",
-                                                          
+                                                          CustomText(
+                                                            text:
+                                                                "${Ordereditems[index]["price"].toString()} \u{20B9}",
                                                           )
                                                         ],
                                                       ),
@@ -239,7 +217,8 @@ class _MyOrderViewState extends ConsumerState<MyOrderView> {
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     Divider(
-                                                      color:colorData.secondaryColor(.9),
+                                                      color: colorData
+                                                          .secondaryColor(.9),
                                                       height: 1,
                                                     ),
                                                     const SizedBox(
@@ -250,13 +229,11 @@ class _MyOrderViewState extends ConsumerState<MyOrderView> {
                                                           MainAxisAlignment
                                                               .spaceBetween,
                                                       children: [
-                                                        CustomText(text: 
-                                                          "Sub Total",
-                                                        
+                                                        CustomText(
+                                                          text: "Sub Total",
                                                         ),
-                                                        CustomText(text: 
-                                                          "68 \u{20B9}",
-                                                      
+                                                        CustomText(
+                                                          text: "68 \u{20B9}",
                                                         )
                                                       ],
                                                     ),
@@ -268,13 +245,11 @@ class _MyOrderViewState extends ConsumerState<MyOrderView> {
                                                           MainAxisAlignment
                                                               .spaceBetween,
                                                       children: [
-                                                        CustomText(text: 
-                                                          "Delivery Cost",
-                                                         
+                                                        CustomText(
+                                                          text: "Delivery Cost",
                                                         ),
-                                                        CustomText(text: 
-                                                          "2 \u{20B9}",
-                                                        
+                                                        CustomText(
+                                                          text: "2 \u{20B9}",
                                                         )
                                                       ],
                                                     ),
@@ -282,7 +257,8 @@ class _MyOrderViewState extends ConsumerState<MyOrderView> {
                                                       height: 15,
                                                     ),
                                                     Divider(
-                                                      color: colorData.secondaryColor(.8),
+                                                      color: colorData
+                                                          .secondaryColor(.8),
                                                       height: 1,
                                                     ),
                                                     const SizedBox(
@@ -293,22 +269,21 @@ class _MyOrderViewState extends ConsumerState<MyOrderView> {
                                                           MainAxisAlignment
                                                               .spaceBetween,
                                                       children: [
-                                                        CustomText(text: 
-                                                          "Total",
-                                                         
+                                                        CustomText(
+                                                          text: "Total",
                                                         ),
-                                                        CustomText(text: 
-                                                          amount.toString() +
+                                                        CustomText(
+                                                          text: amount
+                                                                  .toString() +
                                                               ' \u{20B9}',
-                                                        
                                                         )
                                                       ],
                                                     ),
                                                     const SizedBox(
                                                       height: 25,
                                                     ),
-                                                    RoundButton(
-                                                        title: "Checkout",
+                                                    ElevatedButton(
+                                                        child: Text("Checkout"),
                                                         onPressed: () {
                                                           // History Push
                                                           Ordereditems.addAll({

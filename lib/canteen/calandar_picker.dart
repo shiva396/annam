@@ -2,6 +2,7 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 
 import '../utils/custom_text.dart';
+import '../utils/size_data.dart';
 
 class CalandarPicker extends StatefulWidget {
   const CalandarPicker({super.key});
@@ -20,7 +21,16 @@ class _CalandarPickerState extends State<CalandarPicker> {
 
   @override
   Widget build(BuildContext context) {
-    return _buildSingleDatePickerWithValue();
+    CustomSizeData sizeData = CustomSizeData.from(context);
+    double height = sizeData.height;
+    double width = sizeData.width;
+    return Container(
+        margin: EdgeInsets.only(
+          left: width * 0.04,
+          right: width * 0.04,
+          top: height * 0.02,
+        ),
+        child: _buildSingleDatePickerWithValue());
   }
 
   String _getValueText(
@@ -117,17 +127,14 @@ class _CalandarPickerState extends State<CalandarPicker> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const CustomText(
-              text:   'Selected Date :  ',
-               
+                text: 'Selected Date :  ',
               ),
               const SizedBox(width: 10),
-             CustomText(
-               text:  _getValueText(
+              CustomText(
+                text: _getValueText(
                   config.calendarType,
                   _singleDatePickerValueWithDefaultValue,
                 ),
-                
-               
               ),
             ],
           ),

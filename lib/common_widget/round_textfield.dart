@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../const/color_extension.dart';
 import '../utils/color_data.dart';
 import '../utils/custom_text.dart';
+import '../utils/size_data.dart';
 
 class RoundTextfield extends ConsumerWidget {
   final TextEditingController? controller;
@@ -24,10 +25,15 @@ class RoundTextfield extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-        CustomColorData colorData = CustomColorData.from(ref);
+    CustomSizeData sizeData = CustomSizeData.from(context);
+    CustomColorData colorData = CustomColorData.from(ref);
+
+    double height = sizeData.height;
+    double width = sizeData.width;
+
     return Container(
       decoration: BoxDecoration(
-          color: bgColor ?? colorData.fontColor(.9),
+          color: bgColor ?? colorData.secondaryColor(.9),
           borderRadius: BorderRadius.circular(25)),
       child: Row(
         children: [
@@ -50,9 +56,10 @@ class RoundTextfield extends ConsumerWidget {
                 focusedBorder: InputBorder.none,
                 hintText: hintText,
                 hintStyle: TextStyle(
-                    color: colorData.fontColor(.9),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500),
+                    color: colorData.fontColor(1),
+                    fontSize: sizeData.medium,
+                    letterSpacing: 0.9,
+                    fontWeight: FontWeight.bold),
               ),
             ),
           ),
@@ -85,12 +92,13 @@ class RoundTitleTextfield extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-        CustomColorData colorData = CustomColorData.from(ref);
+    CustomColorData colorData = CustomColorData.from(ref);
+    CustomSizeData sizeData = CustomSizeData.from(context);
     return Container(
       height: 55,
       decoration: BoxDecoration(
-          color: bgColor ?? colorData.fontColor(.7) ,
-          borderRadius: BorderRadius.circular(25)),
+          color: bgColor ?? colorData.primaryColor(.2),
+          borderRadius: BorderRadius.circular(10)),
       child: Row(
         children: [
           if (left != null)
@@ -104,9 +112,10 @@ class RoundTitleTextfield extends ConsumerWidget {
             child: Stack(
               children: [
                 Container(
-                  height: 55,
+                  height: sizeData.height * 0.05,
                   margin: const EdgeInsets.only(
                     top: 8,
+                    bottom: 10,
                   ),
                   alignment: Alignment.topLeft,
                   child: TextField(
@@ -116,25 +125,29 @@ class RoundTitleTextfield extends ConsumerWidget {
                     obscureText: obscureText,
                     keyboardType: keyboardType,
                     decoration: InputDecoration(
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 20),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                      ),
                       enabledBorder: InputBorder.none,
                       focusedBorder: InputBorder.none,
                       hintText: hintText,
                       hintStyle: TextStyle(
-                          color: colorData.fontColor(.9),
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500),
+                        color: colorData.fontColor(.6),
+                        fontSize: sizeData.medium,
+                      ),
                     ),
                   ),
                 ),
                 Container(
                   height: 55,
-                  margin: const EdgeInsets.only(top: 10, left: 20),
+                  margin: const EdgeInsets.only(
+                    top: 5,
+                    left: 20,
+                  ),
                   alignment: Alignment.topLeft,
-                  child:CustomText(
-                  text:  title,
-                   
+                  child: CustomText(
+                    text: title,
+                    size: sizeData.small,
                   ),
                 )
               ],

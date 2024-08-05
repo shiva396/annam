@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/canteen/canteen_main_tab.dart';
 import 'package:projrect_annam/const/image_const.dart';
@@ -8,6 +7,8 @@ import 'package:projrect_annam/const/image_const.dart';
 import 'package:projrect_annam/student/student_main_tab.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
 import 'package:projrect_annam/utils/extension_methods.dart';
+import '../const/static_data.dart';
+import '../utils/size_data.dart';
 import 'role_page.dart';
 
 class LoginSignUp extends StatefulWidget {
@@ -30,9 +31,11 @@ class _LoginSignUpState extends State<LoginSignUp> {
 
   @override
   Widget build(BuildContext context) {
+    CustomSizeData sizeData = CustomSizeData.from(context);
+    double height = sizeData.height;
+    double width = sizeData.width;
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.orange,
         body: Stack(
           children: [
             Container(
@@ -52,8 +55,8 @@ class _LoginSignUpState extends State<LoginSignUp> {
                     Container(
                       padding: const EdgeInsets.all(20),
                       margin: const EdgeInsets.all(10),
-                      height: 500,
-                      width: 330,
+                      height: height * 0.5,
+                      width: width * 0.8,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius:
@@ -73,8 +76,6 @@ class _LoginSignUpState extends State<LoginSignUp> {
                           SignUpBar(
                               toggleForm: _toggleForm, isSignUp: _isSignUp),
                           _isSignUp ? SignUpFields() : const EmailBar(),
-                          const ContinueDivider(),
-                          const SocialIcons(),
                         ],
                       ),
                     ),
@@ -84,77 +85,6 @@ class _LoginSignUpState extends State<LoginSignUp> {
             )
           ],
         ),
-      ),
-    );
-  }
-}
-
-class SocialIcons extends StatelessWidget {
-  const SocialIcons({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        IconButton(
-          padding: const EdgeInsets.all(15),
-          color: Colors.blueAccent,
-          icon: const FaIcon(FontAwesomeIcons.facebook), // facebook icon
-          iconSize: 30,
-          onPressed: () {
-            context.push(RoleSeperationPage(
-              userData: {},
-            ));
-          },
-        ),
-        IconButton(
-          padding: const EdgeInsets.all(15),
-          color: Colors.blueAccent,
-          icon: const FaIcon(FontAwesomeIcons.twitter), // twitter icon
-          iconSize: 30,
-          onPressed: () {},
-        ),
-        IconButton(
-          padding: const EdgeInsets.all(15),
-          color: Colors.orange,
-          icon: const FaIcon(FontAwesomeIcons.google), // google icon
-          iconSize: 30,
-          onPressed: () {},
-        ),
-      ],
-    );
-  }
-}
-
-class ContinueDivider extends StatelessWidget {
-  const ContinueDivider({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(left: 10.0, right: 15.0),
-      child: const Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Divider(
-              color: Colors.grey,
-              thickness: 1,
-            ),
-          ),
-          CustomText( text: 'or continue with'),
-          Expanded(
-            child: Divider(
-              color: Colors.grey,
-              thickness: 1,
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -170,6 +100,7 @@ class EmailBar extends StatefulWidget {
 }
 
 class _EmailBarState extends State<EmailBar> {
+  bool showPassword = false;
   TextEditingController emailController = TextEditingController();
 
   TextEditingController passwordController = TextEditingController();
@@ -183,6 +114,9 @@ class _EmailBarState extends State<EmailBar> {
 
   @override
   Widget build(BuildContext context) {
+    CustomSizeData sizeData = CustomSizeData.from(context);
+    double height = sizeData.height;
+    double width = sizeData.width;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -191,24 +125,35 @@ class _EmailBarState extends State<EmailBar> {
           decoration: InputDecoration(hintText: 'Enter email'),
         ),
         TextField(
+          onTap: () {
+            setState(() {
+              showPassword = !showPassword;
+            });
+          },
           controller: passwordController,
-          decoration: InputDecoration(hintText: 'Password'),
-          obscureText: true,
+          decoration: InputDecoration(
+            hintText: 'Password',
+            suffixIcon: showPassword == true
+                ? Icon(Icons.remove_red_eye)
+                : Icon(
+                    Icons.visibility_off,
+                  ),
+          ),
+          obscureText: showPassword,
           enableSuggestions: false,
           autocorrect: false,
         ),
         SizedBox(
-          height: 20,
+          height: height * 0.08,
         ),
         Align(
           alignment: Alignment.bottomRight,
           child: CustomText(
-           text:  'Forgot Password?',
-           
+            text: 'Forgot Password?',
           ),
         ),
         SizedBox(
-          height: 35,
+          height: height * 0.04,
         ),
         TextButton(
           style: ButtonStyle(
@@ -223,8 +168,7 @@ class _EmailBarState extends State<EmailBar> {
             backgroundColor: WidgetStateProperty.resolveWith<Color>(
               (Set<WidgetState> states) {
                 if (states.contains(WidgetState.hovered)) {
-                  return Colors.orange
-                      .withOpacity(0.8); // darker shade on hover
+                  return Colors.orange.withOpacity(0.8);
                 }
                 return Colors.orange;
               },
@@ -248,16 +192,11 @@ class _EmailBarState extends State<EmailBar> {
                 if (res
                     .containsKey(emailController.text.trim().toLowerCase())) {
                   String role = res[emailController.text.trim().toLowerCase()];
-                  if (role == 'student') {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MainTabView(
-                          role: role,
-                        ),
-                      ),
-                    );
-                  } else if (role == 'canteen_owner') {
+                  if (role == UserRole.student.asString) {
+                    context.pushReplacement(MainTabView(
+                      role: role,
+                    ));
+                  } else if (role == UserRole.canteenOwner.asString) {
                     try {
                       String collegeName = "";
                       CollectionReference collegeCollection =
@@ -277,29 +216,27 @@ class _EmailBarState extends State<EmailBar> {
                       if (collegeName.isNotEmpty) {
                         context.push(CanteenOwner(collegeName: collegeName));
                       } else {
-                        context.showSnackBar("Collge not found");
-                       
+                        context.showSnackBar("College not found");
                       }
 
                       // Iterate through each document in the "college" collection
                     } catch (e) {
-                       context.showSnackBar(
-                      'Error checking documents: $e');
+                      context.showSnackBar('Error checking documents: $e');
                     }
                   }
                 } else {
-                 context.showSnackBar( "Account not found");
+                  context.showSnackBar("Account not found");
                 }
               } catch (e) {
-               context.showSnackBar(e.toString());
+                context.showSnackBar(e.toString());
               }
             } else {
-             context.showSnackBar("Please Fill all details");
+              context.showSnackBar("Please Fill all details");
             }
           },
-          child:  CustomText(
-           text:  'Log In',
-          
+          child: CustomText(
+            text: 'Log In',
+            color: Colors.white,
           ),
         )
       ],
@@ -319,13 +256,16 @@ class SignUpBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    CustomSizeData sizeData = CustomSizeData.from(context);
+    double height = sizeData.height;
+    double width = sizeData.width;
     return Container(
       margin: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey),
         borderRadius: BorderRadius.circular(25),
       ),
-      height: 40,
+      height: height * 0.05,
       child: Stack(
         children: [
           Row(
@@ -349,7 +289,10 @@ class SignUpBar extends StatelessWidget {
                           ? WidgetStateProperty.all<Color>(Colors.white)
                           : WidgetStateProperty.all<Color>(Colors.orange)),
                   onPressed: isSignUp ? toggleForm : null,
-                  child:  CustomText(text:  'Log In'),
+                  child: CustomText(
+                    text: 'Log In',
+                    color: isSignUp ? Colors.orange : Colors.white,
+                  ),
                 ),
               ),
               Expanded(
@@ -370,7 +313,9 @@ class SignUpBar extends StatelessWidget {
                           ? WidgetStateProperty.all<Color>(Colors.orange)
                           : WidgetStateProperty.all<Color>(Colors.white)),
                   onPressed: isSignUp ? null : toggleForm,
-                  child: CustomText(text:  'Sign Up'),
+                  child: CustomText(
+                      text: 'Sign Up',
+                      color: isSignUp ? Colors.white : Colors.orange),
                 ),
               ),
             ],
@@ -389,6 +334,8 @@ class SignUpFields extends StatefulWidget {
 }
 
 class _SignUpFieldsState extends State<SignUpFields> {
+  bool showPassword = false;
+  bool showRetypedPassword = false;
   TextEditingController emailController = TextEditingController();
 
   TextEditingController passwordController = TextEditingController();
@@ -397,6 +344,7 @@ class _SignUpFieldsState extends State<SignUpFields> {
 
   void dispose() {
     super.dispose();
+
     emailController.dispose();
     passwordController.dispose();
     retypedPasswordController.dispose();
@@ -413,17 +361,39 @@ class _SignUpFieldsState extends State<SignUpFields> {
         ),
         SizedBox(height: 10),
         TextField(
+          onTap: () {
+            setState(() {
+              showPassword = !showPassword;
+            });
+          },
           controller: passwordController,
-          decoration: InputDecoration(hintText: 'Password'),
-          obscureText: true,
+          decoration: InputDecoration(
+            hintText: 'Password',
+            suffixIcon: showPassword == true
+                ? Icon(Icons.remove_red_eye)
+                : Icon(
+                    Icons.visibility_off,
+                  ),
+          ),
+          obscureText: showPassword,
           enableSuggestions: false,
           autocorrect: false,
         ),
         SizedBox(height: 10),
         TextField(
+          onTap: () {
+            showRetypedPassword = !showRetypedPassword;
+          },
           controller: retypedPasswordController,
-          decoration: InputDecoration(hintText: 'Re-type Password'),
-          obscureText: true,
+          decoration: InputDecoration(
+            hintText: 'Re-type Password',
+            suffixIcon: showRetypedPassword == true
+                ? Icon(Icons.remove_red_eye)
+                : Icon(
+                    Icons.visibility_off,
+                  ),
+          ),
+          obscureText: showRetypedPassword,
           enableSuggestions: false,
           autocorrect: false,
         ),
@@ -457,9 +427,7 @@ class _SignUpFieldsState extends State<SignUpFields> {
                 passwordController.text.isNotEmpty &&
                 retypedPasswordController.text.isNotEmpty) {
               if (passwordController.text != retypedPasswordController.text) {
-               
-                   context.showSnackBar(
-                     "The re- entered password did n't match");
+                context.showSnackBar("The re- entered password did n't match");
               } else {
                 // All correct
                 context.push(RoleSeperationPage(
@@ -470,10 +438,13 @@ class _SignUpFieldsState extends State<SignUpFields> {
                 ));
               }
             } else {
-             context.showSnackBar( "Enter All the Fields");
+              context.showSnackBar("Enter All the Fields");
             }
           },
-          child: CustomText( text: 'Sign Up', ),
+          child: CustomText(
+            text: 'Sign Up',
+            color: Colors.white,
+          ),
         )
       ],
     );

@@ -5,22 +5,25 @@ import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/common_widget/round_icon_button.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
 import 'package:projrect_annam/utils/extension_methods.dart';
+import 'package:projrect_annam/utils/page_header.dart';
 
 import '../../const/color_extension.dart';
 import '../../const/image_const.dart';
 import '../../utils/color_data.dart';
 import '../../utils/size_data.dart';
-import '../more/my_order_view.dart';
+import 'my_order.dart';
 
 class ItemDetailsView extends ConsumerStatefulWidget {
   final String itemName;
   final String price;
   final String selectedCanteen;
   final String collegeName;
+  final String imagePath;
   const ItemDetailsView(
       {super.key,
       required this.itemName,
       required this.price,
+      required this.imagePath,
       required this.selectedCanteen,
       required this.collegeName});
 
@@ -40,18 +43,17 @@ class _ItemDetailsViewState extends ConsumerState<ItemDetailsView> {
 
   @override
   Widget build(BuildContext context) {
-        CustomColorData colorData = CustomColorData.from(ref);
-            CustomSizeData sizeData = CustomSizeData.from(context);
-      double height = sizeData.height;
+    CustomColorData colorData = CustomColorData.from(ref);
+    CustomSizeData sizeData = CustomSizeData.from(context);
+    double height = sizeData.height;
     double width = sizeData.width;
     return SafeArea(
       child: Scaffold(
-      
         body: Stack(
           alignment: Alignment.topCenter,
           children: [
-            Image.asset(
-              ImageConst.detailImage,
+            Image.network(
+              widget.imagePath,
               width: width,
               height: width,
               fit: BoxFit.cover,
@@ -59,27 +61,30 @@ class _ItemDetailsViewState extends ConsumerState<ItemDetailsView> {
             Container(
               width: width,
               height: width,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                    colors: [Colors.black, Colors.transparent, Colors.black],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(colors: [
+                  Colors.transparent,
+                  colorData.primaryColor(.2),
+                  Colors.transparent,
+                  Colors.black
+                ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
               ),
             ),
             SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
+                padding: const EdgeInsets.only(top: 20),
                 child: Stack(
                   alignment: Alignment.topCenter,
                   children: [
                     Column(
                       children: [
                         SizedBox(
-                          height: width - 60,
+                          height: height * 0.42,
                         ),
                         Container(
+                          height: height * 0.50,
                           decoration: BoxDecoration(
-                              color: colorData.fontColor(.9),
+                              color: colorData.primaryColor(.2),
                               borderRadius: const BorderRadius.only(
                                   topLeft: Radius.circular(30),
                                   topRight: Radius.circular(30))),
@@ -87,15 +92,14 @@ class _ItemDetailsViewState extends ConsumerState<ItemDetailsView> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const SizedBox(
-                                  height: 35,
+                                  height: 40,
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 25),
-                                  child: CustomText(text: 
-
-                                    widget.itemName,
-                                   
+                                  child: CustomText(
+                                    text: widget.itemName,
+                                    size: sizeData.superHeader,
                                   ),
                                 ),
                                 const SizedBox(
@@ -115,7 +119,7 @@ class _ItemDetailsViewState extends ConsumerState<ItemDetailsView> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           IgnorePointer(
-                                            ignoring: true,
+                                            ignoring: false,
                                             child: RatingBar.builder(
                                               initialRating: 4,
                                               minRating: 1,
@@ -127,19 +131,17 @@ class _ItemDetailsViewState extends ConsumerState<ItemDetailsView> {
                                                   const EdgeInsets.symmetric(
                                                       horizontal: 1.0),
                                               itemBuilder: (context, _) => Icon(
-                                                Icons.star,
-                                                color: colorData.primaryColor(.9)
-                                              ),
+                                                  Icons.star,
+                                                  color: colorData
+                                                      .primaryColor(.9)),
                                               onRatingUpdate: (rating) {},
                                             ),
                                           ),
                                           const SizedBox(
                                             height: 4,
                                           ),
-                                          CustomText(text: 
-
-                                            " 4 Star Ratings",
-                                           
+                                          CustomText(
+                                            text: " 4 Star Ratings",
                                           ),
                                         ],
                                       ),
@@ -147,17 +149,15 @@ class _ItemDetailsViewState extends ConsumerState<ItemDetailsView> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.end,
                                         children: [
-                                          CustomText(text: 
-
-                                            "₹${price.toStringAsFixed(2)}",
-
+                                          CustomText(
+                                            text:
+                                                "₹${price.toStringAsFixed(2)}",
                                           ),
                                           const SizedBox(
                                             height: 4,
                                           ),
-                                          CustomText(text: 
-
-                                            "/per Portion",
+                                          CustomText(
+                                            text: "/per Portion",
                                           )
                                         ],
                                       )
@@ -171,8 +171,7 @@ class _ItemDetailsViewState extends ConsumerState<ItemDetailsView> {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 25),
                                     child: Divider(
-                                      color:
-                                          colorData.secondaryColor(.9),
+                                      color: colorData.secondaryColor(.9),
                                       height: 1,
                                     )),
                                 const SizedBox(
@@ -183,10 +182,8 @@ class _ItemDetailsViewState extends ConsumerState<ItemDetailsView> {
                                       horizontal: 25),
                                   child: Row(
                                     children: [
-                                      CustomText(text: 
-
-                                        "Number of Portions",
-                                      
+                                      CustomText(
+                                        text: "Number of Portions",
                                       ),
                                       const Spacer(),
                                       InkWell(
@@ -207,10 +204,10 @@ class _ItemDetailsViewState extends ConsumerState<ItemDetailsView> {
                                               color: colorData.primaryColor(.9),
                                               borderRadius:
                                                   BorderRadius.circular(12.5)),
-                                          child: CustomText(text: 
-
-                                            "-",
-                                        
+                                          child: CustomText(
+                                            text: "-",
+                                            color: Colors.white,
+                                            size: 20,
                                           ),
                                         ),
                                       ),
@@ -228,10 +225,8 @@ class _ItemDetailsViewState extends ConsumerState<ItemDetailsView> {
                                             ),
                                             borderRadius:
                                                 BorderRadius.circular(12.5)),
-                                        child: CustomText(text: 
-
-                                          qty.toString(),
-                                         
+                                        child: CustomText(
+                                          text: qty.toString(),
                                         ),
                                       ),
                                       const SizedBox(
@@ -252,10 +247,10 @@ class _ItemDetailsViewState extends ConsumerState<ItemDetailsView> {
                                               color: colorData.primaryColor(.9),
                                               borderRadius:
                                                   BorderRadius.circular(12.5)),
-                                          child: CustomText(text: 
-
-                                            "+",
-                                          
+                                          child: CustomText(
+                                            text: "+",
+                                            size: 20,
+                                            color: Colors.white,
                                           ),
                                         ),
                                       ),
@@ -318,15 +313,14 @@ class _ItemDetailsViewState extends ConsumerState<ItemDetailsView> {
                                                       CrossAxisAlignment.center,
                                                   children: [
                                                     CustomText(
-                                                    text:  "Total Price",
-                                                     
+                                                      text: "Total Price",
                                                     ),
                                                     const SizedBox(
                                                       height: 15,
                                                     ),
-                                                    CustomText(text: 
-                                                      "₹${(price * qty).toString()}",
-                                                    
+                                                    CustomText(
+                                                      text:
+                                                          "₹${(price * qty).toString()}",
                                                     ),
                                                     const SizedBox(
                                                       height: 15,
@@ -338,7 +332,8 @@ class _ItemDetailsViewState extends ConsumerState<ItemDetailsView> {
                                                           title: "Add to Cart",
                                                           icon: ImageConst
                                                               .shoppingAdd,
-                                                          color: colorData.primaryColor(.9),
+                                                          color: colorData
+                                                              .primaryColor(.9),
                                                           onPressed: () {
                                                             FirebaseOperations.addCartItems(
                                                                     collegeName:
@@ -385,7 +380,8 @@ class _ItemDetailsViewState extends ConsumerState<ItemDetailsView> {
                                                     ImageConst.shoppingCart,
                                                     width: 20,
                                                     height: 20,
-                                                    color: colorData.primaryColor(.9)),
+                                                    color: colorData
+                                                        .primaryColor(.9)),
                                               ),
                                             ),
                                           ],
@@ -424,43 +420,24 @@ class _ItemDetailsViewState extends ConsumerState<ItemDetailsView> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 35,
+            Container(
+              margin: EdgeInsets.only(
+                left: width * 0.04,
+                right: width * 0.04,
+                top: height * 0.02,
+              ),
+              child: PageHeader(
+                title: "",
+                secondaryWidget: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Image.asset(
+                    ImageConst.shoppingCart,
+                    width: sizeData.superLarge,
+                    height: sizeData.superLarge,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: Image.asset(
-                            ImageConst.backButton,
-                            width: 20,
-                            height: 20,
-                            color: colorData.fontColor(.9),
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            context.push(MyOrderView());
-                          },
-                          icon: Image.asset(
-                            ImageConst.shoppingCart,
-                            width: 25,
-                            height: 25,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           ],

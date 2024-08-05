@@ -7,10 +7,10 @@ import 'package:projrect_annam/utils/extension_methods.dart';
 import '../../const/image_const.dart';
 import '../../utils/color_data.dart';
 import '../../utils/size_data.dart';
-import 'my_order_view.dart';
+import '../../students/orders/my_order.dart';
 
 class AboutUsView extends ConsumerWidget {
-   AboutUsView({super.key});
+  AboutUsView({super.key});
 
   List aboutTextArr = [
     "Project Annam is an initative that is working towards reducing malnutrition and making access to healthy food easier for children",
@@ -18,7 +18,7 @@ class AboutUsView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-     CustomSizeData sizeData = CustomSizeData.from(context);
+    CustomSizeData sizeData = CustomSizeData.from(context);
     CustomColorData colorData = CustomColorData.from(ref);
 
     double height = sizeData.height;
@@ -27,8 +27,12 @@ class AboutUsView extends ConsumerWidget {
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20),
+          child: Container(
+            margin: EdgeInsets.only(
+              left: width * 0.04,
+              right: width * 0.04,
+              top: height * 0.02,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -50,18 +54,16 @@ class AboutUsView extends ConsumerWidget {
                         width: 8,
                       ),
                       Expanded(
-                        child:CustomText(text: 
-                          "About Us",
-                         
+                        child: CustomText(
+                          text: "About Us",
                         ),
                       ),
                       IconButton(
                         onPressed: () {
                           context.push(const MyOrderView());
-                          
                         },
                         icon: Image.asset(
-                         ImageConst.shoppingCart,
+                          ImageConst.shoppingCart,
                           width: 25,
                           height: 25,
                         ),
@@ -87,16 +89,15 @@ class AboutUsView extends ConsumerWidget {
                             width: 6,
                             height: 6,
                             decoration: BoxDecoration(
-                                color:colorData.primaryColor(.9),
+                                color: colorData.primaryColor(.9),
                                 borderRadius: BorderRadius.circular(4)),
                           ),
                           const SizedBox(
                             width: 15,
                           ),
                           Expanded(
-                            child:CustomText(text: 
-                              txt,
-                            
+                            child: CustomText(
+                              text: txt,
                             ),
                           ),
                         ],

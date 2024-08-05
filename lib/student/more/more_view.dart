@@ -9,13 +9,13 @@ import 'package:projrect_annam/utils/extension_methods.dart';
 import '../../const/color_extension.dart';
 import '../../utils/color_data.dart';
 import '../../utils/size_data.dart';
-import 'my_order_view.dart';
+import '../../students/orders/my_order.dart';
 
 class MoreView extends ConsumerStatefulWidget {
   const MoreView({super.key});
 
   @override
- ConsumerState<MoreView> createState() => _MoreViewState();
+  ConsumerState<MoreView> createState() => _MoreViewState();
 }
 
 class _MoreViewState extends ConsumerState<MoreView> {
@@ -32,17 +32,12 @@ class _MoreViewState extends ConsumerState<MoreView> {
       "image": ImageConst.myOrders,
       "base": 0
     },
-    {
-      "index": "3",
-      "name": "About Us",
-      "image":ImageConst.aboutUs,
-      "base": 0
-    },
+    {"index": "3", "name": "About Us", "image": ImageConst.aboutUs, "base": 0},
   ];
 
   @override
   Widget build(BuildContext context) {
-     CustomSizeData sizeData = CustomSizeData.from(context);
+    CustomSizeData sizeData = CustomSizeData.from(context);
     CustomColorData colorData = CustomColorData.from(ref);
 
     double height = sizeData.height;
@@ -51,29 +46,29 @@ class _MoreViewState extends ConsumerState<MoreView> {
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20),
+          child: Container(
+            margin: EdgeInsets.only(
+              left: width * 0.04,
+              right: width * 0.04,
+              top: height * 0.02,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(
-                  height: 46,
-                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                     CustomText(text: 
-                        "More",
-                      
+                      CustomText(
+                        text: "More",
                       ),
                       IconButton(
                         onPressed: () {
                           context.push(const MyOrderView());
                         },
                         icon: Image.asset(
-                         ImageConst.shoppingCart,
+                          ImageConst.shoppingCart,
                           width: 25,
                           height: 25,
                         ),
@@ -94,17 +89,17 @@ class _MoreViewState extends ConsumerState<MoreView> {
                           switch (mObj["index"].toString()) {
                             case "1":
                               context.push(const PaymentDetailsView());
-      
+
                               break;
-      
+
                             case "2":
                               context.push(const MyOrderView());
                               break;
-      
+
                             case "3":
-                              context.push( AboutUsView());
+                              context.push(AboutUsView());
                               break;
-      
+
                             default:
                               context.push(const PaymentDetailsView());
                               break;
@@ -135,7 +130,8 @@ class _MoreViewState extends ConsumerState<MoreView> {
                                           borderRadius:
                                               BorderRadius.circular(25)),
                                       alignment: Alignment.center,
-                                      child: Image.asset(mObj["image"].toString(),
+                                      child: Image.asset(
+                                          mObj["image"].toString(),
                                           width: 25,
                                           height: 25,
                                           fit: BoxFit.contain),
@@ -144,10 +140,9 @@ class _MoreViewState extends ConsumerState<MoreView> {
                                       width: 15,
                                     ),
                                     Expanded(
-                                      child:CustomText(text: 
-                                        mObj["name"].toString(),
-                                      )
-                                    ),
+                                        child: CustomText(
+                                      text: mObj["name"].toString(),
+                                    )),
                                     const SizedBox(
                                       width: 15,
                                     ),
@@ -159,8 +154,8 @@ class _MoreViewState extends ConsumerState<MoreView> {
                                             borderRadius:
                                                 BorderRadius.circular(12.5)),
                                         alignment: Alignment.center,
-                                        child:CustomText(text: 
-                                          countBase.toString(),
+                                        child: CustomText(
+                                          text: countBase.toString(),
                                         ),
                                       ),
                                     const SizedBox(

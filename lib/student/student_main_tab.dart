@@ -5,13 +5,14 @@ import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/const/color_extension.dart';
 import 'package:projrect_annam/common_widget/tab_button.dart';
 import 'package:projrect_annam/const/image_const.dart';
+import 'package:projrect_annam/utils/helper_methods.dart';
 
 import '../utils/color_data.dart';
 import '../utils/size_data.dart';
-import 'menu/place_orders.dart';
+import '../students/orders/place_orders.dart';
 import 'more/more_view.dart';
 import 'My Orders/order_history.dart';
-import 'student_profile_page.dart';
+import '../students/profile/profile_page.dart';
 
 class MainTabView extends ConsumerStatefulWidget {
   const MainTabView({super.key, required this.role});
@@ -46,7 +47,8 @@ class _MainTabViewState extends ConsumerState<MainTabView> {
             .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData && selectPageView != null)
-            return CircularProgressIndicator();
+            return overlayContent(
+                context: context, imagePath: 'assets/rive/loading.riv');
           DocumentSnapshot obj = snapshot.data as DocumentSnapshot;
           Map<String, dynamic> studentData =
               (obj.data()) as Map<String, dynamic>;
@@ -70,7 +72,7 @@ class _MainTabViewState extends ConsumerState<MainTabView> {
                           onTap: () {
                             if (selctTab != 0) {
                               selctTab = 0;
-                              selectPageView = const MenuView();
+                              selectPageView = const PlaceOrders();
                             }
                             if (mounted) {
                               setState(() {});

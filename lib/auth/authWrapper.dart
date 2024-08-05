@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:projrect_annam/const/static_data.dart';
 import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/auth/login_signup.dart';
 import 'package:projrect_annam/canteen/canteen_main_tab.dart';
 
 import 'package:projrect_annam/student/student_main_tab.dart';
 import 'package:projrect_annam/utils/extension_methods.dart';
+import 'package:projrect_annam/utils/helper_methods.dart';
 
 class AuthWrapper extends StatelessWidget {
   const AuthWrapper({super.key});
@@ -16,8 +18,13 @@ class AuthWrapper extends StatelessWidget {
     return StreamBuilder<User?>(
       stream: FirebaseOperations.firebaseAuth.authStateChanges(),
       builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return overlayContent(
+              context: context, imagePath: 'assets/rive/404.riv');
+        }
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Overlay();
+          return overlayContent(
+              context: context, imagePath: 'assets/rive/loading.riv');
         } else if (snapshot.hasData && snapshot.data is User) {
           return StreamBuilder<DocumentSnapshot>(
               stream: FirebaseOperations.firebaseInstance
@@ -26,24 +33,19 @@ class AuthWrapper extends StatelessWidget {
                   .snapshots(),
               builder: (context, innerData) {
                 if (!innerData.hasData)
-                  return Center(
-                    child: SizedBox(
-                      height: 50,
-                      width: 50,
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
+                  return overlayContent(
+                      context: context, imagePath: 'assets/rive/loading.riv');
 
                 Map<String, dynamic> allUsers = (innerData.data!.get('role'));
 
                 if (allUsers.containsKey(snapshot.data!.email)) {
                   String role = allUsers[snapshot.data!.email];
 
-                  if (role == 'student') {
+                  if (role == UserRole.student.toString) {
                     return MainTabView(
                       role: role,
                     );
-                  } else if (role == 'canteen_owner') {
+                  } else if (role == UserRole.canteenOwner.toString) {
                     try {
                       return StreamBuilder<QuerySnapshot>(
                           stream: FirebaseFirestore.instance
@@ -51,7 +53,9 @@ class AuthWrapper extends StatelessWidget {
                               .snapshots(),
                           builder: (context, collegeSnapshot) {
                             if (!collegeSnapshot.hasData)
-                              return CircularProgressIndicator();
+                              return overlayContent(
+                                  context: context,
+                                  imagePath: 'assets/rive/loading.riv');
                             String collegeName = "";
 
                             collegeSnapshot.data!.docs.forEach((v) {

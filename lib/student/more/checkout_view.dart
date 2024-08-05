@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projrect_annam/const/color_extension.dart';
-import 'package:projrect_annam/common_widget/round_button.dart';
 import 'package:projrect_annam/const/image_const.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
 
@@ -272,8 +271,8 @@ class _CheckoutViewState extends ConsumerState<CheckoutView> {
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
-                  child: RoundButton(
-                      title: "Send Order",
+                  child: ElevatedButton(
+                      child:Text( "Send Order"),
                       onPressed: () {
                         showModalBottomSheet(
                             context: context,

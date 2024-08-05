@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:projrect_annam/common_widget/round_button.dart';
 import 'package:projrect_annam/const/image_const.dart';
 
 import '../../const/color_extension.dart';
@@ -78,7 +77,7 @@ class _CheckoutMessageViewState extends ConsumerState<CheckoutMessageView> {
           const SizedBox(
             height: 35,
           ),
-          RoundButton(title: "Track My Order", onPressed: () {}),
+          ElevatedButton (child:Text( "Track My Order"), onPressed: () {}),
           TextButton(
             onPressed: () {},
             child: CustomText(

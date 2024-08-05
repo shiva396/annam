@@ -25,7 +25,6 @@ class _CanteenMainPageState extends State<CanteenMainPage> {
           height: 20,
           child:CustomText(
            text: "Today Items",
-         
           ),
         ),
         SizedBox(

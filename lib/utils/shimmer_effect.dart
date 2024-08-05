@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
 
-class ShimmerEffect extends StatelessWidget {
+import 'color_data.dart';
+import 'size_data.dart';
+
+class ShimmerEffect extends ConsumerWidget {
   const ShimmerEffect({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    CustomSizeData sizeData = CustomSizeData.from(context);
+    CustomColorData colorData = CustomColorData.from(ref);
+
+    double width = sizeData.width;
+    double height = sizeData.height;
+    double aspectRatio = sizeData.aspectRatio;
+
     return Shimmer.fromColors(
-        baseColor: Colors.grey.shade300,
-        highlightColor: Colors.grey.shade100,
+        baseColor: colorData.backgroundColor(.1),
+        highlightColor: colorData.secondaryColor(.1),
         enabled: true,
         child: SingleChildScrollView(
           physics: NeverScrollableScrollPhysics(),
