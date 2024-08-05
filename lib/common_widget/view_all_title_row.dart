@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../common/color_extension.dart';
+import '../const/color_extension.dart';
+import '../utils/custom_text.dart';
 
 class ViewAllTitleRow extends StatelessWidget {
   final String title;
@@ -12,21 +13,15 @@ class ViewAllTitleRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          title,
-          style: TextStyle(
-              color: TColor.primaryText,
-              fontSize: 20,
-              fontWeight: FontWeight.w800),
+       CustomText(
+        text:   title,
+          
         ),
         TextButton(
           onPressed: onView,
-          child: Text(
-            "View all",
-            style: TextStyle(
-                color: TColor.primary,
-                fontSize: 13,
-                fontWeight: FontWeight.w500),
+          child:CustomText(
+          text:   "View all",
+           
           ),
         ),
       ],

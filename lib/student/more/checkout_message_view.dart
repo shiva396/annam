@@ -1,26 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projrect_annam/common_widget/round_button.dart';
-import 'package:projrect_annam/helper/image_const.dart';
+import 'package:projrect_annam/const/image_const.dart';
 
-import '../../common/color_extension.dart';
+import '../../const/color_extension.dart';
+import '../../utils/color_data.dart';
+import '../../utils/custom_text.dart';
+import '../../utils/size_data.dart';
 
-class CheckoutMessageView extends StatefulWidget {
+class CheckoutMessageView extends ConsumerStatefulWidget {
   const CheckoutMessageView({super.key});
 
   @override
-  State<CheckoutMessageView> createState() => _CheckoutMessageViewState();
+  ConsumerState<CheckoutMessageView> createState() =>
+      _CheckoutMessageViewState();
 }
 
-class _CheckoutMessageViewState extends State<CheckoutMessageView> {
+class _CheckoutMessageViewState extends ConsumerState<CheckoutMessageView> {
   @override
   Widget build(BuildContext context) {
-    var media = MediaQuery.sizeOf(context);
+    CustomSizeData sizeData = CustomSizeData.from(context);
+    CustomColorData colorData = CustomColorData.from(ref);
+
+    double height = sizeData.height;
+    double width = sizeData.width;
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
-      width: media.width,
+      width: width,
       decoration: BoxDecoration(
-          color: TColor.white,
+          color: colorData.fontColor(.8),
           borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(20), topRight: Radius.circular(20))),
       child: Column(
@@ -37,7 +46,7 @@ class _CheckoutMessageViewState extends State<CheckoutMessageView> {
                 },
                 icon: Icon(
                   Icons.close,
-                  color: TColor.primaryText,
+                  color: colorData.primaryColor(.9),
                   size: 25,
                 ),
               )
@@ -45,35 +54,26 @@ class _CheckoutMessageViewState extends State<CheckoutMessageView> {
           ),
           Image.asset(
             ImageConst.thankYou,
-            width: media.width * 0.55,
+            width: width * 0.55,
           ),
           const SizedBox(
             height: 25,
           ),
-          Text(
-            "Thank You!",
-            style: TextStyle(
-                color: TColor.primaryText,
-                fontSize: 26,
-                fontWeight: FontWeight.w700),
+          CustomText(
+            text: "Thank You!",
           ),
           const SizedBox(
             height: 8,
           ),
-          Text(
-            "for your order",
-            style: TextStyle(
-                color: TColor.primaryText,
-                fontSize: 17,
-                fontWeight: FontWeight.w700),
+          CustomText(
+            text: "for your order",
           ),
           const SizedBox(
             height: 25,
           ),
-          Text(
-            "Your Order is now being processed. We will let you know once the order is picked from the outlet. Check the status of your Order",
-            textAlign: TextAlign.center,
-            style: TextStyle(color: TColor.primaryText, fontSize: 14),
+          CustomText(
+            text:
+                "Your Order is now being processed. We will let you know once the order is picked from the outlet. Check the status of your Order",
           ),
           const SizedBox(
             height: 35,
@@ -81,13 +81,8 @@ class _CheckoutMessageViewState extends State<CheckoutMessageView> {
           RoundButton(title: "Track My Order", onPressed: () {}),
           TextButton(
             onPressed: () {},
-            child: Text(
-              "Back To Home",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: TColor.primaryText,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700),
+            child: CustomText(
+              text: "Back To Home",
             ),
           ),
           const SizedBox(

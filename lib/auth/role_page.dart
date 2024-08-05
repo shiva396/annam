@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:projrect_annam/Firebase/firebase_operations.dart';
-import 'package:projrect_annam/canteen_owner/canteen_main_tab.dart';
-import 'package:projrect_annam/helper/image_const.dart';
-import 'package:projrect_annam/helper/utils.dart';
+import 'package:projrect_annam/firebase/firebase_operations.dart';
+import 'package:projrect_annam/canteen/canteen_main_tab.dart';
+import 'package:projrect_annam/const/image_const.dart';
+import 'package:projrect_annam/utils/custom_text.dart';
+import 'package:projrect_annam/utils/extension_methods.dart';
 import '../student/student_main_tab.dart';
 
 class RoleSeperationPage extends StatefulWidget {
@@ -40,7 +41,7 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
     Set<DropdownMenuItem<String>> items = snapshot.docs.map((doc) {
       return DropdownMenuItem<String>(
         value: doc.id,
-        child: Text(doc.id),
+        child: CustomText(text:  doc.id),
       );
     }).toSet();
 
@@ -125,19 +126,19 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                             items: [
                               DropdownMenuItem(
                                 value: 'student',
-                                child: Text('Student'),
+                                child: CustomText(text:'Student'),
                               ),
                               DropdownMenuItem(
                                 value: 'cattle_owner',
-                                child: Text('Cattle Owner'),
+                                child: CustomText(text:'Cattle Owner'),
                               ),
                               DropdownMenuItem(
                                 value: 'canteen_owner',
-                                child: Text('Canteen Owner'),
+                                child: CustomText(text:'Canteen Owner'),
                               ),
                               DropdownMenuItem(
                                 value: 'ngo',
-                                child: Text('NGO'),
+                                child: CustomText(text:'NGO'),
                               ),
                             ],
                           ),
@@ -339,7 +340,7 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                                     'image': ""
                                   });
                                 } else {
-                                  customBar(context: context, text: "Fill all");
+                               context.showSnackBar( "Fill all");
                                 }
                               } else if (_selectedRole == 'canteen_owner') {
                                 widget.userData.addAll({
@@ -381,9 +382,8 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                                         'role': roleMap,
                                       });
                                     } else {
-                                      customBar(
-                                          context: context,
-                                          text: "Already exist");
+                                      context.showSnackBar(
+                                          "Already exist");
                                     }
                                   } else {
                                     roleMap[widget.userData['email']] =
@@ -396,7 +396,7 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                                     });
                                   }
                                 } catch (e) {
-                                  customBar(context: context, text: e.toString());
+                                   context.showSnackBar( e.toString());
                                 }
                                 if (_selectedRole == 'canteen_owner') {
                                   Map<String, dynamic> user = {
@@ -441,9 +441,9 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                               backgroundColor:
                                   WidgetStateProperty.all(Colors.orange),
                             ),
-                            child: const Text(
+                            child: const CustomText(text:
                               'Save',
-                              style: TextStyle(color: Colors.white),
+                          
                             ),
                           ),
                         ],

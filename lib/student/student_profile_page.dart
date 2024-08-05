@@ -2,18 +2,22 @@ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:projrect_annam/Firebase/firebase_operations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/auth/login_signup.dart';
 import 'package:projrect_annam/common_widget/round_button.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:projrect_annam/helper/helper.dart';
-import 'package:projrect_annam/helper/image_const.dart';
+import 'package:projrect_annam/const/image_const.dart';
+import 'package:projrect_annam/utils/custom_text.dart';
+import 'package:projrect_annam/utils/extension_methods.dart';
 
-import '../common/color_extension.dart';
+import '../const/color_extension.dart';
 import '../common_widget/round_textfield.dart';
+import '../utils/color_data.dart';
+import '../utils/size_data.dart';
 import 'more/my_order_view.dart';
 
-class StudentProfilePage extends StatefulWidget {
+class StudentProfilePage extends ConsumerStatefulWidget {
   const StudentProfilePage({
     super.key,
     required this.studentData,
@@ -21,10 +25,10 @@ class StudentProfilePage extends StatefulWidget {
   final Map<String, dynamic> studentData;
 
   @override
-  State<StudentProfilePage> createState() => _StudentProfilePageState();
+  ConsumerState<StudentProfilePage> createState() => _StudentProfilePageState();
 }
 
-class _StudentProfilePageState extends State<StudentProfilePage> {
+class _StudentProfilePageState extends ConsumerState<StudentProfilePage> {
   final ImagePicker picker = ImagePicker();
   XFile? image;
 
@@ -48,6 +52,12 @@ class _StudentProfilePageState extends State<StudentProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+     CustomSizeData sizeData = CustomSizeData.from(context);
+    CustomColorData colorData = CustomColorData.from(ref);
+
+    double height = sizeData.height;
+    double width = sizeData.width;
+
     String name = widget.studentData['name'] ?? '';
     String phoneNumber = widget.studentData['phoneNumber'] ?? '';
     String email = widget.studentData['email'] ?? '';
@@ -61,26 +71,18 @@ class _StudentProfilePageState extends State<StudentProfilePage> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const SizedBox(
-                      height: 46,
-                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          CustomText(text: 
                             "Profile",
-                            style: TextStyle(
-                                color: TColor.primaryText,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w800),
+                          
                           ),
                           IconButton(
                             onPressed: () {
-                              context.push(MyOrderView(
-                                
-                              ));
+                              context.push(MyOrderView());
                             },
                             icon: Image.asset(
                               ImageConst.shoppingCart,
@@ -98,7 +100,7 @@ class _StudentProfilePageState extends State<StudentProfilePage> {
                       width: 100,
                       height: 100,
                       decoration: BoxDecoration(
-                        color: TColor.placeholder,
+                        color: colorData.fontColor(.9),
                         borderRadius: BorderRadius.circular(50),
                       ),
                       alignment: Alignment.center,
@@ -123,32 +125,33 @@ class _StudentProfilePageState extends State<StudentProfilePage> {
                                 : Icon(
                                     Icons.person,
                                     size: 65,
-                                    color: TColor.secondaryText,
+                                    color: colorData.primaryColor(.8)
                                   ),
                       ),
                     ),
-                    TextButton.icon(
+                    TextButton(
                       onPressed: () async {
                         setState(() {
                           changeData = true;
                         });
                       },
-                      icon: Icon(
-                        Icons.edit,
-                        color: TColor.primary,
-                        size: 12,
-                      ),
-                      label: Text(
-                        "Edit Profile",
-                        style: TextStyle(color: TColor.primary, fontSize: 12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CustomText(text: 
+                            "Edit Profile",
+                           
+                          ),
+                          Image.asset(
+                            ImageConst.editPencil,
+                            height: 30,
+                          ),
+                        ],
                       ),
                     ),
-                    Text(
+                    CustomText(text: 
                       name,
-                      style: TextStyle(
-                          color: TColor.primaryText,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700),
+                      
                     ),
                     TextButton(
                       onPressed: () {
@@ -159,20 +162,17 @@ class _StudentProfilePageState extends State<StudentProfilePage> {
                           return false;
                         });
                       },
-                      child: Text(
+                      child: CustomText(text: 
                         "Sign Out",
-                        style: TextStyle(
-                            color: TColor.secondaryText,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500),
+                       
                       ),
                     ),
                     const SizedBox(
                       height: 20,
                     ),
                     Padding(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 20),
                       child: RoundTitleTextfield(
                         readOnly: !changeData,
                         title: "Name",
@@ -181,8 +181,8 @@ class _StudentProfilePageState extends State<StudentProfilePage> {
                       ),
                     ),
                     Padding(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 20),
                       child: RoundTitleTextfield(
                         title: "Email",
                         readOnly: true,
@@ -191,8 +191,8 @@ class _StudentProfilePageState extends State<StudentProfilePage> {
                       ),
                     ),
                     Padding(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 20),
                       child: RoundTitleTextfield(
                         title: "Mobile No",
                         readOnly: !changeData,
@@ -202,8 +202,8 @@ class _StudentProfilePageState extends State<StudentProfilePage> {
                       ),
                     ),
                     Padding(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 20),
                       child: RoundTitleTextfield(
                         readOnly: true,
                         title: "College Name",
@@ -235,15 +235,16 @@ class _StudentProfilePageState extends State<StudentProfilePage> {
                                           data['phoneNumber'] =
                                               txtMobile.text.trim();
                                         }
-      
+
                                         if (image != null) {
-                                          UploadTask dataUploaded = FirebaseOperations
-                                              .firebaseStorage
-                                              .ref(
-                                                  'students/${FirebaseOperations.firebaseAuth.currentUser!.uid}')
-                                              .putFile(File(image!.path));
-                                          TaskSnapshot cases = await dataUploaded
-                                              .whenComplete(() {});
+                                          UploadTask dataUploaded =
+                                              FirebaseOperations.firebaseStorage
+                                                  .ref(
+                                                      'students/${FirebaseOperations.firebaseAuth.currentUser!.uid}')
+                                                  .putFile(File(image!.path));
+                                          TaskSnapshot cases =
+                                              await dataUploaded
+                                                  .whenComplete(() {});
                                           String imagePath =
                                               await cases.ref.getDownloadURL();
                                           data['image'] = imagePath;
@@ -253,9 +254,11 @@ class _StudentProfilePageState extends State<StudentProfilePage> {
                                           FirebaseOperations.firebaseInstance
                                               .collection('student')
                                               .doc(FirebaseOperations
-                                                  .firebaseAuth.currentUser!.uid)
+                                                  .firebaseAuth
+                                                  .currentUser!
+                                                  .uid)
                                               .update(data);
-      
+
                                           setState(() {
                                             changeData = false;
                                           });
@@ -270,8 +273,8 @@ class _StudentProfilePageState extends State<StudentProfilePage> {
                               SizedBox(
                                 width: 100,
                                 child: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 20),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20),
                                   child: RoundButton(
                                       title: "Cancel",
                                       onPressed: () async {

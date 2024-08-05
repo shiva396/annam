@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../common/color_extension.dart';
+import '../const/color_extension.dart';
+import '../utils/color_data.dart';
+import '../utils/custom_text.dart';
 
-class RoundTextfield extends StatelessWidget {
+class RoundTextfield extends ConsumerWidget {
   final TextEditingController? controller;
   final String hintText;
   final TextInputType? keyboardType;
@@ -20,10 +23,11 @@ class RoundTextfield extends StatelessWidget {
       this.obscureText = false});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+        CustomColorData colorData = CustomColorData.from(ref);
     return Container(
       decoration: BoxDecoration(
-          color: bgColor ?? TColor.textfield,
+          color: bgColor ?? colorData.fontColor(.9),
           borderRadius: BorderRadius.circular(25)),
       child: Row(
         children: [
@@ -46,7 +50,7 @@ class RoundTextfield extends StatelessWidget {
                 focusedBorder: InputBorder.none,
                 hintText: hintText,
                 hintStyle: TextStyle(
-                    color: TColor.placeholder,
+                    color: colorData.fontColor(.9),
                     fontSize: 14,
                     fontWeight: FontWeight.w500),
               ),
@@ -58,7 +62,7 @@ class RoundTextfield extends StatelessWidget {
   }
 }
 
-class RoundTitleTextfield extends StatelessWidget {
+class RoundTitleTextfield extends ConsumerWidget {
   final TextEditingController? controller;
   final String title;
   final String hintText;
@@ -80,11 +84,12 @@ class RoundTitleTextfield extends StatelessWidget {
       this.readOnly});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+        CustomColorData colorData = CustomColorData.from(ref);
     return Container(
       height: 55,
       decoration: BoxDecoration(
-          color: bgColor ?? TColor.textfield,
+          color: bgColor ?? colorData.fontColor(.7) ,
           borderRadius: BorderRadius.circular(25)),
       child: Row(
         children: [
@@ -117,7 +122,7 @@ class RoundTitleTextfield extends StatelessWidget {
                       focusedBorder: InputBorder.none,
                       hintText: hintText,
                       hintStyle: TextStyle(
-                          color: TColor.placeholder,
+                          color: colorData.fontColor(.9),
                           fontSize: 14,
                           fontWeight: FontWeight.w500),
                     ),
@@ -127,9 +132,9 @@ class RoundTitleTextfield extends StatelessWidget {
                   height: 55,
                   margin: const EdgeInsets.only(top: 10, left: 20),
                   alignment: Alignment.topLeft,
-                  child: Text(
-                    title,
-                    style: TextStyle(color: TColor.placeholder, fontSize: 11),
+                  child:CustomText(
+                  text:  title,
+                   
                   ),
                 )
               ],

@@ -1,24 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:projrect_annam/common/color_extension.dart';
-import 'package:projrect_annam/helper/helper.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projrect_annam/const/color_extension.dart';
+import 'package:projrect_annam/utils/custom_text.dart';
+import 'package:projrect_annam/utils/extension_methods.dart';
 
-import '../../helper/image_const.dart';
+import '../../const/image_const.dart';
+import '../../utils/color_data.dart';
+import '../../utils/size_data.dart';
 import 'my_order_view.dart';
 
-class AboutUsView extends StatefulWidget {
-  const AboutUsView({super.key});
+class AboutUsView extends ConsumerWidget {
+   AboutUsView({super.key});
 
-  @override
-  State<AboutUsView> createState() => _AboutUsViewState();
-}
-
-class _AboutUsViewState extends State<AboutUsView> {
   List aboutTextArr = [
     "Project Annam is an initative that is working towards reducing malnutrition and making access to healthy food easier for children",
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+     CustomSizeData sizeData = CustomSizeData.from(context);
+    CustomColorData colorData = CustomColorData.from(ref);
+
+    double height = sizeData.height;
+    double width = sizeData.width;
+
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -45,12 +50,9 @@ class _AboutUsViewState extends State<AboutUsView> {
                         width: 8,
                       ),
                       Expanded(
-                        child: Text(
+                        child:CustomText(text: 
                           "About Us",
-                          style: TextStyle(
-                              color: TColor.primaryText,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w800),
+                         
                         ),
                       ),
                       IconButton(
@@ -85,17 +87,16 @@ class _AboutUsViewState extends State<AboutUsView> {
                             width: 6,
                             height: 6,
                             decoration: BoxDecoration(
-                                color: TColor.primary,
+                                color:colorData.primaryColor(.9),
                                 borderRadius: BorderRadius.circular(4)),
                           ),
                           const SizedBox(
                             width: 15,
                           ),
                           Expanded(
-                            child: Text(
+                            child:CustomText(text: 
                               txt,
-                              style: TextStyle(
-                                  color: TColor.primaryText, fontSize: 14),
+                            
                             ),
                           ),
                         ],

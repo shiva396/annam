@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:projrect_annam/Firebase/firebase_operations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/common_widget/round_icon_button.dart';
-import 'package:projrect_annam/helper/helper.dart';
+import 'package:projrect_annam/utils/custom_text.dart';
+import 'package:projrect_annam/utils/extension_methods.dart';
 
-import '../../common/color_extension.dart';
-import '../../helper/image_const.dart';
+import '../../const/color_extension.dart';
+import '../../const/image_const.dart';
+import '../../utils/color_data.dart';
+import '../../utils/size_data.dart';
 import '../more/my_order_view.dart';
 
-class ItemDetailsView extends StatefulWidget {
+class ItemDetailsView extends ConsumerStatefulWidget {
   final String itemName;
   final String price;
   final String selectedCanteen;
@@ -21,10 +25,10 @@ class ItemDetailsView extends StatefulWidget {
       required this.collegeName});
 
   @override
-  State<ItemDetailsView> createState() => _ItemDetailsViewState();
+  ConsumerState<ItemDetailsView> createState() => _ItemDetailsViewState();
 }
 
-class _ItemDetailsViewState extends State<ItemDetailsView> {
+class _ItemDetailsViewState extends ConsumerState<ItemDetailsView> {
   double price = 0.0;
   int qty = 1;
   bool isFav = false;
@@ -36,22 +40,25 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    var media = MediaQuery.of(context).size;
+        CustomColorData colorData = CustomColorData.from(ref);
+            CustomSizeData sizeData = CustomSizeData.from(context);
+      double height = sizeData.height;
+    double width = sizeData.width;
     return SafeArea(
       child: Scaffold(
-        backgroundColor: TColor.white,
+      
         body: Stack(
           alignment: Alignment.topCenter,
           children: [
             Image.asset(
               ImageConst.detailImage,
-              width: media.width,
-              height: media.width,
+              width: width,
+              height: width,
               fit: BoxFit.cover,
             ),
             Container(
-              width: media.width,
-              height: media.width,
+              width: width,
+              height: width,
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                     colors: [Colors.black, Colors.transparent, Colors.black],
@@ -68,11 +75,11 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                     Column(
                       children: [
                         SizedBox(
-                          height: media.width - 60,
+                          height: width - 60,
                         ),
                         Container(
                           decoration: BoxDecoration(
-                              color: TColor.white,
+                              color: colorData.fontColor(.9),
                               borderRadius: const BorderRadius.only(
                                   topLeft: Radius.circular(30),
                                   topRight: Radius.circular(30))),
@@ -83,26 +90,25 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                                   height: 35,
                                 ),
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 25),
-                                  child: Text(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 25),
+                                  child: CustomText(text: 
+
                                     widget.itemName,
-                                    style: TextStyle(
-                                        color: TColor.primaryText,
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.w800),
+                                   
                                   ),
                                 ),
                                 const SizedBox(
                                   height: 8,
                                 ),
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 25),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 25),
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Column(
                                         crossAxisAlignment:
@@ -122,7 +128,7 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                                                       horizontal: 1.0),
                                               itemBuilder: (context, _) => Icon(
                                                 Icons.star,
-                                                color: TColor.primary,
+                                                color: colorData.primaryColor(.9)
                                               ),
                                               onRatingUpdate: (rating) {},
                                             ),
@@ -130,12 +136,10 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                                           const SizedBox(
                                             height: 4,
                                           ),
-                                          Text(
+                                          CustomText(text: 
+
                                             " 4 Star Ratings",
-                                            style: TextStyle(
-                                                color: TColor.primary,
-                                                fontSize: 11,
-                                                fontWeight: FontWeight.w500),
+                                           
                                           ),
                                         ],
                                       ),
@@ -143,23 +147,18 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.end,
                                         children: [
-                                          Text(
+                                          CustomText(text: 
+
                                             "₹${price.toStringAsFixed(2)}",
-                                            style: TextStyle(
-                                                color: TColor.primaryText,
-                                                fontSize: 31,
-                                                fontWeight: FontWeight.w700),
+
                                           ),
                                           const SizedBox(
                                             height: 4,
                                           ),
-                                          Text(
+                                          CustomText(text: 
+
                                             "/per Portion",
-                                            style: TextStyle(
-                                                color: TColor.primaryText,
-                                                fontSize: 11,
-                                                fontWeight: FontWeight.w500),
-                                          ),
+                                          )
                                         ],
                                       )
                                     ],
@@ -173,29 +172,27 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                                         horizontal: 25),
                                     child: Divider(
                                       color:
-                                          TColor.secondaryText.withOpacity(0.4),
+                                          colorData.secondaryColor(.9),
                                       height: 1,
                                     )),
                                 const SizedBox(
                                   height: 20,
                                 ),
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 25),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 25),
                                   child: Row(
                                     children: [
-                                      Text(
+                                      CustomText(text: 
+
                                         "Number of Portions",
-                                        style: TextStyle(
-                                            color: TColor.primaryText,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w700),
+                                      
                                       ),
                                       const Spacer(),
                                       InkWell(
                                         onTap: () {
                                           qty = qty - 1;
-      
+
                                           if (qty < 1) {
                                             qty = 1;
                                           }
@@ -207,15 +204,13 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                                           height: 25,
                                           alignment: Alignment.center,
                                           decoration: BoxDecoration(
-                                              color: TColor.primary,
+                                              color: colorData.primaryColor(.9),
                                               borderRadius:
                                                   BorderRadius.circular(12.5)),
-                                          child: Text(
+                                          child: CustomText(text: 
+
                                             "-",
-                                            style: TextStyle(
-                                                color: TColor.white,
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w700),
+                                        
                                           ),
                                         ),
                                       ),
@@ -229,16 +224,14 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                                         alignment: Alignment.center,
                                         decoration: BoxDecoration(
                                             border: Border.all(
-                                              color: TColor.primary,
+                                              color: colorData.primaryColor(.9),
                                             ),
                                             borderRadius:
                                                 BorderRadius.circular(12.5)),
-                                        child: Text(
+                                        child: CustomText(text: 
+
                                           qty.toString(),
-                                          style: TextStyle(
-                                              color: TColor.primary,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500),
+                                         
                                         ),
                                       ),
                                       const SizedBox(
@@ -247,7 +240,7 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                                       InkWell(
                                         onTap: () {
                                           qty = qty + 1;
-      
+
                                           setState(() {});
                                         },
                                         child: Container(
@@ -256,15 +249,13 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                                           height: 25,
                                           alignment: Alignment.center,
                                           decoration: BoxDecoration(
-                                              color: TColor.primary,
+                                              color: colorData.primaryColor(.9),
                                               borderRadius:
                                                   BorderRadius.circular(12.5)),
-                                          child: Text(
+                                          child: CustomText(text: 
+
                                             "+",
-                                            style: TextStyle(
-                                                color: TColor.white,
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w700),
+                                          
                                           ),
                                         ),
                                       ),
@@ -277,10 +268,10 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                                     alignment: Alignment.centerLeft,
                                     children: [
                                       Container(
-                                        width: media.width * 0.25,
+                                        width: width * 0.25,
                                         height: 160,
                                         decoration: BoxDecoration(
-                                          color: TColor.primary,
+                                          color: colorData.primaryColor(.9),
                                           borderRadius: const BorderRadius.only(
                                               topRight: Radius.circular(35),
                                               bottomRight: Radius.circular(35)),
@@ -296,7 +287,7 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                                                     bottom: 8,
                                                     left: 10,
                                                     right: 20),
-                                                width: media.width - 80,
+                                                width: width - 80,
                                                 height: 120,
                                                 decoration: const BoxDecoration(
                                                     color: Colors.white,
@@ -326,26 +317,16 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.center,
                                                   children: [
-                                                    Text(
-                                                      "Total Price",
-                                                      style: TextStyle(
-                                                          color:
-                                                              TColor.primaryText,
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.w500),
+                                                    CustomText(
+                                                    text:  "Total Price",
+                                                     
                                                     ),
                                                     const SizedBox(
                                                       height: 15,
                                                     ),
-                                                    Text(
+                                                    CustomText(text: 
                                                       "₹${(price * qty).toString()}",
-                                                      style: TextStyle(
-                                                          color:
-                                                              TColor.primaryText,
-                                                          fontSize: 21,
-                                                          fontWeight:
-                                                              FontWeight.w700),
+                                                    
                                                     ),
                                                     const SizedBox(
                                                       height: 15,
@@ -355,9 +336,9 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                                                       height: 25,
                                                       child: RoundIconButton(
                                                           title: "Add to Cart",
-                                                          icon:
-                                                              ImageConst.shoppingAdd,
-                                                          color: TColor.primary,
+                                                          icon: ImageConst
+                                                              .shoppingAdd,
+                                                          color: colorData.primaryColor(.9),
                                                           onPressed: () {
                                                             FirebaseOperations.addCartItems(
                                                                     collegeName:
@@ -372,7 +353,8 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                                                                         .price,
                                                                     quantity: qty
                                                                         .toString())
-                                                                .whenComplete(() {
+                                                                .whenComplete(
+                                                                    () {
                                                               context.pop();
                                                               context.pop();
                                                             });
@@ -403,7 +385,7 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                                                     ImageConst.shoppingCart,
                                                     width: 20,
                                                     height: 20,
-                                                    color: TColor.primary),
+                                                    color: colorData.primaryColor(.9)),
                                               ),
                                             ),
                                           ],
@@ -423,7 +405,7 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                       ],
                     ),
                     Container(
-                      height: media.width - 20,
+                      height: width - 20,
                       alignment: Alignment.bottomRight,
                       margin: const EdgeInsets.only(right: 4),
                       child: InkWell(
@@ -462,7 +444,7 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                             ImageConst.backButton,
                             width: 20,
                             height: 20,
-                            color: TColor.white,
+                            color: colorData.fontColor(.9),
                           ),
                         ),
                         IconButton(
@@ -470,10 +452,9 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                             context.push(MyOrderView());
                           },
                           icon: Image.asset(
-                           ImageConst.backButton,
+                            ImageConst.shoppingCart,
                             width: 25,
                             height: 25,
-                            color: TColor.white,
                           ),
                         ),
                       ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../common/color_extension.dart';
+import '../const/color_extension.dart';
+import '../utils/custom_text.dart';
 
 class TabButton extends StatelessWidget {
   final VoidCallback onTap;
@@ -26,18 +27,18 @@ class TabButton extends StatelessWidget {
             icon,
             width: 19,
             height: 19,
-            color: isSelected ? TColor.primary : TColor.placeholder,
+            // color: isSelected ? TColor.primary : TColor.placeholder,
           ),
           const SizedBox(
             height: 4,
           ),
-          Text(
-            title,
-            style: TextStyle(
-              color: isSelected ? TColor.primary : TColor.placeholder,
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-            ),
+          CustomText(
+         text:    title,
+            // style: TextStyle(
+            //   color: isSelected ? TColor.primary : TColor.placeholder,
+            //   fontSize: 12,
+            //   fontWeight: FontWeight.w500,
+            // ),
           )
         ],
       ),

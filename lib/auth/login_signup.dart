@@ -1,14 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:projrect_annam/Firebase/firebase_operations.dart';
-import 'package:projrect_annam/canteen_owner/canteen_main_tab.dart';
-import 'package:projrect_annam/helper/helper.dart';
-import 'package:projrect_annam/helper/image_const.dart';
-
-import 'package:projrect_annam/helper/utils.dart';
+import 'package:projrect_annam/firebase/firebase_operations.dart';
+import 'package:projrect_annam/canteen/canteen_main_tab.dart';
+import 'package:projrect_annam/const/image_const.dart';
 
 import 'package:projrect_annam/student/student_main_tab.dart';
+import 'package:projrect_annam/utils/custom_text.dart';
+import 'package:projrect_annam/utils/extension_methods.dart';
 import 'role_page.dart';
 
 class LoginSignUp extends StatefulWidget {
@@ -39,7 +38,7 @@ class _LoginSignUpState extends State<LoginSignUp> {
             Container(
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(ImageConst.loginsignUp),
+                  image: AssetImage(ImageConst.backgroundImage),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -57,7 +56,8 @@ class _LoginSignUpState extends State<LoginSignUp> {
                       width: 330,
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: const BorderRadius.all(Radius.circular(20)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20)),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.grey.withOpacity(0.5),
@@ -70,7 +70,8 @@ class _LoginSignUpState extends State<LoginSignUp> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          SignUpBar(toggleForm: _toggleForm, isSignUp: _isSignUp),
+                          SignUpBar(
+                              toggleForm: _toggleForm, isSignUp: _isSignUp),
                           _isSignUp ? SignUpFields() : const EmailBar(),
                           const ContinueDivider(),
                           const SocialIcons(),
@@ -146,7 +147,7 @@ class ContinueDivider extends StatelessWidget {
               thickness: 1,
             ),
           ),
-          Text('or continue with'),
+          CustomText( text: 'or continue with'),
           Expanded(
             child: Divider(
               color: Colors.grey,
@@ -201,9 +202,9 @@ class _EmailBarState extends State<EmailBar> {
         ),
         Align(
           alignment: Alignment.bottomRight,
-          child: Text(
-            'Forgot Password?',
-            style: TextStyle(color: Colors.orange),
+          child: CustomText(
+           text:  'Forgot Password?',
+           
           ),
         ),
         SizedBox(
@@ -276,29 +277,29 @@ class _EmailBarState extends State<EmailBar> {
                       if (collegeName.isNotEmpty) {
                         context.push(CanteenOwner(collegeName: collegeName));
                       } else {
-                        customBar(context: context, text: "Collge not found");
+                        context.showSnackBar("Collge not found");
+                       
                       }
 
                       // Iterate through each document in the "college" collection
                     } catch (e) {
-                      customBar(
-                          context: context,
-                          text: 'Error checking documents: $e');
+                       context.showSnackBar(
+                      'Error checking documents: $e');
                     }
                   }
                 } else {
-                  customBar(context: context, text: "Account not found");
+                 context.showSnackBar( "Account not found");
                 }
               } catch (e) {
-                customBar(context: context, text: e.toString());
+               context.showSnackBar(e.toString());
               }
             } else {
-              customBar(context: context, text: "Please Fill all details");
+             context.showSnackBar("Please Fill all details");
             }
           },
-          child: const Text(
-            'Log In',
-            style: TextStyle(fontSize: 18),
+          child:  CustomText(
+           text:  'Log In',
+          
           ),
         )
       ],
@@ -348,7 +349,7 @@ class SignUpBar extends StatelessWidget {
                           ? WidgetStateProperty.all<Color>(Colors.white)
                           : WidgetStateProperty.all<Color>(Colors.orange)),
                   onPressed: isSignUp ? toggleForm : null,
-                  child: const Text('Log In'),
+                  child:  CustomText(text:  'Log In'),
                 ),
               ),
               Expanded(
@@ -369,7 +370,7 @@ class SignUpBar extends StatelessWidget {
                           ? WidgetStateProperty.all<Color>(Colors.orange)
                           : WidgetStateProperty.all<Color>(Colors.white)),
                   onPressed: isSignUp ? null : toggleForm,
-                  child: const Text('Sign Up'),
+                  child: CustomText(text:  'Sign Up'),
                 ),
               ),
             ],
@@ -456,7 +457,9 @@ class _SignUpFieldsState extends State<SignUpFields> {
                 passwordController.text.isNotEmpty &&
                 retypedPasswordController.text.isNotEmpty) {
               if (passwordController.text != retypedPasswordController.text) {
-                customBar(context: context, text: "The re- entered password did n't match");
+               
+                   context.showSnackBar(
+                     "The re- entered password did n't match");
               } else {
                 // All correct
                 context.push(RoleSeperationPage(
@@ -467,10 +470,10 @@ class _SignUpFieldsState extends State<SignUpFields> {
                 ));
               }
             } else {
-              customBar(context: context, text: "Enter All the Fields");
+             context.showSnackBar( "Enter All the Fields");
             }
           },
-          child: const Text('Sign Up', style: TextStyle(fontSize: 18)),
+          child: CustomText( text: 'Sign Up', ),
         )
       ],
     );

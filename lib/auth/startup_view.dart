@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:projrect_annam/auth/authWrapper.dart';
-import 'package:projrect_annam/helper/helper.dart';
 import 'package:projrect_annam/auth/on_boarding_view.dart';
-import 'package:projrect_annam/helper/image_const.dart';
+import 'package:projrect_annam/const/image_const.dart';
+import 'package:projrect_annam/utils/extension_methods.dart';
 
 class StartupView extends StatefulWidget {
   final int? initScreen;

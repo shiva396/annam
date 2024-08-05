@@ -1,16 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:projrect_annam/Firebase/firebase_operations.dart';
-import 'package:projrect_annam/canteen_owner/canteen_history.dart';
-import 'package:projrect_annam/canteen_owner/canteen_home_page.dart';
-import 'package:projrect_annam/canteen_owner/canteen_profile_page.dart';
-import 'package:projrect_annam/canteen_owner/creation.dart';
-import 'package:projrect_annam/common/color_extension.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projrect_annam/firebase/firebase_operations.dart';
+import 'package:projrect_annam/canteen/canteen_history.dart';
+import 'package:projrect_annam/canteen/canteen_home_page.dart';
+import 'package:projrect_annam/canteen/canteen_profile_page.dart';
+import 'package:projrect_annam/canteen/creation.dart';
+import 'package:projrect_annam/const/color_extension.dart';
 import 'package:projrect_annam/common_widget/tab_button.dart';
-import 'package:projrect_annam/helper/image_const.dart';
+import 'package:projrect_annam/const/image_const.dart';
 import 'package:projrect_annam/student/more/more_view.dart';
+import 'package:projrect_annam/utils/color_data.dart';
 
-class CanteenOwner extends StatefulWidget {
+class CanteenOwner extends ConsumerStatefulWidget {
   const CanteenOwner({
     super.key,
     required this.collegeName,
@@ -19,10 +21,10 @@ class CanteenOwner extends StatefulWidget {
   final String collegeName;
 
   @override
-  State<CanteenOwner> createState() => _CanteenOwnerState();
+  ConsumerState<CanteenOwner> createState() => _CanteenOwnerState();
 }
 
-class _CanteenOwnerState extends State<CanteenOwner> {
+class _CanteenOwnerState extends ConsumerState<CanteenOwner> {
   Widget? selectPageView;
   void initState() {
     selectPageView = Creation(collegeName: widget.collegeName);
@@ -33,6 +35,7 @@ class _CanteenOwnerState extends State<CanteenOwner> {
   PageStorageBucket storageBucket = PageStorageBucket();
   @override
   Widget build(BuildContext context) {
+        CustomColorData colorData = CustomColorData.from(ref);
     return StreamBuilder<DocumentSnapshot>(
         stream: FirebaseOperations.firebaseInstance
             .collection('college')
@@ -68,7 +71,7 @@ class _CanteenOwnerState extends State<CanteenOwner> {
                   },
                   shape: const CircleBorder(),
                   backgroundColor:
-                      selctTab == 2 ? TColor.primary : TColor.placeholder,
+                      selctTab == 2 ?  colorData.primaryColor(.9): colorData.primaryColor(.2),
                   child: Image.asset(
                     ImageConst.hometab,
                     width: 30,
@@ -77,7 +80,7 @@ class _CanteenOwnerState extends State<CanteenOwner> {
                 ),
               ),
               bottomNavigationBar: BottomAppBar(
-                surfaceTintColor: TColor.white,
+                surfaceTintColor: colorData.fontColor(.8),
                 shadowColor: Colors.black,
                 elevation: 1,
                 notchMargin: 12,

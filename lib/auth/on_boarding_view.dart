@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projrect_annam/auth/authWrapper.dart';
-import 'package:projrect_annam/common/color_extension.dart';
+import 'package:projrect_annam/const/color_extension.dart';
 import 'package:projrect_annam/common_widget/round_button.dart';
-import 'package:projrect_annam/helper/helper.dart';
-import 'package:projrect_annam/helper/image_const.dart';
+import 'package:projrect_annam/const/image_const.dart';
+import 'package:projrect_annam/utils/color_data.dart';
+import 'package:projrect_annam/utils/extension_methods.dart';
+import 'package:projrect_annam/utils/size_data.dart';
 
-class OnBoardingView extends StatefulWidget {
+import '../utils/custom_text.dart';
+
+class OnBoardingView extends ConsumerStatefulWidget {
   const OnBoardingView({super.key});
 
   @override
-  State<OnBoardingView> createState() => _OnBoardingViewState();
+  ConsumerState<OnBoardingView> createState() => _OnBoardingViewState();
 }
 
-class _OnBoardingViewState extends State<OnBoardingView> {
+class _OnBoardingViewState extends ConsumerState<OnBoardingView> {
   int selectPage = 0;
   PageController controller = PageController();
 
@@ -56,8 +61,10 @@ class _OnBoardingViewState extends State<OnBoardingView> {
 
   @override
   Widget build(BuildContext context) {
-    var media = MediaQuery.of(context).size;
-
+    CustomColorData colorData = CustomColorData.from(ref);
+    CustomSizeData sizeData = CustomSizeData.from(context);
+    double height = sizeData.height;
+    double width = sizeData.width;
     return SafeArea(
       child: Scaffold(
         body: Stack(
@@ -73,38 +80,29 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      width: media.width,
-                      height: media.width,
+                      width: width,
+                      height: width,
                       alignment: Alignment.center,
                       child: Image.asset(
                         pObj["image"].toString(),
-                        width: media.width * 0.65,
+                        width: width * 0.65,
                         fit: BoxFit.contain,
                       ),
                     ),
                     SizedBox(
-                      height: media.width * 0.2,
+                      height: width * 0.2,
                     ),
-                    Text(
-                      pObj["title"].toString(),
-                      style: TextStyle(
-                          color: TColor.primaryText,
-                          fontSize: 28,
-                          fontWeight: FontWeight.w800),
+                    CustomText(
+                      text: pObj["title"].toString(),
                     ),
                     SizedBox(
-                      height: media.width * 0.05,
+                      height: width * 0.05,
                     ),
-                    Text(
-                      pObj["subtitle"].toString(),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: TColor.secondaryText,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500),
+                    CustomText(
+                      text: pObj["subtitle"].toString(),
                     ),
                     SizedBox(
-                      height: media.width * 0.20,
+                      height: width * 0.20,
                     ),
                   ],
                 );
@@ -114,27 +112,27 @@ class _OnBoardingViewState extends State<OnBoardingView> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  height: media.height * 0.6,
+                  height: height * 0.6,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: pageArr.map((e) {
                     var index = pageArr.indexOf(e);
-      
+
                     return Container(
                       margin: const EdgeInsets.symmetric(horizontal: 4),
                       height: 6,
                       width: 6,
                       decoration: BoxDecoration(
                           color: index == selectPage
-                              ? TColor.primary
-                              : TColor.placeholder,
+                              ? colorData.primaryColor(.9)
+                              : colorData.secondaryColor(.2),
                           borderRadius: BorderRadius.circular(4)),
                     );
                   }).toList(),
                 ),
                 SizedBox(
-                  height: media.height * 0.28,
+                  height: height * 0.28,
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),

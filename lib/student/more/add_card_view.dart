@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:projrect_annam/common/color_extension.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projrect_annam/const/color_extension.dart';
 import 'package:projrect_annam/common_widget/round_icon_button.dart';
 import 'package:projrect_annam/common_widget/round_textfield.dart';
-import 'package:projrect_annam/helper/image_const.dart';
+import 'package:projrect_annam/const/image_const.dart';
+import 'package:projrect_annam/utils/color_data.dart';
+import 'package:projrect_annam/utils/custom_text.dart';
 
-class AddCardView extends StatefulWidget {
+import '../../utils/size_data.dart';
+
+class AddCardView extends ConsumerStatefulWidget {
   const AddCardView({super.key});
 
   @override
-  State<AddCardView> createState() => _AddCardViewState();
+  ConsumerState<AddCardView> createState() => _AddCardViewState();
 }
 
-class _AddCardViewState extends State<AddCardView> {
+class _AddCardViewState extends ConsumerState<AddCardView> {
   TextEditingController txtCardNumber = TextEditingController();
   TextEditingController txtCardMonth = TextEditingController();
   TextEditingController txtCardYear = TextEditingController();
@@ -33,12 +38,17 @@ class _AddCardViewState extends State<AddCardView> {
 
   @override
   Widget build(BuildContext context) {
-    var media = MediaQuery.of(context).size;
+    CustomSizeData sizeData = CustomSizeData.from(context);
+    CustomColorData colorData = CustomColorData.from(ref);
+
+    double height = sizeData.height;
+    double width = sizeData.width;
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
-      width: media.width,
+      width: width,
       decoration: BoxDecoration(
-          color: TColor.white,
+          color: colorData.fontColor(.9),
           borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(20), topRight: Radius.circular(20))),
       child: Column(
@@ -48,12 +58,8 @@ class _AddCardViewState extends State<AddCardView> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                "Add Credit/Debit Card",
-                style: TextStyle(
-                    color: TColor.primaryText,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700),
+              CustomText(
+                text: "Add Credit/Debit Card",
               ),
               IconButton(
                 onPressed: () {
@@ -61,14 +67,14 @@ class _AddCardViewState extends State<AddCardView> {
                 },
                 icon: Icon(
                   Icons.close,
-                  color: TColor.primaryText,
+                  color: colorData.primaryColor(.9),
                   size: 25,
                 ),
               )
             ],
           ),
           Divider(
-            color: TColor.secondaryText.withOpacity(0.4),
+            color: colorData.secondaryColor(.9),
             height: 1,
           ),
           const SizedBox(
@@ -84,12 +90,8 @@ class _AddCardViewState extends State<AddCardView> {
           ),
           Row(
             children: [
-              Text(
-                "Expiry",
-                style: TextStyle(
-                    color: TColor.primaryText,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600),
+              CustomText(
+                text: "Expiry",
               ),
               const Spacer(),
               SizedBox(
@@ -137,17 +139,13 @@ class _AddCardViewState extends State<AddCardView> {
             height: 15,
           ),
           Row(children: [
-            Text(
-              "You can remove this card at anytime",
-              style: TextStyle(
-                  color: TColor.secondaryText,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500),
+            CustomText(
+              text: "You can remove this card at anytime",
             ),
             const Spacer(),
             Switch(
                 value: isAnyTime,
-                activeColor: TColor.primary,
+                activeColor:colorData.primaryColor(.9),
                 onChanged: (newVal) {
                   setState(() {
                     isAnyTime = newVal;
@@ -160,7 +158,7 @@ class _AddCardViewState extends State<AddCardView> {
           RoundIconButton(
               title: "Add Card",
               icon: ImageConst.addCard,
-              color: TColor.primary,
+              color:colorData.primaryColor(.9),
               fontSize: 16,
               fontWeight: FontWeight.w600,
               onPressed: () {}),

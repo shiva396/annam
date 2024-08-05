@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../common/color_extension.dart';
+import '../const/color_extension.dart';
+import '../utils/custom_text.dart';
 
 class RoundIconButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -41,13 +42,9 @@ class RoundIconButton extends StatelessWidget {
             const SizedBox(
               width: 8,
             ),
-            Text(
-              title,
-              style: TextStyle(
-                  color: TColor.white,
-                  fontSize: fontSize,
-                  fontWeight: fontWeight),
-            ),
+           CustomText(
+           text:   title,
+           )
           ],
         ),
       ),

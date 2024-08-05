@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:projrect_annam/common/color_extension.dart';
+import 'package:projrect_annam/const/color_extension.dart';
 import 'package:projrect_annam/common_widget/round_textfield.dart';
-import 'package:projrect_annam/helper/helper.dart';
-import 'package:projrect_annam/helper/image_const.dart';
+import 'package:projrect_annam/const/image_const.dart';
+import 'package:projrect_annam/utils/custom_text.dart';
+import 'package:projrect_annam/utils/extension_methods.dart';
 
 import '../more/my_order_view.dart';
 import 'item_details_view.dart';
@@ -78,19 +79,13 @@ class _MenuItemsViewState extends State<MenuItemsView> {
                         width: 8,
                       ),
                       Expanded(
-                        child: Text(
-                          widget.selectedCategory.toString(),
-                          style: TextStyle(
-                              color: TColor.primaryText,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w800),
+                        child: CustomText(
+                          text: widget.selectedCategory.toString(),
                         ),
                       ),
                       IconButton(
                         onPressed: () {
-                          context.push(MyOrderView(
-                          
-                          ));
+                          context.push(MyOrderView());
                         },
                         icon: Image.asset(
                           ImageConst.shoppingCart,
@@ -113,7 +108,7 @@ class _MenuItemsViewState extends State<MenuItemsView> {
                       alignment: Alignment.center,
                       width: 30,
                       child: Image.asset(
-                       ImageConst.search,
+                        ImageConst.search,
                         width: 20,
                         height: 20,
                       ),
@@ -183,21 +178,16 @@ class _MenuItemsViewState extends State<MenuItemsView> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      widget.canteenData[items[index]]['name'],
-                                      style: TextStyle(
-                                          color: TColor.primaryText,
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.w700),
+                                    CustomText(
+                                      text: widget.canteenData[items[index]]
+                                          ['name'],
                                     ),
                                     const SizedBox(
                                       height: 4,
                                     ),
-                                    Text(
-                                      widget.canteenData[items[index]]['price'],
-                                      style: TextStyle(
-                                          color: TColor.secondaryText,
-                                          fontSize: 11),
+                                    CustomText(
+                                      text: widget.canteenData[items[index]]
+                                          ['price'],
                                     ),
                                   ],
                                 ),

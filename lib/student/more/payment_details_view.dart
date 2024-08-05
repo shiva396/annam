@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:projrect_annam/common/color_extension.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projrect_annam/const/color_extension.dart';
 import 'package:projrect_annam/common_widget/round_icon_button.dart';
-import 'package:projrect_annam/helper/helper.dart';
-import 'package:projrect_annam/helper/image_const.dart';
+import 'package:projrect_annam/const/image_const.dart';
 import 'package:projrect_annam/student/more/add_card_view.dart';
+import 'package:projrect_annam/utils/custom_text.dart';
+import 'package:projrect_annam/utils/extension_methods.dart';
 
 import '../../common_widget/round_button.dart';
+import '../../utils/color_data.dart';
+import '../../utils/size_data.dart';
 import 'my_order_view.dart';
 
-class PaymentDetailsView extends StatefulWidget {
+class PaymentDetailsView extends ConsumerStatefulWidget {
   const PaymentDetailsView({super.key});
 
   @override
-  State<PaymentDetailsView> createState() => _PaymentDetailsViewState();
+  ConsumerState<PaymentDetailsView> createState() => _PaymentDetailsViewState();
 }
 
-class _PaymentDetailsViewState extends State<PaymentDetailsView> {
+class _PaymentDetailsViewState extends ConsumerState<PaymentDetailsView> {
   List cardArr = [
     {
       "icon": ImageConst.visa,
@@ -25,6 +29,12 @@ class _PaymentDetailsViewState extends State<PaymentDetailsView> {
 
   @override
   Widget build(BuildContext context) {
+    CustomSizeData sizeData = CustomSizeData.from(context);
+    CustomColorData colorData = CustomColorData.from(ref);
+
+    double height = sizeData.height;
+    double width = sizeData.width;
+
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -51,18 +61,13 @@ class _PaymentDetailsViewState extends State<PaymentDetailsView> {
                         width: 8,
                       ),
                       Expanded(
-                        child: Text(
-                          "Payment Details",
-                          style: TextStyle(
-                              color: TColor.primaryText,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w800),
+                        child: CustomText(
+                          text: "Payment Details",
                         ),
                       ),
                       IconButton(
                         onPressed: () {
                           context.push(const MyOrderView());
-                         
                         },
                         icon: Image.asset(
                           ImageConst.backButton,
@@ -76,18 +81,14 @@ class _PaymentDetailsViewState extends State<PaymentDetailsView> {
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
-                  child: Text(
-                    "Customize your payment method",
-                    style: TextStyle(
-                        color: TColor.primaryText,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700),
+                  child: CustomText(
+                    text: "Customize your payment method",
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
                   child: Divider(
-                    color: TColor.secondaryText.withOpacity(0.4),
+                    color: colorData.secondaryColor(.9),
                     height: 1,
                   ),
                 ),
@@ -96,7 +97,7 @@ class _PaymentDetailsViewState extends State<PaymentDetailsView> {
                 ),
                 Container(
                   decoration: BoxDecoration(
-                      color: TColor.textfield,
+                      color: colorData.fontColor(.8),
                       boxShadow: const [
                         BoxShadow(
                             color: Colors.black26,
@@ -111,12 +112,8 @@ class _PaymentDetailsViewState extends State<PaymentDetailsView> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              "Cash/Card On Delivery",
-                              style: TextStyle(
-                                  color: TColor.primaryText,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w700),
+                            CustomText(
+                              text: "Cash/Card On Delivery",
                             ),
                             Image.asset(
                               ImageConst.check,
@@ -129,7 +126,7 @@ class _PaymentDetailsViewState extends State<PaymentDetailsView> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 35),
                         child: Divider(
-                          color: TColor.secondaryText.withOpacity(0.4),
+                          color: colorData.secondaryColor(.9),
                           height: 1,
                         ),
                       ),
@@ -155,12 +152,8 @@ class _PaymentDetailsViewState extends State<PaymentDetailsView> {
                                   width: 15,
                                 ),
                                 Expanded(
-                                  child: Text(
-                                    cObj["card"].toString(),
-                                    style: TextStyle(
-                                        color: TColor.secondaryText,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600),
+                                  child: CustomText(
+                                    text: cObj["card"].toString(),
                                   ),
                                 ),
                                 SizedBox(
@@ -181,7 +174,7 @@ class _PaymentDetailsViewState extends State<PaymentDetailsView> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 35),
                         child: Divider(
-                          color: TColor.secondaryText.withOpacity(0.4),
+                          color: colorData.secondaryColor(.9),
                           height: 1,
                         ),
                       ),
@@ -191,12 +184,8 @@ class _PaymentDetailsViewState extends State<PaymentDetailsView> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              "Other Methods",
-                              style: TextStyle(
-                                  color: TColor.primaryText,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w700),
+                            CustomText(
+                              text: "Other Methods",
                             ),
                           ],
                         ),
@@ -215,7 +204,7 @@ class _PaymentDetailsViewState extends State<PaymentDetailsView> {
                   child: RoundIconButton(
                       title: "Add Another Credit/Debit Card",
                       icon: ImageConst.addCard,
-                      color: TColor.primary,
+                      color: colorData.primaryColor(.9),
                       fontSize: 16,
                       onPressed: () {
                         showModalBottomSheet(

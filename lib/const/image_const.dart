@@ -1,5 +1,4 @@
 class ImageConst {
-  static const String loginsignUp = "assets/img/bg.jpg";
   static const String onboarding1 = "assets/img/on_boarding_1.png";
   static const String onboarding2 = "assets/img/on_boarding_2.png";
   static const String logo = "assets/img/logo.png";
@@ -30,4 +29,5 @@ class ImageConst {
   static const String myOrders = "assets/img/more_my_order.png";
   static const String aboutUs = "assets/img/more_info.png";
   static const String check = "assets/img/check.png";
+  static const String editPencil = "assets/images/edit.png";
 }

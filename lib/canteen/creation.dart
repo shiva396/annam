@@ -4,8 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:projrect_annam/Firebase/firebase_operations.dart';
-import 'package:projrect_annam/helper/utils.dart';
+import 'package:projrect_annam/firebase/firebase_operations.dart';
+import 'package:projrect_annam/utils/extension_methods.dart';
+
+import '../utils/custom_text.dart';
 
 class Creation extends StatefulWidget {
   final String collegeName;
@@ -48,8 +50,8 @@ class _CreationState extends State<Creation> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(
-            'Edit Item',
+          title:CustomText(
+          text:   'Edit Item',
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -66,7 +68,7 @@ class _CreationState extends State<Creation> {
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Stock in Hand"),
+                 CustomText(text:  "Stock in Hand"),
                     Switch(
                       value: selected,
                       onChanged: (v) {
@@ -82,13 +84,14 @@ class _CreationState extends State<Creation> {
           ),
           actions: [
             TextButton(
-              child: Text('Cancel'),
+              child:CustomText(text:  'Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Save'),
+              child: CustomText( 
+                text: 'Save'),
               onPressed: () {
                 FirebaseOperations.editItems(
                   categoryName: categoryName,
@@ -117,7 +120,7 @@ class _CreationState extends State<Creation> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Add Item'),
+          title:CustomText(text:  'Add Item'),
           content: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
@@ -152,15 +155,15 @@ class _CreationState extends State<Creation> {
           ),
           actions: [
             TextButton(
-              child: Text('Cancel'),
+              child:CustomText(text:  'Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Add'),
+              child: CustomText(text:  'Add'),
               onPressed: () async {
-                print(categoryName);
+            
                 if (categoryName.isNotEmpty &&
                     nameController.text.isNotEmpty &&
                     priceController.text.isNotEmpty &&
@@ -180,7 +183,7 @@ class _CreationState extends State<Creation> {
                           itemImageUrl: image!)
                       .whenComplete(() => Navigator.of(context).pop());
                 } else {
-                  customBar(context: context, text: "Add All details");
+                  context.showSnackBar("Add All details");
                 }
               },
             ),
@@ -202,7 +205,7 @@ class _CreationState extends State<Creation> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Add Category'),
+          title: const  CustomText( text: 'Add Category'),
           content: TextField(
             onChanged: (value) {
               categoryName = value;
@@ -211,13 +214,13 @@ class _CreationState extends State<Creation> {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel'),
+              child: const CustomText(text: 'Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: const Text('OK'),
+              child: const CustomText(text: 'OK'),
               onPressed: () {
                 FirebaseOperations.addCategories(
                         categoryName: categoryName,
@@ -254,10 +257,9 @@ class _CreationState extends State<Creation> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
+                          const CustomText(text: 
                             "Welcome to,\nProducts gallery",
-                            style: TextStyle(
-                                fontSize: 22, fontWeight: FontWeight.bold),
+                         
                           ),
                           GestureDetector(
                             onTap: () {
@@ -266,12 +268,9 @@ class _CreationState extends State<Creation> {
                             child: Container(
                               height: 20,
                               width: 100,
-                              child: const Text(
+                              child: const CustomText(text: 
                                 "Add Category",
-                                style: TextStyle(
-                                  color: Color.fromARGB(255, 2, 93, 150),
-                                  fontWeight: FontWeight.w500,
-                                ),
+                               
                               ),
                             ),
                           ),
@@ -285,11 +284,12 @@ class _CreationState extends State<Creation> {
                           .doc(widget.collegeName)
                           .snapshots(),
                       builder: (context, snapshot) {
-                        if (!snapshot.hasData) return CircularProgressIndicator();
+                        if (!snapshot.hasData)
+                          return CircularProgressIndicator();
                         Map<String, dynamic> data = snapshot.data!.get(
                             FirebaseOperations.firebaseAuth.currentUser!
                                 .uid)['categories'] as Map<String, dynamic>;
-      
+
                         List<String> categories = data.keys.toList();
                         if (categories.isNotEmpty) {
                           return Column(
@@ -327,19 +327,20 @@ class _CreationState extends State<Creation> {
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.center,
                                                   children: [
-                                                    Text(
+                                                    CustomText(text: 
                                                       categories[index]
                                                           .toString(),
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontSize: current == index
-                                                            ? 16
-                                                            : 12,
-                                                        color: current == index
-                                                            ? Colors.black
-                                                            : Colors.black54,
-                                                      ),
+                                                      // style: TextStyle(
+                                                      //   fontWeight:
+                                                      //       FontWeight.w500,
+                                                      //   fontSize:
+                                                      //       current == index
+                                                      //           ? 16
+                                                      //           : 12,
+                                                      //   color: current == index
+                                                      //       ? Colors.black
+                                                      //       : Colors.black54,
+                                                      // ),
                                                     ),
                                                   ],
                                                 ),
@@ -353,7 +354,8 @@ class _CreationState extends State<Creation> {
                                               width: 5,
                                               height: 5,
                                               decoration: const BoxDecoration(
-                                                  color: Colors.deepPurpleAccent,
+                                                  color:
+                                                      Colors.deepPurpleAccent,
                                                   shape: BoxShape.circle),
                                             ),
                                           )
@@ -370,18 +372,19 @@ class _CreationState extends State<Creation> {
                                 itemBuilder: (context, index) {
                                   List<String> items =
                                       data[categories[current]].keys.toList();
-      
+
                                   if (index + 1 ==
                                       data[categories[current]].length + 1) {
                                     return Card(
                                       color: Color(0xFFE6E6E6),
                                       margin: EdgeInsets.all(10.0),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10.0),
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
                                       ),
                                       child: ListTile(
                                         leading: Icon(Icons.add),
-                                        title: Text('Add New Item'),
+                                        title: CustomText(text: 'Add New Item'),
                                         onTap: () => _addItem(
                                             categoryName: selectedCategory),
                                       ),
@@ -391,7 +394,8 @@ class _CreationState extends State<Creation> {
                                       color: Color(0xFFE6E6E6),
                                       margin: EdgeInsets.all(10.0),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10.0),
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
                                       ),
                                       child: ListTile(
                                         leading: CircleAvatar(
@@ -407,9 +411,9 @@ class _CreationState extends State<Creation> {
                                                           ['imageUrl'])
                                                   : null,
                                         ),
-                                        title: Text(data[categories[current]]
+                                        title: CustomText(text: data[categories[current]]
                                             [items[index]]['name']),
-                                        subtitle: Text(data[categories[current]]
+                                        subtitle: CustomText(text: data[categories[current]]
                                             [items[index]]['price']),
                                         trailing: Row(
                                           mainAxisSize: MainAxisSize.min,
@@ -421,12 +425,11 @@ class _CreationState extends State<Creation> {
                                                     data[categories[current]]
                                                             [items[index]]
                                                         ['stockInHand'];
-      
+
                                                 _editItem(
-                                                    itemName:
-                                                        data[categories[current]]
-                                                                [items[index]]
-                                                            ['name'],
+                                                    itemName: data[
+                                                            categories[current]]
+                                                        [items[index]]['name'],
                                                     categoryName:
                                                         selectedCategory,
                                                     data: stockData);
@@ -436,11 +439,14 @@ class _CreationState extends State<Creation> {
                                               icon: Icon(Icons.delete),
                                               onPressed: () {
                                                 FirebaseOperations.removeItems(
-                                                  categoryName: selectedCategory,
-                                                  collegeName: widget.collegeName,
+                                                  categoryName:
+                                                      selectedCategory,
+                                                  collegeName:
+                                                      widget.collegeName,
                                                   itemName:
                                                       data[categories[current]]
-                                                          [items[index]]['name'],
+                                                              [items[index]]
+                                                          ['name'],
                                                 );
                                               },
                                             ),
@@ -455,7 +461,7 @@ class _CreationState extends State<Creation> {
                           );
                         } else {
                           return Center(
-                            child: Text("No categories"),
+                            child: CustomText(text: "No categories"),
                           );
                         }
                       })

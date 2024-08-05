@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:projrect_annam/common/color_extension.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projrect_annam/const/color_extension.dart';
 import 'package:projrect_annam/common_widget/round_button.dart';
-import 'package:projrect_annam/helper/image_const.dart';
+import 'package:projrect_annam/const/image_const.dart';
+import 'package:projrect_annam/utils/custom_text.dart';
 
-// import 'change_address_view.dart';
+import '../../utils/color_data.dart';
+import '../../utils/size_data.dart';
 import 'checkout_message_view.dart';
 
-class CheckoutView extends StatefulWidget {
+class CheckoutView extends ConsumerStatefulWidget {
   const CheckoutView({super.key});
 
   @override
-  State<CheckoutView> createState() => _CheckoutViewState();
+  ConsumerState<CheckoutView> createState() => _CheckoutViewState();
 }
 
-class _CheckoutViewState extends State<CheckoutView> {
+class _CheckoutViewState extends ConsumerState<CheckoutView> {
   List paymentArr = [
     {"name": "Cash on delivery", "icon": ImageConst.cash},
     {"name": "**** **** **** 2187", "icon": ImageConst.visa},
@@ -24,9 +27,15 @@ class _CheckoutViewState extends State<CheckoutView> {
 
   @override
   Widget build(BuildContext context) {
+    CustomSizeData sizeData = CustomSizeData.from(context);
+    CustomColorData colorData = CustomColorData.from(ref);
+
+    double height = sizeData.height;
+    double width = sizeData.width;
+
     return SafeArea(
       child: Scaffold(
-        backgroundColor: TColor.white,
+        backgroundColor: colorData.fontColor(.9),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 20),
@@ -51,12 +60,8 @@ class _CheckoutViewState extends State<CheckoutView> {
                         width: 8,
                       ),
                       Expanded(
-                        child: Text(
-                          "Checkout",
-                          style: TextStyle(
-                              color: TColor.primaryText,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w800),
+                        child: CustomText(
+                          text: "Checkout",
                         ),
                       ),
                     ],
@@ -68,11 +73,8 @@ class _CheckoutViewState extends State<CheckoutView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Delivery Address",
-                        textAlign: TextAlign.center,
-                        style:
-                            TextStyle(color: TColor.secondaryText, fontSize: 12),
+                      CustomText(
+                        text: "Delivery Address",
                       ),
                       const SizedBox(
                         height: 8,
@@ -81,12 +83,8 @@ class _CheckoutViewState extends State<CheckoutView> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Expanded(
-                            child: Text(
-                              "653 Nostrand Ave.\nBrooklyn, NY 11216",
-                              style: TextStyle(
-                                  color: TColor.primaryText,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700),
+                            child: CustomText(
+                              text: "653 Nostrand Ave.\nBrooklyn, NY 11216",
                             ),
                           ),
                           const SizedBox(
@@ -95,15 +93,9 @@ class _CheckoutViewState extends State<CheckoutView> {
                           TextButton(
                             onPressed: () {
                               // context.push(const ChangeAddressView());
-                              
                             },
-                            child: Text(
-                              "Change",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: TColor.primary,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w700),
+                            child: CustomText(
+                              text: "Change",
                             ),
                           )
                         ],
@@ -115,7 +107,8 @@ class _CheckoutViewState extends State<CheckoutView> {
                   height: 20,
                 ),
                 Container(
-                  decoration: BoxDecoration(color: TColor.textfield),
+                  decoration:
+                      BoxDecoration(color: colorData.secondaryColor(.9)),
                   height: 8,
                 ),
                 Padding(
@@ -126,23 +119,15 @@ class _CheckoutViewState extends State<CheckoutView> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "Payment method",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: TColor.secondaryText,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500),
+                          CustomText(
+                            text: "Payment method",
                           ),
                           TextButton.icon(
                             onPressed: () {},
-                            icon: Icon(Icons.add, color: TColor.primary),
-                            label: Text(
-                              "Add Card",
-                              style: TextStyle(
-                                  color: TColor.primary,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w700),
+                            icon: Icon(Icons.add,
+                                color: colorData.primaryColor(.9)),
+                            label: CustomText(
+                              text: "Add Card",
                             ),
                           )
                         ],
@@ -159,26 +144,23 @@ class _CheckoutViewState extends State<CheckoutView> {
                               padding: const EdgeInsets.symmetric(
                                   vertical: 8.0, horizontal: 15.0),
                               decoration: BoxDecoration(
-                                  color: TColor.textfield,
+                                  color: colorData.secondaryColor(.9),
                                   borderRadius: BorderRadius.circular(5),
                                   border: Border.all(
-                                      color:
-                                          TColor.secondaryText.withOpacity(0.2))),
+                                      color: colorData.secondaryColor(.9))),
                               child: Row(
                                 children: [
                                   Image.asset(pObj["icon"].toString(),
-                                      width: 50, height: 20, fit: BoxFit.contain),
+                                      width: 50,
+                                      height: 20,
+                                      fit: BoxFit.contain),
                                   // const SizedBox(width: 8),
                                   Expanded(
-                                    child: Text(
-                                      pObj["name"],
-                                      style: TextStyle(
-                                          color: TColor.primaryText,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500),
+                                    child: CustomText(
+                                      text: pObj["name"],
                                     ),
                                   ),
-      
+
                                   InkWell(
                                     onTap: () {
                                       setState(() {
@@ -189,7 +171,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                                       selectMethod == index
                                           ? Icons.radio_button_on
                                           : Icons.radio_button_off,
-                                      color: TColor.primary,
+                                      color: colorData.primaryColor(.9),
                                       size: 15,
                                     ),
                                   )
@@ -204,7 +186,8 @@ class _CheckoutViewState extends State<CheckoutView> {
                   height: 20,
                 ),
                 Container(
-                  decoration: BoxDecoration(color: TColor.textfield),
+                  decoration:
+                      BoxDecoration(color: colorData.secondaryColor(.9)),
                   height: 8,
                 ),
                 Padding(
@@ -218,20 +201,11 @@ class _CheckoutViewState extends State<CheckoutView> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "Sub Total",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: TColor.primaryText,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500),
+                          CustomText(
+                            text: "Sub Total",
                           ),
-                          Text(
-                            "\$68",
-                            style: TextStyle(
-                                color: TColor.primaryText,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w700),
+                          CustomText(
+                            text: "\$68",
                           )
                         ],
                       ),
@@ -241,20 +215,11 @@ class _CheckoutViewState extends State<CheckoutView> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "Delivery Cost",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: TColor.primaryText,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500),
+                          CustomText(
+                            text: "Delivery Cost",
                           ),
-                          Text(
-                            "\$2",
-                            style: TextStyle(
-                                color: TColor.primaryText,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w700),
+                          CustomText(
+                            text: "\$2",
                           )
                         ],
                       ),
@@ -264,20 +229,11 @@ class _CheckoutViewState extends State<CheckoutView> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "Discount",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: TColor.primaryText,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500),
+                          CustomText(
+                            text: "Discount",
                           ),
-                          Text(
-                            "-\$4",
-                            style: TextStyle(
-                                color: TColor.primaryText,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w700),
+                          CustomText(
+                            text: "-\$4",
                           )
                         ],
                       ),
@@ -285,7 +241,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                         height: 15,
                       ),
                       Divider(
-                        color: TColor.secondaryText.withOpacity(0.5),
+                        color: colorData.secondaryColor(.9),
                         height: 1,
                       ),
                       const SizedBox(
@@ -294,20 +250,11 @@ class _CheckoutViewState extends State<CheckoutView> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "Total",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: TColor.primaryText,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500),
+                          CustomText(
+                            text: "Total",
                           ),
-                          Text(
-                            "\$66",
-                            style: TextStyle(
-                                color: TColor.primaryText,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700),
+                          CustomText(
+                            text: "\$66",
                           )
                         ],
                       ),
@@ -318,7 +265,8 @@ class _CheckoutViewState extends State<CheckoutView> {
                   height: 20,
                 ),
                 Container(
-                  decoration: BoxDecoration(color: TColor.textfield),
+                  decoration:
+                      BoxDecoration(color: colorData.secondaryColor(.9)),
                   height: 8,
                 ),
                 Padding(

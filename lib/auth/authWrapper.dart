@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:projrect_annam/Firebase/firebase_operations.dart';
+import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/auth/login_signup.dart';
-import 'package:projrect_annam/canteen_owner/canteen_main_tab.dart';
-import 'package:projrect_annam/helper/helper.dart';
-import 'package:projrect_annam/helper/utils.dart';
+import 'package:projrect_annam/canteen/canteen_main_tab.dart';
+
 import 'package:projrect_annam/student/student_main_tab.dart';
+import 'package:projrect_annam/utils/extension_methods.dart';
 
 class AuthWrapper extends StatelessWidget {
   const AuthWrapper({super.key});
@@ -17,9 +17,7 @@ class AuthWrapper extends StatelessWidget {
       stream: FirebaseOperations.firebaseAuth.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Overlay(
-            
-          );
+          return Overlay();
         } else if (snapshot.hasData && snapshot.data is User) {
           return StreamBuilder<DocumentSnapshot>(
               stream: FirebaseOperations.firebaseInstance
@@ -73,9 +71,7 @@ class AuthWrapper extends StatelessWidget {
                             }
                           });
                     } catch (e) {
-                      customBar(
-                          text: 'Error checking documents: $e',
-                          context: context);
+                      context.showSnackBar('Error checking documents: $e');
                       return SizedBox();
                     }
                   } else {

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:projrect_annam/utils/custom_text.dart';
 
-import '../common/color_extension.dart';
-import '../helper/image_const.dart';
+import '../const/color_extension.dart';
+import '../const/image_const.dart';
 
 class RecentItemRow extends StatelessWidget {
   final Map rObj;
@@ -37,13 +38,9 @@ class RecentItemRow extends StatelessWidget {
                 children: [
                   
                   
-                  Text(
+                 CustomText(text: 
                     rObj["name"],
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: TColor.primaryText,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700),
+                  
                   ),
                   const SizedBox(
                     height: 8,
@@ -51,20 +48,17 @@ class RecentItemRow extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
+                      CustomText(text: 
                         rObj["type"],
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: TColor.secondaryText, fontSize: 11),
+                       
                       ),
-                      Text(
+                      CustomText(text: 
                         " . ",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: TColor.primary, fontSize: 11),
+                      
                       ),
-                      Text(
+                      CustomText(text: 
                         rObj["food_type"],
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: TColor.secondaryText, fontSize: 12),
+                      
                       ),
                       
                     ],
@@ -87,21 +81,18 @@ class RecentItemRow extends StatelessWidget {
                       const SizedBox(
                         width: 4,
                       ),
-                      Text(
+                      CustomText(text: 
                         rObj["rate"],
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: TColor.primary, fontSize: 11),
+                      
                       ),
 
                        const SizedBox(
                         width: 8,
                       ),
 
-                      Text(
+                      CustomText(text: 
                         "(${ rObj["rating"] } Ratings)",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: TColor.secondaryText, fontSize: 11),
+                   
                       ),
                     ],
                   ),

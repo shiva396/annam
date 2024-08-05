@@ -3,18 +3,21 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:projrect_annam/Firebase/firebase_operations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/auth/login_signup.dart';
 import 'package:projrect_annam/common_widget/round_button.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:projrect_annam/helper/helper.dart';
+import 'package:projrect_annam/utils/color_data.dart';
+import 'package:projrect_annam/utils/custom_text.dart';
+import 'package:projrect_annam/utils/extension_methods.dart';
 
-import '../common/color_extension.dart';
+import '../const/color_extension.dart';
 import '../common_widget/round_textfield.dart';
-import '../helper/image_const.dart';
+import '../const/image_const.dart';
 import '../student/more/my_order_view.dart';
 
-class CanteenProfilePage extends StatefulWidget {
+class CanteenProfilePage extends ConsumerStatefulWidget {
   const CanteenProfilePage({
     super.key,
     required this.canteenOwnerData,
@@ -22,10 +25,10 @@ class CanteenProfilePage extends StatefulWidget {
   final Map<String, dynamic> canteenOwnerData;
 
   @override
-  State<CanteenProfilePage> createState() => _CanteenProfilePageState();
+  ConsumerState<CanteenProfilePage> createState() => _CanteenProfilePageState();
 }
 
-class _CanteenProfilePageState extends State<CanteenProfilePage> {
+class _CanteenProfilePageState extends ConsumerState<CanteenProfilePage> {
   final ImagePicker picker = ImagePicker();
   XFile? image;
 
@@ -48,6 +51,8 @@ class _CanteenProfilePageState extends State<CanteenProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+        CustomColorData colorData = CustomColorData.from(ref);
+
     String name = widget.canteenOwnerData['name'] ?? '';
     String phoneNumber = widget.canteenOwnerData['phoneNumber'] ?? '';
     String email = widget.canteenOwnerData['email'] ?? '';
@@ -68,12 +73,9 @@ class _CanteenProfilePageState extends State<CanteenProfilePage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "Profile",
-                      style: TextStyle(
-                          color: TColor.primaryText,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w800),
+                  CustomText(
+                text:       "Profile",
+                     
                     ),
                     IconButton(
                       onPressed: () {
@@ -96,7 +98,7 @@ class _CanteenProfilePageState extends State<CanteenProfilePage> {
                 width: 100,
                 height: 100,
                 decoration: BoxDecoration(
-                  color: TColor.placeholder,
+                  color:colorData.primaryColor(.9) ,
                   borderRadius: BorderRadius.circular(50),
                 ),
                 alignment: Alignment.center,
@@ -121,7 +123,7 @@ class _CanteenProfilePageState extends State<CanteenProfilePage> {
                           : Icon(
                               Icons.person,
                               size: 65,
-                              color: TColor.secondaryText,
+                              color:colorData.secondaryColor(.9)
                             ),
                 ),
               ),
@@ -133,20 +135,18 @@ class _CanteenProfilePageState extends State<CanteenProfilePage> {
                 },
                 icon: Icon(
                   Icons.edit,
-                  color: TColor.primary,
+                  color: colorData.primaryColor(.9),
                   size: 12,
                 ),
-                label: Text(
+                label: CustomText(text: 
                   "Edit Profile",
-                  style: TextStyle(color: TColor.primary, fontSize: 12),
+                
                 ),
               ),
-              Text(
+              CustomText(text: 
                 name,
-                style: TextStyle(
-                    color: TColor.primaryText,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700),
+                
+                
               ),
               TextButton(
                 onPressed: () {
@@ -157,12 +157,9 @@ class _CanteenProfilePageState extends State<CanteenProfilePage> {
                     return false;
                   });
                 },
-                child: Text(
-                  "Sign Out",
-                  style: TextStyle(
-                      color: TColor.secondaryText,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w500),
+                child: CustomText(
+                text:   "Sign Out",
+                
                 ),
               ),
               const SizedBox(

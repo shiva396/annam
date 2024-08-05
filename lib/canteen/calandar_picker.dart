@@ -1,6 +1,8 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 
+import '../utils/custom_text.dart';
+
 class CalandarPicker extends StatefulWidget {
   const CalandarPicker({super.key});
 
@@ -114,21 +116,18 @@ class _CalandarPickerState extends State<CalandarPicker> {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                'Selected Date :  ',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
+              const CustomText(
+              text:   'Selected Date :  ',
+               
               ),
               const SizedBox(width: 10),
-              Text(
-                _getValueText(
+             CustomText(
+               text:  _getValueText(
                   config.calendarType,
                   _singleDatePickerValueWithDefaultValue,
                 ),
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
+                
+               
               ),
             ],
           ),

@@ -1,22 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:projrect_annam/Firebase/firebase_operations.dart';
-import 'package:projrect_annam/common/color_extension.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projrect_annam/firebase/firebase_operations.dart';
+import 'package:projrect_annam/const/color_extension.dart';
 import 'package:projrect_annam/common_widget/round_button.dart';
-import 'package:projrect_annam/helper/image_const.dart';
-import 'package:projrect_annam/helper/utils.dart';
+import 'package:projrect_annam/const/image_const.dart';
+import 'package:projrect_annam/utils/custom_text.dart';
+import 'package:projrect_annam/utils/helper_methods.dart';
 
-class MyOrderView extends StatefulWidget {
+import '../../utils/color_data.dart';
+import '../../utils/size_data.dart';
+
+class MyOrderView extends ConsumerStatefulWidget {
   const MyOrderView({
     super.key,
   });
 
   @override
-  State<MyOrderView> createState() => _MyOrderViewState();
+ ConsumerState<MyOrderView> createState() => _MyOrderViewState();
 }
 
-class _MyOrderViewState extends State<MyOrderView> {
+class _MyOrderViewState extends ConsumerState<MyOrderView> {
   bool _showLoading = true;
   @override
   void initState() {
@@ -31,9 +36,15 @@ class _MyOrderViewState extends State<MyOrderView> {
 
   @override
   Widget build(BuildContext context) {
+     CustomSizeData sizeData = CustomSizeData.from(context);
+    CustomColorData colorData = CustomColorData.from(ref);
+
+    double height = sizeData.height;
+    double width = sizeData.width;
+
     return SafeArea(
       child: Scaffold(
-        backgroundColor: TColor.white,
+       
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 20),
@@ -57,12 +68,9 @@ class _MyOrderViewState extends State<MyOrderView> {
                       width: 8,
                     ),
                     Expanded(
-                      child: Text(
+                      child: CustomText(text: 
                         "My Order",
-                        style: TextStyle(
-                            color: TColor.primaryText,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w800),
+                      
                       ),
                     ),
                   ],
@@ -94,12 +102,12 @@ class _MyOrderViewState extends State<MyOrderView> {
                           }
 
                           if (snapshot.hasError && collegeName.isNotEmpty) {
-                            return Center(child: Text("An error occurred."));
+                            return Center(child: CustomText(text: "An error occurred."));
                           }
 
                           if (!snapshot.hasData ||
                               snapshot.data!.docs.isEmpty) {
-                            return Center(child: Text("No orders found."));
+                            return Center(child: CustomText(text: "No orders found."));
                           }
                           Map<String, dynamic> canteenOrders =
                               snapshot.data!.docs.first.data()!
@@ -118,7 +126,7 @@ class _MyOrderViewState extends State<MyOrderView> {
                                           .doc(collegeName)
                                           .snapshots(),
                                       builder: (context, innersnapshot) {
-                                        if (!innersnapshot.hasData )
+                                        if (!innersnapshot.hasData)
                                           return overlayContent(
                                               context: context,
                                               imagePath:
@@ -140,7 +148,6 @@ class _MyOrderViewState extends State<MyOrderView> {
                                           }
                                           return MapEntry(k, v);
                                         });
-                                        print(finalData);
 
                                         List itemElements =
                                             finalData.values.map((v) {
@@ -167,19 +174,16 @@ class _MyOrderViewState extends State<MyOrderView> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Text(
+                                              CustomText(text: 
                                                 canteenName,
-                                                style: TextStyle(
-                                                    fontSize: 17,
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                             
                                               ),
                                               const SizedBox(
                                                 height: 20,
                                               ),
                                               Container(
                                                 decoration: BoxDecoration(
-                                                    color: TColor.textfield),
+                                                    color:colorData.primaryColor(.6) ),
                                                 child: ListView.separated(
                                                   physics:
                                                       const NeverScrollableScrollPhysics(),
@@ -192,9 +196,7 @@ class _MyOrderViewState extends State<MyOrderView> {
                                                       Divider(
                                                         indent: 25,
                                                         endIndent: 25,
-                                                        color: TColor
-                                                            .secondaryText
-                                                            .withOpacity(0.5),
+                                                        color: colorData.secondaryColor(.8),
                                                         height: 1,
                                                       )),
                                                   itemBuilder:
@@ -210,29 +212,17 @@ class _MyOrderViewState extends State<MyOrderView> {
                                                                 .start,
                                                         children: [
                                                           Expanded(
-                                                            child: Text(
+                                                            child: CustomText(text: 
                                                               "${Ordereditems[index]["name"].toString()} x${Ordereditems[index]["quantity"].toString()}",
-                                                              style: TextStyle(
-                                                                  color: TColor
-                                                                      .primaryText,
-                                                                  fontSize: 13,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500),
+                                                             
                                                             ),
                                                           ),
                                                           const SizedBox(
                                                             width: 15,
                                                           ),
-                                                          Text(
+                                                          CustomText(text: 
                                                             "${Ordereditems[index]["price"].toString()} \u{20B9}",
-                                                            style: TextStyle(
-                                                                color: TColor
-                                                                    .primaryText,
-                                                                fontSize: 13,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w700),
+                                                          
                                                           )
                                                         ],
                                                       ),
@@ -249,9 +239,7 @@ class _MyOrderViewState extends State<MyOrderView> {
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     Divider(
-                                                      color: TColor
-                                                          .secondaryText
-                                                          .withOpacity(0.5),
+                                                      color:colorData.secondaryColor(.9),
                                                       height: 1,
                                                     ),
                                                     const SizedBox(
@@ -262,27 +250,13 @@ class _MyOrderViewState extends State<MyOrderView> {
                                                           MainAxisAlignment
                                                               .spaceBetween,
                                                       children: [
-                                                        Text(
+                                                        CustomText(text: 
                                                           "Sub Total",
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                              color: TColor
-                                                                  .primaryText,
-                                                              fontSize: 13,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w700),
+                                                        
                                                         ),
-                                                        Text(
+                                                        CustomText(text: 
                                                           "68 \u{20B9}",
-                                                          style: TextStyle(
-                                                              color: TColor
-                                                                  .primary,
-                                                              fontSize: 13,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w700),
+                                                      
                                                         )
                                                       ],
                                                     ),
@@ -294,27 +268,13 @@ class _MyOrderViewState extends State<MyOrderView> {
                                                           MainAxisAlignment
                                                               .spaceBetween,
                                                       children: [
-                                                        Text(
+                                                        CustomText(text: 
                                                           "Delivery Cost",
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                              color: TColor
-                                                                  .primaryText,
-                                                              fontSize: 13,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w700),
+                                                         
                                                         ),
-                                                        Text(
+                                                        CustomText(text: 
                                                           "2 \u{20B9}",
-                                                          style: TextStyle(
-                                                              color: TColor
-                                                                  .primary,
-                                                              fontSize: 13,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w700),
+                                                        
                                                         )
                                                       ],
                                                     ),
@@ -322,9 +282,7 @@ class _MyOrderViewState extends State<MyOrderView> {
                                                       height: 15,
                                                     ),
                                                     Divider(
-                                                      color: TColor
-                                                          .secondaryText
-                                                          .withOpacity(0.5),
+                                                      color: colorData.secondaryColor(.8),
                                                       height: 1,
                                                     ),
                                                     const SizedBox(
@@ -335,28 +293,14 @@ class _MyOrderViewState extends State<MyOrderView> {
                                                           MainAxisAlignment
                                                               .spaceBetween,
                                                       children: [
-                                                        Text(
+                                                        CustomText(text: 
                                                           "Total",
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                              color: TColor
-                                                                  .primaryText,
-                                                              fontSize: 13,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w700),
+                                                         
                                                         ),
-                                                        Text(
+                                                        CustomText(text: 
                                                           amount.toString() +
                                                               ' \u{20B9}',
-                                                          style: TextStyle(
-                                                              color: TColor
-                                                                  .primary,
-                                                              fontSize: 22,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w700),
+                                                        
                                                         )
                                                       ],
                                                     ),

@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:projrect_annam/common/color_extension.dart';
-import 'package:projrect_annam/helper/utils.dart';
-import 'package:rive/rive.dart' as rive;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projrect_annam/const/color_extension.dart';
+import 'package:projrect_annam/utils/custom_text.dart';
 
-class OfferView extends StatefulWidget {
+import '../../utils/color_data.dart';
+import '../../utils/size_data.dart';
+
+
+class OfferView extends ConsumerStatefulWidget {
   const OfferView({super.key});
 
   @override
-  State<OfferView> createState() => _OfferViewState();
+  ConsumerState<OfferView> createState() => _OfferViewState();
 }
 
-class _OfferViewState extends State<OfferView> {
+class _OfferViewState extends ConsumerState<OfferView> {
   TextEditingController txtSearch = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -21,6 +30,12 @@ class _OfferViewState extends State<OfferView> {
 
   @override
   Widget build(BuildContext context) {
+     CustomSizeData sizeData = CustomSizeData.from(context);
+    CustomColorData colorData = CustomColorData.from(ref);
+
+    double height = sizeData.height;
+    double width = sizeData.width;
+
     return SafeArea(
       child: Scaffold(
         body: Column(
@@ -31,7 +46,7 @@ class _OfferViewState extends State<OfferView> {
               decoration: BoxDecoration(
                   gradient: LinearGradient(
                 colors: [
-                  TColor.primary,
+                 colorData.primaryColor(.9),
                   Colors.white,
                 ],
                 stops: [0.5, 0.5],
@@ -50,14 +65,12 @@ class _OfferViewState extends State<OfferView> {
                       radius: 50,
                     ),
                   ),
-                  Text("Name"),
+                  CustomText(text: "Name"),
                   ElevatedButton(
                     onPressed: () {
-                      loadingImage(
-                          context: context,
-                          imagePath: "assets/rive/spiral.riv");
+                      
                     },
-                    child: Text("Edt"),
+                    child: CustomText(text: "Edit"),
                     style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder()),
                   ),

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:projrect_annam/Firebase/firebase_operations.dart';
-import 'package:projrect_annam/common/color_extension.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projrect_annam/firebase/firebase_operations.dart';
+import 'package:projrect_annam/const/color_extension.dart';
+import 'package:projrect_annam/utils/custom_text.dart';
 
-class ExpandableCard extends StatefulWidget {
+import '../utils/color_data.dart';
+
+class ExpandableCard extends ConsumerStatefulWidget {
   const ExpandableCard(
       {super.key,
       required this.orderedData,
@@ -16,15 +20,17 @@ class ExpandableCard extends StatefulWidget {
   ExpandableCardState createState() => ExpandableCardState();
 }
 
-class ExpandableCardState extends State<ExpandableCard> {
+class ExpandableCardState extends ConsumerState<ExpandableCard> {
   bool _isExpanded = false;
   bool checked = false;
   @override
   Widget build(BuildContext context) {
+        CustomColorData colorData = CustomColorData.from(ref);
+
     return Padding(
       padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
       child: Card(
-        color: TColor.white,
+        color: colorData.fontColor(.9),
         elevation: 4,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
@@ -32,11 +38,11 @@ class ExpandableCardState extends State<ExpandableCard> {
         child: Column(
           children: <Widget>[
             ListTile(
-              title: const Text(
+              title: const CustomText(text: 
                 'Name: John Doe',
-                style: TextStyle(fontWeight: FontWeight.bold),
+             
               ),
-              subtitle: const Text('Time: 2:00 PM'),
+              subtitle: const CustomText(text: 'Time: 2:00 PM'),
               trailing: IconButton(
                 icon: Icon(
                   _isExpanded
@@ -56,29 +62,17 @@ class ExpandableCardState extends State<ExpandableCard> {
                       Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Table(
-                          border: TableBorder.all(color: TColor.primary),
+                          border: TableBorder.all(color: colorData.primaryColor(.9)),
                           children: const [
                             TableRow(
                               children: [
                                 Padding(
                                   padding: EdgeInsets.all(8.0),
-                                  child: Text('Item 1'),
+                                  child: CustomText(text: 'Item 1'),
                                 ),
                                 Padding(
                                   padding: EdgeInsets.all(8.0),
-                                  child: Text('Description 1'),
-                                ),
-                              ],
-                            ),
-                            TableRow(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Text('Item 2'),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Text('Description 2'),
+                                  child: CustomText(text: 'Description 1'),
                                 ),
                               ],
                             ),
@@ -86,11 +80,23 @@ class ExpandableCardState extends State<ExpandableCard> {
                               children: [
                                 Padding(
                                   padding: EdgeInsets.all(8.0),
-                                  child: Text('Item 3'),
+                                  child: CustomText(text: 'Item 2'),
                                 ),
                                 Padding(
                                   padding: EdgeInsets.all(8.0),
-                                  child: Text('Description 3'),
+                                  child: CustomText(text: 'Description 2'),
+                                ),
+                              ],
+                            ),
+                            TableRow(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: CustomText(text: 'Item 3'),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: CustomText(text: 'Description 3'),
                                 ),
                               ],
                             ),
@@ -102,10 +108,9 @@ class ExpandableCardState extends State<ExpandableCard> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            const Text(
+                            const CustomText(text: 
                               'Amount Paid: 100 Rs',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 16),
+                            
                             ),
                             OutlinedButton(
                               onPressed: () {
@@ -125,18 +130,14 @@ class ExpandableCardState extends State<ExpandableCard> {
                                     : Colors.grey.shade400,
                                 side: BorderSide(
                                   color: checked == false
-                                      ? TColor.primary
+                                      ? colorData.primaryColor(.9)
                                       : Colors.transparent,
                                   width: 1.5,
                                 ),
                               ),
-                              child: Text(
+                              child: CustomText(text: 
                                 'Checked Out',
-                                style: TextStyle(
-                                  color: checked == false
-                                      ? TColor.primary
-                                      : Colors.black,
-                                ),
+                             
                               ),
                             ),
                           ],

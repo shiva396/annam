@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:projrect_annam/helper/helper.dart';
-import 'package:projrect_annam/helper/image_const.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projrect_annam/const/image_const.dart';
 import 'package:projrect_annam/student/more/about_us_view.dart';
 import 'package:projrect_annam/student/more/payment_details_view.dart';
+import 'package:projrect_annam/utils/custom_text.dart';
+import 'package:projrect_annam/utils/extension_methods.dart';
 
-import '../../common/color_extension.dart';
+import '../../const/color_extension.dart';
+import '../../utils/color_data.dart';
+import '../../utils/size_data.dart';
 import 'my_order_view.dart';
 
-class MoreView extends StatefulWidget {
+class MoreView extends ConsumerStatefulWidget {
   const MoreView({super.key});
 
   @override
-  State<MoreView> createState() => _MoreViewState();
+ ConsumerState<MoreView> createState() => _MoreViewState();
 }
 
-class _MoreViewState extends State<MoreView> {
+class _MoreViewState extends ConsumerState<MoreView> {
   List moreArr = [
     {
       "index": "1",
@@ -38,6 +42,12 @@ class _MoreViewState extends State<MoreView> {
 
   @override
   Widget build(BuildContext context) {
+     CustomSizeData sizeData = CustomSizeData.from(context);
+    CustomColorData colorData = CustomColorData.from(ref);
+
+    double height = sizeData.height;
+    double width = sizeData.width;
+
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -54,12 +64,9 @@ class _MoreViewState extends State<MoreView> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                     CustomText(text: 
                         "More",
-                        style: TextStyle(
-                            color: TColor.primaryText,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w800),
+                      
                       ),
                       IconButton(
                         onPressed: () {
@@ -95,7 +102,7 @@ class _MoreViewState extends State<MoreView> {
                               break;
       
                             case "3":
-                              context.push(const AboutUsView());
+                              context.push( AboutUsView());
                               break;
       
                             default:
@@ -113,7 +120,7 @@ class _MoreViewState extends State<MoreView> {
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 12, horizontal: 12),
                                 decoration: BoxDecoration(
-                                    color: TColor.textfield,
+                                    color: colorData.fontColor(.9),
                                     borderRadius: BorderRadius.circular(5)),
                                 margin: const EdgeInsets.only(right: 15),
                                 child: Row(
@@ -124,7 +131,7 @@ class _MoreViewState extends State<MoreView> {
                                       height: 50,
                                       padding: const EdgeInsets.all(8),
                                       decoration: BoxDecoration(
-                                          color: TColor.placeholder,
+                                          color: colorData.fontColor(.6),
                                           borderRadius:
                                               BorderRadius.circular(25)),
                                       alignment: Alignment.center,
@@ -137,13 +144,9 @@ class _MoreViewState extends State<MoreView> {
                                       width: 15,
                                     ),
                                     Expanded(
-                                      child: Text(
+                                      child:CustomText(text: 
                                         mObj["name"].toString(),
-                                        style: TextStyle(
-                                            color: TColor.primaryText,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600),
-                                      ),
+                                      )
                                     ),
                                     const SizedBox(
                                       width: 15,
@@ -156,12 +159,8 @@ class _MoreViewState extends State<MoreView> {
                                             borderRadius:
                                                 BorderRadius.circular(12.5)),
                                         alignment: Alignment.center,
-                                        child: Text(
+                                        child:CustomText(text: 
                                           countBase.toString(),
-                                          style: TextStyle(
-                                              color: TColor.white,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w600),
                                         ),
                                       ),
                                     const SizedBox(
@@ -173,12 +172,12 @@ class _MoreViewState extends State<MoreView> {
                               Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                    color: TColor.textfield,
+                                    color: colorData.secondaryColor(.9),
                                     borderRadius: BorderRadius.circular(15)),
                                 child: Image.asset(ImageConst.backNext,
                                     width: 10,
                                     height: 10,
-                                    color: TColor.primaryText),
+                                    color: colorData.secondaryColor(.9)),
                               ),
                             ],
                           ),

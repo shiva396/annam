@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:projrect_annam/utils/custom_text.dart';
 
-import '../common/color_extension.dart';
-import '../helper/image_const.dart';
+import '../const/color_extension.dart';
+import '../const/image_const.dart';
 
 class PopularRestaurantRow extends StatelessWidget {
   final Map pObj;
@@ -36,13 +37,9 @@ class PopularRestaurantRow extends StatelessWidget {
                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    CustomText(text: 
                       pObj["name"],
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: TColor.primaryText,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700),
+                      
                     ),
                     const SizedBox(
                       height: 8,
@@ -62,41 +59,34 @@ class PopularRestaurantRow extends StatelessWidget {
                         width: 4,
                       ),
 
-                      Text(
+                      CustomText(text: 
                         pObj["rate"],
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: TColor.primary, fontSize: 11),
+                       
                       ),
                       const SizedBox(
                         width: 8,
                       ),
-                      Text(
+                      CustomText(text: 
                         "(${pObj["rating"]} Ratings)",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: TColor.secondaryText, fontSize: 11),
+                       
+                      
                       ),
 
                       const SizedBox(
                         width: 8,
                       ),
 
-                        Text(
+                        CustomText(text: 
                           pObj["type"],
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: TColor.secondaryText, fontSize: 11),
+                       
                         ),
-                        Text(
+                        CustomText(text: 
                           " . ",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: TColor.primary, fontSize: 11),
+                       
                         ),
-                        Text(
+                        CustomText(text: 
                           pObj["food_type"],
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: TColor.secondaryText, fontSize: 12),
+                         
                         ),
                       ],
                     ),

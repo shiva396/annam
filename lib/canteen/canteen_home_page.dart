@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:projrect_annam/Firebase/firebase_operations.dart';
-import 'package:projrect_annam/canteen_owner/expanded_card.dart';
+import 'package:projrect_annam/firebase/firebase_operations.dart';
+import 'package:projrect_annam/canteen/expanded_card.dart';
+
+import '../utils/custom_text.dart';
 
 class CanteenMainPage extends StatefulWidget {
   final Map<String, dynamic> canteenOwnerData;
@@ -21,12 +23,9 @@ class _CanteenMainPageState extends State<CanteenMainPage> {
         ),
         SizedBox(
           height: 20,
-          child: Text(
-            "Today Items",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
+          child:CustomText(
+           text: "Today Items",
+         
           ),
         ),
         SizedBox(

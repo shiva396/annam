@@ -1,22 +1,26 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:projrect_annam/Firebase/firebase_operations.dart';
-import 'package:projrect_annam/helper/helper.dart';
-import 'package:projrect_annam/helper/image_const.dart';
-import 'package:projrect_annam/helper/utils.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projrect_annam/firebase/firebase_operations.dart';
+import 'package:projrect_annam/const/image_const.dart';
+import 'package:projrect_annam/student/menu/shimmer_effect.dart';
+import 'package:projrect_annam/utils/custom_text.dart';
+import 'package:projrect_annam/utils/extension_methods.dart';
 
-import '../../common/color_extension.dart';
+import '../../const/color_extension.dart';
+import '../../utils/color_data.dart';
+import '../../utils/size_data.dart';
 import '../more/my_order_view.dart';
 import 'menu_items_view.dart';
 
-class MenuView extends StatefulWidget {
+class MenuView extends ConsumerStatefulWidget {
   const MenuView({super.key});
 
   @override
-  State<MenuView> createState() => _MenuViewState();
+  ConsumerState<MenuView> createState() => _MenuViewState();
 }
 
-class _MenuViewState extends State<MenuView> {
+class _MenuViewState extends ConsumerState<MenuView> {
   TextEditingController txtSearch = TextEditingController();
   String _selectedCanteen = "";
   int indexing = 0;
@@ -47,7 +51,12 @@ class _MenuViewState extends State<MenuView> {
 
   @override
   Widget build(BuildContext context) {
-    var media = MediaQuery.of(context).size;
+    CustomSizeData sizeData = CustomSizeData.from(context);
+    CustomColorData colorData = CustomColorData.from(ref);
+
+    double height = sizeData.height;
+    double width = sizeData.width;
+
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -58,12 +67,8 @@ class _MenuViewState extends State<MenuView> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "Place Orders",
-                      style: TextStyle(
-                          color: TColor.primaryText,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w800),
+                    CustomText(
+                      text: "Place Orders",
                     ),
                     IconButton(
                       onPressed: () {
@@ -87,9 +92,7 @@ class _MenuViewState extends State<MenuView> {
                     .doc(FirebaseOperations.firebaseAuth.currentUser!.uid)
                     .snapshots(),
                 builder: (context, snapshot) {
-                  if (!snapshot.hasData || _showLoading)
-                    return overlayContent(
-                        context: context, imagePath: "assets/rive/loading.riv");
+                  if (!snapshot.hasData || _showLoading) return ShimmerEffect();
 
                   Map<String, dynamic> data =
                       (snapshot.data!.data() as Map<String, dynamic>);
@@ -101,10 +104,7 @@ class _MenuViewState extends State<MenuView> {
                         .doc(collegeName)
                         .snapshots(),
                     builder: (context, innersnapshot) {
-                      if (!innersnapshot.hasData)
-                        return overlayContent(
-                            context: context,
-                            imagePath: "assets/rive/loading.riv");
+                      if (!innersnapshot.hasData) return ShimmerEffect();
 
                       Map<String, dynamic> canteenOwnersId =
                           innersnapshot.data!.data() as Map<String, dynamic>;
@@ -123,6 +123,7 @@ class _MenuViewState extends State<MenuView> {
                           Padding(
                             padding: EdgeInsets.zero,
                             child: DropdownMenu<String>(
+                              hintText: "Search Canteen",
                               requestFocusOnTap: keyboardOn,
                               searchCallback:
                                   (List<DropdownMenuEntry<String>> entries,
@@ -166,13 +167,13 @@ class _MenuViewState extends State<MenuView> {
                                       Positioned(
                                         left: 0,
                                         top: 8,
-                                        height: media.height * 0.8,
-                                        width: media.width * 0.27,
+                                        height: height * 0.8,
+                                        width: width * 0.27,
                                         child: Container(
                                           margin:
                                               const EdgeInsets.only(top: 30),
                                           decoration: BoxDecoration(
-                                            color: TColor.primary,
+                                            color: colorData.primaryColor(.9),
                                             borderRadius:
                                                 const BorderRadius.only(
                                                     topRight:
@@ -211,7 +212,7 @@ class _MenuViewState extends State<MenuView> {
                                                       top: 15,
                                                       bottom: 8,
                                                       right: 20),
-                                                  width: media.width - 100,
+                                                  width: width - 100,
                                                   height: 90,
                                                   decoration: const BoxDecoration(
                                                       color: Colors.white,
@@ -250,32 +251,22 @@ class _MenuViewState extends State<MenuView> {
                                                               CrossAxisAlignment
                                                                   .start,
                                                           children: [
-                                                            Text(
-                                                              allCategories[
-                                                                  index],
-                                                              style: TextStyle(
-                                                                  color: TColor
-                                                                      .primaryText,
-                                                                  fontSize: 22,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w700),
+                                                            CustomText(
+                                                              text:
+                                                                  allCategories[
+                                                                      index],
                                                             ),
                                                             const SizedBox(
                                                               height: 4,
                                                             ),
-                                                            Text(
-                                                              canteenOwnersId[
+                                                            CustomText(
+                                                              text: canteenOwnersId[
                                                                           _selectedCanteenId]
                                                                       [
                                                                       'categories']
                                                                   .keys
                                                                   .length
                                                                   .toString(),
-                                                              style: TextStyle(
-                                                                  color: TColor
-                                                                      .secondaryText,
-                                                                  fontSize: 11),
                                                             ),
                                                           ],
                                                         ),
