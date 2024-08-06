@@ -3,11 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projrect_annam/const/color_extension.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
 import 'package:projrect_annam/utils/extension_methods.dart';
+import 'package:projrect_annam/utils/page_header.dart';
 
 import '../../const/image_const.dart';
 import '../../utils/color_data.dart';
 import '../../utils/size_data.dart';
-import '../../students/orders/my_order.dart';
+import '../orders/my_order.dart';
 
 class AboutUsView extends ConsumerWidget {
   AboutUsView({super.key});
@@ -36,40 +37,8 @@ class AboutUsView extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(
-                  height: 46,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: Image.asset(ImageConst.backButton,
-                            width: 20, height: 20),
-                      ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      Expanded(
-                        child: CustomText(
-                          text: "About Us",
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          context.push(const MyOrderView());
-                        },
-                        icon: Image.asset(
-                          ImageConst.shoppingCart,
-                          width: 25,
-                          height: 25,
-                        ),
-                      ),
-                    ],
-                  ),
+                PageHeader(
+                  title: "about us",
                 ),
                 ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
@@ -98,6 +67,7 @@ class AboutUsView extends ConsumerWidget {
                           Expanded(
                             child: CustomText(
                               text: txt,
+                              maxLine: 3,
                             ),
                           ),
                         ],

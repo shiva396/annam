@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projrect_annam/const/image_const.dart';
-import 'package:projrect_annam/student/more/about_us_view.dart';
-import 'package:projrect_annam/student/more/payment_details_view.dart';
+import 'package:projrect_annam/students/more/about_us.dart';
+import 'package:projrect_annam/students/more/payment_details.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
 import 'package:projrect_annam/utils/extension_methods.dart';
 
 import '../../const/color_extension.dart';
 import '../../utils/color_data.dart';
+import '../../utils/page_header.dart';
 import '../../utils/size_data.dart';
-import '../../students/orders/my_order.dart';
+import '../orders/my_order.dart';
 
 class MoreView extends ConsumerStatefulWidget {
   const MoreView({super.key});
@@ -45,36 +46,35 @@ class _MoreViewState extends ConsumerState<MoreView> {
 
     return SafeArea(
       child: Scaffold(
-        body: SingleChildScrollView(
-          child: Container(
-            margin: EdgeInsets.only(
-              left: width * 0.04,
-              right: width * 0.04,
-              top: height * 0.02,
-            ),
+        body: Container(
+          margin: EdgeInsets.only(
+            left: width * 0.04,
+            right: width * 0.04,
+            top: height * 0.02,
+          ),
+          child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      CustomText(
-                        text: "More",
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CustomText(
+                      text: "More",
+                      size: sizeData.header,
+                      color: colorData.fontColor(1),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        context.push(const MyOrderView());
+                      },
+                      icon: Image.asset(
+                        ImageConst.shoppingCart,
+                        width: sizeData.superLarge,
+                        height: sizeData.superLarge,
                       ),
-                      IconButton(
-                        onPressed: () {
-                          context.push(const MyOrderView());
-                        },
-                        icon: Image.asset(
-                          ImageConst.shoppingCart,
-                          width: 25,
-                          height: 25,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
                 ListView.builder(
                     padding: EdgeInsets.zero,
@@ -107,7 +107,7 @@ class _MoreViewState extends ConsumerState<MoreView> {
                         },
                         child: Container(
                           margin: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 20),
+                              vertical: 8, horizontal: 10),
                           child: Stack(
                             alignment: Alignment.centerRight,
                             children: [
@@ -115,18 +115,17 @@ class _MoreViewState extends ConsumerState<MoreView> {
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 12, horizontal: 12),
                                 decoration: BoxDecoration(
-                                    color: colorData.fontColor(.9),
+                                    color: colorData.secondaryColor(.9),
                                     borderRadius: BorderRadius.circular(5)),
                                 margin: const EdgeInsets.only(right: 15),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Container(
-                                      width: 50,
-                                      height: 50,
+                                      height: height * 0.05,
                                       padding: const EdgeInsets.all(8),
                                       decoration: BoxDecoration(
-                                          color: colorData.fontColor(.6),
+                                          color: colorData.primaryColor(.6),
                                           borderRadius:
                                               BorderRadius.circular(25)),
                                       alignment: Alignment.center,
@@ -168,11 +167,21 @@ class _MoreViewState extends ConsumerState<MoreView> {
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
                                     color: colorData.secondaryColor(.9),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                          color: Colors.black12,
+                                          blurRadius: 4,
+                                          offset: Offset(0, 2)),
+                                      BoxShadow(
+                                          color: Colors.black45,
+                                          blurRadius: 4,
+                                          offset: Offset(0, 2))
+                                    ],
                                     borderRadius: BorderRadius.circular(15)),
                                 child: Image.asset(ImageConst.backNext,
                                     width: 10,
                                     height: 10,
-                                    color: colorData.secondaryColor(.9)),
+                                    color: colorData.primaryColor(1)),
                               ),
                             ],
                           ),

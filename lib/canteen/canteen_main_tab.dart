@@ -9,7 +9,7 @@ import 'package:projrect_annam/canteen/creation.dart';
 import 'package:projrect_annam/const/color_extension.dart';
 import 'package:projrect_annam/common_widget/tab_button.dart';
 import 'package:projrect_annam/const/image_const.dart';
-import 'package:projrect_annam/student/more/more_view.dart';
+import 'package:projrect_annam/students/more/more.dart';
 import 'package:projrect_annam/utils/color_data.dart';
 
 class CanteenOwner extends ConsumerStatefulWidget {

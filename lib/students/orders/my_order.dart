@@ -78,7 +78,8 @@ class _MyOrderViewState extends ConsumerState<MyOrderView> {
                           }
 
                           if (snapshot.hasError && collegeName.isNotEmpty) {
-                            return overlayContent(context: context, imagePath: "");
+                            return overlayContent(
+                                context: context, imagePath: "");
                           }
 
                           if (!snapshot.hasData ||
@@ -151,8 +152,13 @@ class _MyOrderViewState extends ConsumerState<MyOrderView> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
+                                              SizedBox(
+                                                height: height * 0.01,
+                                              ),
                                               CustomText(
                                                 text: canteenName,
+                                                size: sizeData.header,
+                                                color: colorData.fontColor(1),
                                               ),
                                               const SizedBox(
                                                 height: 20,
@@ -160,7 +166,7 @@ class _MyOrderViewState extends ConsumerState<MyOrderView> {
                                               Container(
                                                 decoration: BoxDecoration(
                                                     color: colorData
-                                                        .primaryColor(.6)),
+                                                        .secondaryColor(.9)),
                                                 child: ListView.separated(
                                                   physics:
                                                       const NeverScrollableScrollPhysics(),
@@ -174,8 +180,8 @@ class _MyOrderViewState extends ConsumerState<MyOrderView> {
                                                         indent: 25,
                                                         endIndent: 25,
                                                         color: colorData
-                                                            .secondaryColor(.8),
-                                                        height: 1,
+                                                            .primaryColor(1),
+                                                        height: 2,
                                                       )),
                                                   itemBuilder:
                                                       ((context, index) {
@@ -216,11 +222,6 @@ class _MyOrderViewState extends ConsumerState<MyOrderView> {
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: [
-                                                    Divider(
-                                                      color: colorData
-                                                          .secondaryColor(.9),
-                                                      height: 1,
-                                                    ),
                                                     const SizedBox(
                                                       height: 15,
                                                     ),
@@ -258,8 +259,8 @@ class _MyOrderViewState extends ConsumerState<MyOrderView> {
                                                     ),
                                                     Divider(
                                                       color: colorData
-                                                          .secondaryColor(.8),
-                                                      height: 1,
+                                                          .primaryColor(1),
+                                                      height: 2,
                                                     ),
                                                     const SizedBox(
                                                       height: 15,
@@ -282,25 +283,42 @@ class _MyOrderViewState extends ConsumerState<MyOrderView> {
                                                     const SizedBox(
                                                       height: 25,
                                                     ),
-                                                    ElevatedButton(
-                                                        child: Text("Checkout"),
-                                                        onPressed: () {
-                                                          // History Push
-                                                          Ordereditems.addAll({
-                                                            'canttenName':
-                                                                canteenName
-                                                          });
+                                                    Center(
+                                                      child: ElevatedButton(
+                                                          style: ElevatedButton.styleFrom(
+                                                              shape:
+                                                                  RoundedRectangleBorder(),
+                                                              backgroundColor:
+                                                                  colorData
+                                                                      .primaryColor(
+                                                                          1)),
+                                                          child: CustomText(
+                                                            text: "Checkout",
+                                                            size: sizeData
+                                                                .subHeader,
+                                                            color: colorData
+                                                                .secondaryColor(
+                                                                    1),
+                                                          ),
+                                                          onPressed: () {
+                                                            // History Push
+                                                            Ordereditems
+                                                                .addAll({
+                                                              'canttenName':
+                                                                  canteenName
+                                                            });
 
-                                                          Map<String, dynamic>
-                                                              data = {};
-                                                          Ordereditems.map(
-                                                              (k, v) {
-                                                            data[k.toString()] =
-                                                                v;
-                                                            return MapEntry(
-                                                                k, v);
-                                                          });
-                                                        }),
+                                                            Map<String, dynamic>
+                                                                data = {};
+                                                            Ordereditems.map(
+                                                                (k, v) {
+                                                              data[k.toString()] =
+                                                                  v;
+                                                              return MapEntry(
+                                                                  k, v);
+                                                            });
+                                                          }),
+                                                    ),
                                                     const SizedBox(
                                                       height: 20,
                                                     ),

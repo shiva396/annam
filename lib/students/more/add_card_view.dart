@@ -48,7 +48,7 @@ class _AddCardViewState extends ConsumerState<AddCardView> {
       padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
       width: width,
       decoration: BoxDecoration(
-          color: colorData.fontColor(.9),
+          color: colorData.secondaryColor(.9),
           borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(20), topRight: Radius.circular(20))),
       child: Column(
@@ -145,7 +145,7 @@ class _AddCardViewState extends ConsumerState<AddCardView> {
             const Spacer(),
             Switch(
                 value: isAnyTime,
-                activeColor:colorData.primaryColor(.9),
+                activeColor: colorData.primaryColor(.9),
                 onChanged: (newVal) {
                   setState(() {
                     isAnyTime = newVal;
@@ -158,7 +158,7 @@ class _AddCardViewState extends ConsumerState<AddCardView> {
           RoundIconButton(
               title: "Add Card",
               icon: ImageConst.addCard,
-              color:colorData.primaryColor(.9),
+              color: colorData.primaryColor(.9),
               fontSize: 16,
               fontWeight: FontWeight.w600,
               onPressed: () {}),

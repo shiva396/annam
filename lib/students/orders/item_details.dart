@@ -287,19 +287,9 @@ class _ItemDetailsViewState extends ConsumerState<ItemDetailsView> {
                                                 decoration: const BoxDecoration(
                                                     color: Colors.white,
                                                     borderRadius:
-                                                        BorderRadius.only(
-                                                            topLeft:
-                                                                Radius.circular(
-                                                                    35),
-                                                            bottomLeft:
-                                                                Radius.circular(
-                                                                    35),
-                                                            topRight:
-                                                                Radius.circular(
-                                                                    10),
-                                                            bottomRight:
-                                                                Radius.circular(
-                                                                    10)),
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                10)),
                                                     boxShadow: [
                                                       BoxShadow(
                                                           color: Colors.black12,
@@ -373,6 +363,10 @@ class _ItemDetailsViewState extends ConsumerState<ItemDetailsView> {
                                                       BoxShadow(
                                                           color: Colors.black12,
                                                           blurRadius: 4,
+                                                          offset: Offset(0, 2)),
+                                                      BoxShadow(
+                                                          color: Colors.black45,
+                                                          blurRadius: 4,
                                                           offset: Offset(0, 2))
                                                     ]),
                                                 alignment: Alignment.center,
@@ -430,7 +424,7 @@ class _ItemDetailsViewState extends ConsumerState<ItemDetailsView> {
                 title: "",
                 secondaryWidget: IconButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    context.push(MyOrderView());
                   },
                   icon: Image.asset(
                     ImageConst.shoppingCart,

@@ -9,10 +9,10 @@ import 'package:projrect_annam/utils/helper_methods.dart';
 
 import '../utils/color_data.dart';
 import '../utils/size_data.dart';
-import '../students/orders/place_orders.dart';
-import 'more/more_view.dart';
-import 'My Orders/order_history.dart';
-import '../students/profile/profile_page.dart';
+import 'orders/place_orders.dart';
+import 'more/more.dart';
+import 'history/order_history.dart';
+import 'profile/profile_page.dart';
 
 class MainTabView extends ConsumerStatefulWidget {
   const MainTabView({super.key, required this.role});
@@ -29,7 +29,7 @@ class _MainTabViewState extends ConsumerState<MainTabView> {
   void initState() {
     super.initState();
 
-    selectPageView = const OfferView();
+    selectPageView = const StudentHistory();
   }
 
   @override
@@ -68,7 +68,7 @@ class _MainTabViewState extends ConsumerState<MainTabView> {
                     children: [
                       TabButton(
                           title: "Orders",
-                          icon: ImageConst.menutab,
+                          icon: ImageConst.shoppingCart,
                           onTap: () {
                             if (selctTab != 0) {
                               selctTab = 0;
@@ -85,7 +85,7 @@ class _MainTabViewState extends ConsumerState<MainTabView> {
                           onTap: () {
                             if (selctTab != 1) {
                               selctTab = 1;
-                              selectPageView = const OfferView();
+                              selectPageView = const StudentHistory();
                             }
                             if (mounted) {
                               setState(() {});
@@ -109,7 +109,7 @@ class _MainTabViewState extends ConsumerState<MainTabView> {
                           isSelected: selctTab == 3),
                       TabButton(
                           title: "More",
-                          icon: ImageConst.profiletab,
+                          icon: ImageConst.moretab,
                           onTap: () {
                             if (selctTab != 4) {
                               selctTab = 4;

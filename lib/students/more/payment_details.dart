@@ -3,13 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projrect_annam/const/color_extension.dart';
 import 'package:projrect_annam/common_widget/round_icon_button.dart';
 import 'package:projrect_annam/const/image_const.dart';
-import 'package:projrect_annam/student/more/add_card_view.dart';
+import 'package:projrect_annam/students/more/add_card_view.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
 import 'package:projrect_annam/utils/extension_methods.dart';
+import 'package:projrect_annam/utils/page_header.dart';
 
 import '../../utils/color_data.dart';
 import '../../utils/size_data.dart';
-import '../../students/orders/my_order.dart';
+import '../orders/my_order.dart';
 
 class PaymentDetailsView extends ConsumerStatefulWidget {
   const PaymentDetailsView({super.key});
@@ -46,30 +47,15 @@ class _PaymentDetailsViewState extends ConsumerState<PaymentDetailsView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: Image.asset(ImageConst.backButton,
-                          width: 20, height: 20),
-                    ),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    Expanded(
-                      child: CustomText(
-                        text: "Payment Details",
-                      ),
-                    )
-                  ],
-                ),
+                PageHeader(title: "Payment details"),
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 15,
+                  ),
                   child: CustomText(
                     text: "Customize your payment method",
+                    size: sizeData.medium,
+                    color: colorData.fontColor(1),
                   ),
                 ),
                 Padding(
@@ -84,7 +70,7 @@ class _PaymentDetailsViewState extends ConsumerState<PaymentDetailsView> {
                 ),
                 Container(
                   decoration: BoxDecoration(
-                      color: colorData.fontColor(.8),
+                      color: colorData.secondaryColor(.8),
                       boxShadow: const [
                         BoxShadow(
                             color: Colors.black26,
@@ -145,13 +131,12 @@ class _PaymentDetailsViewState extends ConsumerState<PaymentDetailsView> {
                                 ),
                                 SizedBox(
                                   width: 100,
-                                  height: 28,
+                                  height: 45,
                                   child: ElevatedButton(
-                                    child:Text( 'Delete Card'),
-                                    
-                                    
+                                    style: ElevatedButton.styleFrom(
+                                        shape: RoundedRectangleBorder()),
+                                    child: Text('Delete Card'),
                                     onPressed: () {},
-                                    
                                   ),
                                 )
                               ],

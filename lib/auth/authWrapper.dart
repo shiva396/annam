@@ -6,7 +6,7 @@ import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/auth/login_signup.dart';
 import 'package:projrect_annam/canteen/canteen_main_tab.dart';
 
-import 'package:projrect_annam/student/student_main_tab.dart';
+import 'package:projrect_annam/students/student_main_tab.dart';
 import 'package:projrect_annam/utils/extension_methods.dart';
 import 'package:projrect_annam/utils/helper_methods.dart';
 
@@ -41,11 +41,11 @@ class AuthWrapper extends StatelessWidget {
                 if (allUsers.containsKey(snapshot.data!.email)) {
                   String role = allUsers[snapshot.data!.email];
 
-                  if (role == UserRole.student.toString) {
+                  if (role == UserRole.student.asString) {
                     return MainTabView(
                       role: role,
                     );
-                  } else if (role == UserRole.canteenOwner.toString) {
+                  } else if (role == UserRole.canteenOwner.asString) {
                     try {
                       return StreamBuilder<QuerySnapshot>(
                           stream: FirebaseFirestore.instance
@@ -79,6 +79,7 @@ class AuthWrapper extends StatelessWidget {
                       return SizedBox();
                     }
                   } else {
+                    
                     return SizedBox();
                   }
                 } else {

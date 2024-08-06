@@ -7,7 +7,7 @@ import 'package:projrect_annam/canteen/canteen_main_tab.dart';
 import 'package:projrect_annam/const/image_const.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
 import 'package:projrect_annam/utils/extension_methods.dart';
-import '../student/student_main_tab.dart';
+import '../students/student_main_tab.dart';
 import '../utils/size_data.dart';
 
 class RoleSeperationPage extends StatefulWidget {

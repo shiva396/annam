@@ -4,7 +4,7 @@ import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/canteen/canteen_main_tab.dart';
 import 'package:projrect_annam/const/image_const.dart';
 
-import 'package:projrect_annam/student/student_main_tab.dart';
+import 'package:projrect_annam/students/student_main_tab.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
 import 'package:projrect_annam/utils/extension_methods.dart';
 import '../const/static_data.dart';

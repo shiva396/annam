@@ -24,13 +24,7 @@ class _CalandarPickerState extends State<CalandarPicker> {
     CustomSizeData sizeData = CustomSizeData.from(context);
     double height = sizeData.height;
     double width = sizeData.width;
-    return Container(
-        margin: EdgeInsets.only(
-          left: width * 0.04,
-          right: width * 0.04,
-          top: height * 0.02,
-        ),
-        child: _buildSingleDatePickerWithValue());
+    return _buildSingleDatePickerWithValue();
   }
 
   String _getValueText(
@@ -111,7 +105,6 @@ class _CalandarPickerState extends State<CalandarPicker> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(height: 10),
           SizedBox(
             width: 800,
             child: CalendarDatePicker2(

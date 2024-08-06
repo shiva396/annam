@@ -8,7 +8,7 @@ import 'package:projrect_annam/auth/startup_view.dart';
 import 'package:projrect_annam/theme/theme_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<void> main() async {
+Future<void> main() async { 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

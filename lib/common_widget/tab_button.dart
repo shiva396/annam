@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../const/color_extension.dart';
+import '../utils/color_data.dart';
 import '../utils/custom_text.dart';
+import '../utils/size_data.dart';
 
-class TabButton extends StatelessWidget {
+class TabButton extends ConsumerWidget {
   final VoidCallback onTap;
   final String title;
   final String icon;
@@ -16,29 +19,29 @@ class TabButton extends StatelessWidget {
       required this.isSelected});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    CustomSizeData sizeData = CustomSizeData.from(context);
+    CustomColorData colorData = CustomColorData.from(ref);
+
+    double height = sizeData.height;
+    double width = sizeData.width;
     return InkWell(
       onTap: onTap,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Image.asset(
-            icon,
-            width: 19,
-            height: 19,
-            // color: isSelected ? TColor.primary : TColor.placeholder,
-          ),
-          const SizedBox(
-            height: 4,
+          Expanded(
+            flex: 2,
+            child: Image.asset(
+              icon,
+              width: sizeData.superLarge,
+              height: sizeData.superLarge,
+            ),
           ),
           CustomText(
-         text:    title,
-            // style: TextStyle(
-            //   color: isSelected ? TColor.primary : TColor.placeholder,
-            //   fontSize: 12,
-            //   fontWeight: FontWeight.w500,
-            // ),
+            text: title,
+            size: sizeData.small,
           )
         ],
       ),

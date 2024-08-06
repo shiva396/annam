@@ -10,7 +10,7 @@ class ImageConst {
   static const String onboarding3 = "assets/img/on_boarding_3.png";
 
   // navigation
-  static const String hometab = "assets/img/tab_home.png";
+  static const String hometab = "assets/images/home.png";
   static const String menutab = "assets/img/tab_menu.png";
   static const String offertab = "assets/images/history.png";
   static const String profiletab = "assets/images/user_profile.png";
