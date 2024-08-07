@@ -21,36 +21,33 @@ import '../../students/profile/color_palette.dart';
 import '../../students/profile/theme_toggle.dart';
 import '../../utils/size_data.dart';
 
-class CanteenProfilePage extends ConsumerStatefulWidget {
-  const CanteenProfilePage({
+class NgoProfilePage extends ConsumerStatefulWidget {
+  const NgoProfilePage({
     super.key,
-    required this.canteenOwnerData,
+    required this.ngoData,
   });
-  final Map<String, dynamic> canteenOwnerData;
+  final Map<String, dynamic> ngoData;
 
   @override
-  ConsumerState<CanteenProfilePage> createState() => _CanteenProfilePageState();
+  ConsumerState<NgoProfilePage> createState() => _NgoProfilePageState();
 }
 
-class _CanteenProfilePageState extends ConsumerState<CanteenProfilePage> {
+class _NgoProfilePageState extends ConsumerState<NgoProfilePage> {
   final ImagePicker picker = ImagePicker();
   XFile? image;
 
   bool changeData = false;
 
-  TextEditingController txtName = TextEditingController();
-  TextEditingController txtMobile = TextEditingController();
-  TextEditingController txtAddress = TextEditingController();
-  TextEditingController txtPassword = TextEditingController();
-  TextEditingController txtConfirmPassword = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
+  TextEditingController cordinatorPhoneNumberController =
+      TextEditingController();
+  TextEditingController organizationNameController = TextEditingController();
 
   void dispose() {
     super.dispose();
-    txtAddress.dispose();
-    txtConfirmPassword.dispose();
-    txtMobile.dispose();
-    txtPassword.dispose();
-    txtName.dispose();
+    phoneNumberController.dispose();
+    cordinatorPhoneNumberController.dispose();
+    organizationNameController.dispose();
   }
 
   @override
@@ -60,11 +57,12 @@ class _CanteenProfilePageState extends ConsumerState<CanteenProfilePage> {
 
     double height = sizeData.height;
     double width = sizeData.width;
-    String name = widget.canteenOwnerData['name'] ?? '';
-    String phoneNumber = widget.canteenOwnerData['phoneNumber'] ?? '';
-    String email = widget.canteenOwnerData['email'] ?? '';
-    String collegeName = widget.canteenOwnerData['collegeName'] ?? '';
-    String profileUrl = widget.canteenOwnerData['image'] ?? '';
+    String co_ordinatorPhoneNumber =
+        widget.ngoData['co-ordinator-phoneNumber'] ?? '';
+    String phoneNumber = widget.ngoData['phoneNumber'] ?? '';
+    String email = widget.ngoData['email'] ?? '';
+    String organization = widget.ngoData['organization'] ?? '';
+    String profileUrl = widget.ngoData['image'] ?? '';
     return SafeArea(
       child: Scaffold(
         body: Container(
@@ -155,7 +153,7 @@ class _CanteenProfilePageState extends ConsumerState<CanteenProfilePage> {
                     height: height * 0.01,
                   ),
                   CustomText(
-                    text: name,
+                    text: organization,
                     size: sizeData.header,
                     color: colorData.primaryColor(1),
                   ),
@@ -183,9 +181,9 @@ class _CanteenProfilePageState extends ConsumerState<CanteenProfilePage> {
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
                     child: RoundTitleTextfield(
                       readOnly: !changeData,
-                      title: "Name",
-                      hintText: changeData ? "Enter Name" : name,
-                      controller: txtName,
+                      title: "Organization",
+                      hintText: changeData ? "Enter Name" : organization,
+                      controller: organizationNameController,
                     ),
                   ),
                   Padding(
@@ -205,7 +203,7 @@ class _CanteenProfilePageState extends ConsumerState<CanteenProfilePage> {
                       title: "Mobile No",
                       readOnly: !changeData,
                       hintText: changeData ? "Enter Mobile No" : phoneNumber,
-                      controller: txtMobile,
+                      controller: phoneNumberController,
                       keyboardType: TextInputType.phone,
                     ),
                   ),
@@ -213,24 +211,14 @@ class _CanteenProfilePageState extends ConsumerState<CanteenProfilePage> {
                     padding:
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
                     child: RoundTitleTextfield(
-                      title: "Address",
+                      title: "Cordinator mobile No",
                       readOnly: !changeData,
-                      hintText: "Enter Address",
-                      controller: txtAddress,
+                      hintText: changeData
+                          ? "Enter Mobile No"
+                          : co_ordinatorPhoneNumber,
+                      controller: cordinatorPhoneNumberController,
+                      keyboardType: TextInputType.phone,
                     ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-                    child: RoundTitleTextfield(
-                      readOnly: true,
-                      title: "College Name",
-                      hintText: collegeName,
-                      obscureText: true,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
                   ),
                   changeData
                       ? Row(
@@ -250,11 +238,24 @@ class _CanteenProfilePageState extends ConsumerState<CanteenProfilePage> {
                                 ),
                                 onPressed: () async {
                                   Map<String, dynamic> data = {};
-                                  if (txtName.text.trim().isNotEmpty) {
-                                    data['name'] = txtName.text.trim();
+                                  if (organizationNameController.text
+                                      .trim()
+                                      .isNotEmpty) {
+                                    data['organization'] =
+                                        organizationNameController.text.trim();
                                   }
-                                  if (txtMobile.text.trim().isNotEmpty) {
-                                    data['phoneNumber'] = txtMobile.text.trim();
+                                  if (phoneNumberController.text
+                                      .trim()
+                                      .isNotEmpty) {
+                                    data['phoneNumber'] =
+                                        phoneNumberController.text.trim();
+                                  }
+                                  if (cordinatorPhoneNumberController.text
+                                      .trim()
+                                      .isNotEmpty) {
+                                    data['co-ordinator-phoneNumber'] =
+                                        cordinatorPhoneNumberController.text
+                                            .trim();
                                   }
                                   // Editing data
                                   if (image != null) {
@@ -269,7 +270,7 @@ class _CanteenProfilePageState extends ConsumerState<CanteenProfilePage> {
                                     UploadTask dataUploaded = FirebaseOperations
                                         .firebaseStorage
                                         .ref(
-                                            'canteenOwner/${FirebaseOperations.firebaseAuth.currentUser!.uid}/profileImage/')
+                                            'ngo/${FirebaseOperations.firebaseAuth.currentUser!.uid}/profileImage/')
                                         .putFile(File(image!.path));
                                     TaskSnapshot cases =
                                         await dataUploaded.whenComplete(() {});
@@ -277,16 +278,13 @@ class _CanteenProfilePageState extends ConsumerState<CanteenProfilePage> {
                                         await cases.ref.getDownloadURL();
                                     data['image'] = imagePath;
                                   }
-                                  Map<String, dynamic> userdata = {
-                                    FirebaseOperations
-                                        .firebaseAuth.currentUser!.uid: data
-                                  };
+                                  Map<String, dynamic> userdata = data;
                                   if (data.isNotEmpty) {
                                     FirebaseOperations.firebaseInstance
-                                        .collection('college')
-                                        .doc(widget
-                                            .canteenOwnerData['collegeName'])
-                                        .set(userdata, SetOptions(merge: true));
+                                        .collection('ngo')
+                                        .doc(FirebaseOperations
+                                            .firebaseAuth.currentUser!.uid)
+                                        .update(userdata);
 
                                     setState(() {
                                       changeData = false;

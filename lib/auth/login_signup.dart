@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/canteen/canteen_main_tab.dart';
 import 'package:projrect_annam/const/image_const.dart';
+import 'package:projrect_annam/ngo/main_tab.dart';
 
 import 'package:projrect_annam/students/student_main_tab.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
@@ -189,9 +190,11 @@ class _EmailBarState extends State<EmailBar> {
                     .doc('role')
                     .get();
                 Map<String, dynamic> res = (docSnapshot.get('role'));
+          
                 if (res
                     .containsKey(emailController.text.trim().toLowerCase())) {
                   String role = res[emailController.text.trim().toLowerCase()];
+
                   if (role == UserRole.student.asString) {
                     context.pushReplacement(MainTabView(
                       role: role,
@@ -223,6 +226,8 @@ class _EmailBarState extends State<EmailBar> {
                     } catch (e) {
                       context.showSnackBar('Error checking documents: $e');
                     }
+                  } else if (role = UserRole.ngo.asString) {
+                    context.push(NgoMainTab());
                   }
                 } else {
                   context.showSnackBar("Account not found");

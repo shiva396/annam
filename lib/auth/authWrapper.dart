@@ -5,6 +5,7 @@ import 'package:projrect_annam/const/static_data.dart';
 import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/auth/login_signup.dart';
 import 'package:projrect_annam/canteen/canteen_main_tab.dart';
+import 'package:projrect_annam/ngo/main_tab.dart';
 
 import 'package:projrect_annam/students/student_main_tab.dart';
 import 'package:projrect_annam/utils/extension_methods.dart';
@@ -78,8 +79,9 @@ class AuthWrapper extends StatelessWidget {
                       context.showSnackBar('Error checking documents: $e');
                       return SizedBox();
                     }
+                  } else if (role == UserRole.ngo.asString) {
+                    return NgoMainTab();
                   } else {
-                    
                     return SizedBox();
                   }
                 } else {
