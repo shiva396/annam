@@ -8,7 +8,7 @@ import 'package:projrect_annam/auth/startup_view.dart';
 import 'package:projrect_annam/theme/theme_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<void> main() async { 
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -43,15 +43,6 @@ class MyApp extends ConsumerWidget with CustomThemeDataMixin {
     ThemeMode themeMode = ref.watch(themeProvider).keys.first;
     return MaterialApp(
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
-      supportedLocales: const [
-        Locale('en', ''),
-        Locale('zh', ''),
-        Locale('he', ''),
-        Locale('es', ''),
-        Locale('ru', ''),
-        Locale('ko', ''),
-        Locale('hi', ''),
-      ],
       title: 'Annam',
       debugShowCheckedModeBanner: false,
       themeMode: themeMode,
