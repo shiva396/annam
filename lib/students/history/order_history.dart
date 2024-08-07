@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projrect_annam/const/static_data.dart';
 import 'package:projrect_annam/utils/extension_methods.dart';
 
 import '../../utils/calandar_picker.dart';
@@ -7,10 +8,11 @@ import '../../const/image_const.dart';
 import '../../utils/color_data.dart';
 import '../../utils/custom_text.dart';
 import '../../utils/size_data.dart';
-import '../orders/my_order.dart';
+import '../orders/my_cart.dart';
 
 class StudentHistory extends ConsumerStatefulWidget {
-  const StudentHistory({super.key});
+  final UserRole userRole;
+  const StudentHistory({required this.userRole, super.key});
 
   @override
   ConsumerState<StudentHistory> createState() => _StudentHistoryState();
@@ -43,7 +45,7 @@ class _StudentHistoryState extends ConsumerState<StudentHistory> {
                 ),
                 IconButton(
                   onPressed: () {
-                    context.push(MyOrderView());
+                    context.push(CartView());
                   },
                   icon: Image.asset(
                     ImageConst.shoppingCart,
@@ -53,7 +55,9 @@ class _StudentHistoryState extends ConsumerState<StudentHistory> {
                 ),
               ],
             ),
-            CalandarPicker(),
+            CalandarPicker(
+              userRole: widget.userRole,
+            ),
           ],
         ),
       )),

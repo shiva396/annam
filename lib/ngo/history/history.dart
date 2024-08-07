@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projrect_annam/const/static_data.dart';
 import 'package:projrect_annam/utils/calandar_picker.dart';
 
-import '../../students/orders/my_order.dart';
+import '../../students/orders/my_cart.dart';
 import '../../utils/color_data.dart';
 import '../../utils/custom_text.dart';
 import '../../utils/size_data.dart';
 
 class NgoHistory extends ConsumerStatefulWidget {
-  const NgoHistory({super.key});
+  final UserRole userRole;
+  const NgoHistory({required this.userRole, super.key});
 
   @override
   ConsumerState<NgoHistory> createState() => _NgoHistoryState();
@@ -41,7 +43,9 @@ class _NgoHistoryState extends ConsumerState<NgoHistory> {
                 ),
               ],
             ),
-            CalandarPicker(),
+            CalandarPicker(
+              userRole: widget. userRole,
+            ),
           ],
         ),
       )),

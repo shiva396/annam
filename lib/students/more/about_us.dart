@@ -8,7 +8,7 @@ import 'package:projrect_annam/utils/page_header.dart';
 import '../../const/image_const.dart';
 import '../../utils/color_data.dart';
 import '../../utils/size_data.dart';
-import '../orders/my_order.dart';
+import '../orders/my_cart.dart';
 
 class AboutUsView extends ConsumerWidget {
   AboutUsView({super.key});

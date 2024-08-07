@@ -11,7 +11,7 @@ import '../../const/color_extension.dart';
 import '../../utils/color_data.dart';
 import '../../utils/page_header.dart';
 import '../../utils/size_data.dart';
-import '../orders/my_order.dart';
+import '../orders/my_cart.dart';
 
 class MoreView extends ConsumerStatefulWidget {
   const MoreView({
@@ -69,7 +69,7 @@ class _MoreViewState extends ConsumerState<MoreView> {
                     ),
                     IconButton(
                       onPressed: () {
-                        context.push(const MyOrderView());
+                        context.push(const CartView());
                       },
                       icon: Image.asset(
                         ImageConst.shoppingCart,
@@ -97,7 +97,7 @@ class _MoreViewState extends ConsumerState<MoreView> {
                               break;
 
                             case "2":
-                              context.push(const MyOrderView());
+                              context.push(const CartView());
                               break;
 
                             case "3":

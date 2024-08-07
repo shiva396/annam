@@ -13,7 +13,7 @@ import 'package:projrect_annam/utils/helper_methods.dart';
 import '../../const/color_extension.dart';
 import '../../utils/color_data.dart';
 import '../../utils/size_data.dart';
-import 'my_order.dart';
+import 'my_cart.dart';
 import 'items.dart';
 
 class PlaceOrders extends ConsumerStatefulWidget {
@@ -81,7 +81,7 @@ class _PlaceOrdersState extends ConsumerState<PlaceOrders> {
                     ),
                     IconButton(
                       onPressed: () {
-                        context.push(MyOrderView());
+                        context.push(CartView());
                       },
                       icon: Image.asset(
                         ImageConst.shoppingCart,

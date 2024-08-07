@@ -1,11 +1,13 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 
+import '../const/static_data.dart';
 import 'custom_text.dart';
 import 'size_data.dart';
 
 class CalandarPicker extends StatefulWidget {
-  const CalandarPicker({super.key});
+  final UserRole userRole;
+  const CalandarPicker({super.key, required this.userRole});
 
   @override
   State<CalandarPicker> createState() => _CalandarPickerState();
@@ -24,38 +26,39 @@ class _CalandarPickerState extends State<CalandarPicker> {
     CustomSizeData sizeData = CustomSizeData.from(context);
     double height = sizeData.height;
     double width = sizeData.width;
-    return _buildSingleDatePickerWithValue();
+    return SingleChildScrollView(child: _buildSingleDatePickerWithValue());
   }
 
   String _getValueText(
     CalendarDatePicker2Type datePickerType,
     List<DateTime?> values,
   ) {
-    values =
-        values.map((e) => e != null ? DateUtils.dateOnly(e) : null).toList();
-    var valueText = (values.isNotEmpty ? values[0] : null)
-        .toString()
-        .replaceAll('00:00:00.000', '');
+    return values.first.toString().split(' ').first;
+    // values =
+    //     values.map((e) => e != null ? DateUtils.dateOnly(e) : null).toList();
+    // var valueText = (values.isNotEmpty ? values[0] : null)
+    //     .toString()
+    //     .replaceAll('00:00:00.000', '');
 
-    if (datePickerType == CalendarDatePicker2Type.multi) {
-      valueText = values.isNotEmpty
-          ? values
-              .map((v) => v.toString().replaceAll('00:00:00.000', ''))
-              .join(', ')
-          : 'null';
-    } else if (datePickerType == CalendarDatePicker2Type.range) {
-      if (values.isNotEmpty) {
-        final startDate = values[0].toString().replaceAll('00:00:00.000', '');
-        final endDate = values.length > 1
-            ? values[1].toString().replaceAll('00:00:00.000', '')
-            : 'null';
-        valueText = '$startDate to $endDate';
-      } else {
-        return 'null';
-      }
-    }
+    // if (datePickerType == CalendarDatePicker2Type.multi) {
+    //   valueText = values.isNotEmpty
+    //       ? values
+    //           .map((v) => v.toString().replaceAll('00:00:00.000', ''))
+    //           .join(', ')
+    //       : 'null';
+    // } else if (datePickerType == CalendarDatePicker2Type.range) {
+    //   if (values.isNotEmpty) {
+    //     final startDate = values[0].toString().replaceAll('00:00:00.000', '');
+    //     final endDate = values.length > 1
+    //         ? values[1].toString().replaceAll('00:00:00.000', '')
+    //         : 'null';
+    //     valueText = '$startDate to $endDate';
+    //   } else {
+    //     return 'null';
+    //   }
+    // }
 
-    return valueText;
+    // return valueText;
   }
 
   Widget _buildSingleDatePickerWithValue() {
@@ -94,11 +97,6 @@ class _CalandarPickerState extends State<CalandarPicker> {
       },
       firstDate: DateTime(DateTime.now().year - 5),
       lastDate: DateTime.now(),
-      // selectableDayPredicate: (day) =>
-      //     !day
-      //         .difference(DateTime.now().add(const Duration(days: 3)))
-      //         .isNegative &&
-      //     day.isBefore(DateTime.now().add(const Duration(days: 30))),
     );
     return SizedBox(
       width: 900,
@@ -129,6 +127,7 @@ class _CalandarPickerState extends State<CalandarPicker> {
                   _singleDatePickerValueWithDefaultValue,
                 ),
               ),
+              if (UserRole.canteenOwner == widget.userRole) ...[]
             ],
           ),
           const SizedBox(height: 25),

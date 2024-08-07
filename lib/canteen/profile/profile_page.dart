@@ -16,7 +16,7 @@ import 'package:projrect_annam/utils/helper_methods.dart';
 import '../../const/color_extension.dart';
 import '../../common_widget/round_textfield.dart';
 import '../../const/image_const.dart';
-import '../../students/orders/my_order.dart';
+import '../../students/orders/my_cart.dart';
 import '../../students/profile/color_palette.dart';
 import '../../students/profile/theme_toggle.dart';
 import '../../utils/size_data.dart';
@@ -269,7 +269,7 @@ class _CanteenProfilePageState extends ConsumerState<CanteenProfilePage> {
                                     UploadTask dataUploaded = FirebaseOperations
                                         .firebaseStorage
                                         .ref(
-                                            'canteenOwner/${FirebaseOperations.firebaseAuth.currentUser!.uid}/profileImage/')
+                                            'canteenOwners/${FirebaseOperations.firebaseAuth.currentUser!.uid}/profileImage/')
                                         .putFile(File(image!.path));
                                     TaskSnapshot cases =
                                         await dataUploaded.whenComplete(() {});

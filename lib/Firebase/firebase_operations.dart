@@ -3,7 +3,11 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:projrect_annam/canteen/canteen_main_tab.dart';
+import 'package:projrect_annam/utils/extension_methods.dart';
 
 class FirebaseOperations {
   static final FirebaseFirestore firebaseInstance = FirebaseFirestore.instance;
@@ -11,18 +15,27 @@ class FirebaseOperations {
   static final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
   static Future<void> addCategories(
-      {required String categoryName, required String collegeName}) async {
+      {required String categoryName,
+      required String collegeName,
+      required BuildContext context}) async {
     DocumentSnapshot<Map<String, dynamic>> data =
         await firebaseInstance.collection('college').doc(collegeName).get();
     Map<String, dynamic> obj = data.data() as Map<String, dynamic>;
     Map<String, dynamic> update = (obj[firebaseAuth.currentUser!.uid]);
-    obj[firebaseAuth.currentUser!.uid]['categories'] = {categoryName: {}};
-    //  TODO : Check for existing categories Name
 
-    await firebaseInstance
-        .collection('college')
-        .doc(collegeName)
-        .set({firebaseAuth.currentUser!.uid: update}, SetOptions(merge: true));
+    List<String> existingData = update['categories'].keys.toList();
+    List items = [];
+    existingData.forEach((e) {
+      items.add(e.toLowerCase());
+    });
+
+    if (!(items.contains(categoryName.toLowerCase()))) {
+      obj[firebaseAuth.currentUser!.uid]['categories'] = {categoryName: {}};
+      await firebaseInstance.collection('college').doc(collegeName).set(
+          {firebaseAuth.currentUser!.uid: update}, SetOptions(merge: true));
+    } else {
+      context.showSnackBar("Category Already exists");
+    }
   }
 
   static Future<void> addItems(
@@ -30,42 +43,53 @@ class FirebaseOperations {
       required String itemName,
       required String itemPrice,
       required String collegeName,
+      required BuildContext context,
       required XFile itemImageUrl}) async {
     DocumentSnapshot<Map<String, dynamic>> data =
         await firebaseInstance.collection('college').doc(collegeName).get();
     Map<String, dynamic> obj = data.data() as Map<String, dynamic>;
     Map<String, dynamic> update = obj[firebaseAuth.currentUser!.uid]
         ['categories'][categoryName] as Map<String, dynamic>;
-         //  TODO : Check for existing item Name
-    String? imagePath;
-    try {
-      Reference reference = firebaseStorage.ref();
-      Reference ref = reference.child(
-          "canteenOwner/${firebaseAuth.currentUser!.uid}/${categoryName}/${itemName}");
-      UploadTask uploadTask = ref.putFile(File(itemImageUrl.path));
-      TaskSnapshot onCompleted = await uploadTask.whenComplete(() {});
-      imagePath = await onCompleted.ref.getDownloadURL();
-    } catch (r) {}
-    update[itemName] = {
-      "name": itemName,
-      "price": itemPrice,
-      "imageUrl": imagePath != null ? imagePath : "empty",
-      "stockInHand": true,
-    };
+    print(update.keys.toList());
+    List<String> existingData = update.keys.toList();
+    List<String> items = [];
+    existingData.forEach((e) {
+      items.add(e.toLowerCase());
+    });
+    if (!items.contains(itemName.toLowerCase())) {
+      String? imagePath;
+      try {
+        Reference reference = firebaseStorage.ref();
+        Reference ref = reference.child(
+            "canteenOwners/${firebaseAuth.currentUser!.uid}/${categoryName}/${itemName}");
+        UploadTask uploadTask = ref.putFile(File(itemImageUrl.path));
+        TaskSnapshot onCompleted = await uploadTask.whenComplete(() {});
+        imagePath = await onCompleted.ref.getDownloadURL();
+      } catch (r) {}
+      update[itemName] = {
+        "name": itemName,
+        "price": itemPrice,
+        "imageUrl": imagePath != null ? imagePath : "empty",
+        "stockInHand": true,
+      };
 
-    await firebaseInstance.collection('college').doc(collegeName).set({
-      firebaseAuth.currentUser!.uid: {
-        'categories': {categoryName: update}
-      }
-    }, SetOptions(merge: true));
+      await firebaseInstance.collection('college').doc(collegeName).set({
+        firebaseAuth.currentUser!.uid: {
+          'categories': {categoryName: update}
+        }
+      }, SetOptions(merge: true));
+    } else {
+      context.showSnackBar("Item Already Exist");
+    }
   }
 
   static Future<void> editItems(
       {required String categoryName,
       required String collegeName,
       required String newitemName,
+      required String oldImagePath,
       required String itemPrice,
-      required String itemImageUrl,
+      required XFile? newImagePath,
       required String olditemName,
       required bool stockInHand}) async {
     DocumentSnapshot<Map<String, dynamic>> data =
@@ -74,10 +98,23 @@ class FirebaseOperations {
     Map<String, dynamic> update = obj[firebaseAuth.currentUser!.uid]
         ['categories'][categoryName] as Map<String, dynamic>;
     update[olditemName] = FieldValue.delete();
+    String? imagePath;
+    if (newImagePath != null) {
+      try {
+        Reference reference = firebaseStorage.ref();
+        Reference ref = reference.child(
+            "canteenOwners/${firebaseAuth.currentUser!.uid}/${categoryName}/${newitemName}");
+        UploadTask uploadTask = ref.putFile(File(newImagePath.path));
+        TaskSnapshot onCompleted = await uploadTask.whenComplete(() {});
+        imagePath = await onCompleted.ref.getDownloadURL();
+      } catch (r) {}
+    } else {
+      imagePath = oldImagePath;
+    }
     update[newitemName] = {
       "name": newitemName,
       "price": itemPrice,
-      "imageUrl": itemImageUrl,
+      "imageUrl": imagePath,
       "stockInHand": stockInHand,
     };
 
@@ -125,14 +162,14 @@ class FirebaseOperations {
     QuerySnapshot<Map<String, dynamic>> obj = await firebaseInstance
         .collection('student')
         .doc(firebaseAuth.currentUser!.uid)
-        .collection('orders')
+        .collection('cart')
         .get();
     if (obj.docs.isNotEmpty) {
       if (obj.docs.first.data().containsKey(canteenName)) {
         firebaseInstance
             .collection('student')
             .doc(firebaseAuth.currentUser!.uid)
-            .collection('orders')
+            .collection('cart')
             .doc(firebaseAuth.currentUser!.uid)
             .set({
           canteenName: itemdata,
@@ -141,32 +178,17 @@ class FirebaseOperations {
         firebaseInstance
             .collection('student')
             .doc(firebaseAuth.currentUser!.uid)
-            .collection('orders')
+            .collection('cart')
             .doc(firebaseAuth.currentUser!.uid)
             .set({
           canteenName: itemdata,
-        }, SetOptions(merge: true)).then((v) async {
-          DocumentSnapshot<Map<String, dynamic>> collegeData =
-              await firebaseInstance
-                  .collection('college')
-                  .doc(collegeName)
-                  .get();
-          Map<String, dynamic> obj = collegeData.data() as Map<String, dynamic>;
-
-          Map<String, dynamic> update = (obj[canteenName]);
-          update['todayOrders'] =
-              FieldValue.arrayUnion([firebaseAuth.currentUser!.uid]);
-          firebaseInstance
-              .collection('college')
-              .doc(collegeName)
-              .set({canteenName: update}, SetOptions(merge: true));
-        });
+        }, SetOptions(merge: true));
       }
     } else {
       firebaseInstance
           .collection('student')
           .doc(firebaseAuth.currentUser!.uid)
-          .collection('orders')
+          .collection('cart')
           .doc(firebaseAuth.currentUser!.uid)
           .set({canteenName: itemdata}).then((v) async {
         DocumentSnapshot<Map<String, dynamic>> collegeData =
@@ -182,6 +204,42 @@ class FirebaseOperations {
             .set({canteenName: update}, SetOptions(merge: true));
       });
     }
+  }
+
+  static Future<void> placeOrders({
+    required Map<String, dynamic> data,
+    required String canttenOwnerId,
+    required String collegeName
+  }) async {
+    firebaseInstance
+        .collection('student')
+        .doc(firebaseAuth.currentUser!.uid)
+        .collection('cart')
+        .doc(firebaseAuth.currentUser!.uid)
+        .set({canttenOwnerId: FieldValue.delete()},
+            SetOptions(merge: true)).then((v) {
+      firebaseInstance
+          .collection('student')
+          .doc(firebaseAuth.currentUser!.uid)
+          .collection('orders')
+          .doc(firebaseAuth.currentUser!.uid)
+          .set({DateTime.now().toString(): data}, SetOptions(merge: true)).then((v) async {
+          DocumentSnapshot<Map<String, dynamic>> collegeData =
+              await firebaseInstance
+                  .collection('college')
+                  .doc(collegeName)
+                  .get();
+          Map<String, dynamic> obj = collegeData.data() as Map<String, dynamic>;
+
+          Map<String, dynamic> update = (obj[canttenOwnerId]);
+          update['todayOrders'] =
+              FieldValue.arrayUnion([firebaseAuth.currentUser!.uid]);
+          firebaseInstance
+              .collection('college')
+              .doc(collegeName)
+              .set({canttenOwnerId: update}, SetOptions(merge: true));
+        });
+    });
   }
 
   static Future<void> checkOutItems({required String studentId}) async {

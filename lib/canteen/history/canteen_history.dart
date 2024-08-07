@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart';
+import 'package:projrect_annam/const/static_data.dart';
 import 'package:projrect_annam/utils/calandar_picker.dart';
 
-import '../../students/orders/my_order.dart';
+import '../../students/orders/my_cart.dart';
 import '../../utils/color_data.dart';
 import '../../utils/custom_text.dart';
 import '../../utils/size_data.dart';
 
 class CanteenHistory extends ConsumerStatefulWidget {
-  const CanteenHistory({super.key});
+  final UserRole userRole;
+  const CanteenHistory({required this.userRole, super.key});
 
   @override
   ConsumerState<CanteenHistory> createState() => _CanteenHistoryState();
@@ -41,7 +44,9 @@ class _CanteenHistoryState extends ConsumerState<CanteenHistory> {
                 ),
               ],
             ),
-            CalandarPicker(),
+            CalandarPicker(
+              userRole: widget.userRole,
+            ),
           ],
         ),
       )),

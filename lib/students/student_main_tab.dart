@@ -30,7 +30,7 @@ class _MainTabViewState extends ConsumerState<MainTabView> {
   void initState() {
     super.initState();
 
-    selectPageView = const StudentHistory();
+    selectPageView = const StudentHistory(userRole: UserRole.student,);
   }
 
   @override
@@ -86,7 +86,9 @@ class _MainTabViewState extends ConsumerState<MainTabView> {
                           onTap: () {
                             if (selctTab != 1) {
                               selctTab = 1;
-                              selectPageView = const StudentHistory();
+                              selectPageView = const StudentHistory(
+                                userRole: UserRole.student,
+                              );
                             }
                             if (mounted) {
                               setState(() {});

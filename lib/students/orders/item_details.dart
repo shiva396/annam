@@ -11,7 +11,7 @@ import '../../const/color_extension.dart';
 import '../../const/image_const.dart';
 import '../../utils/color_data.dart';
 import '../../utils/size_data.dart';
-import 'my_order.dart';
+import 'my_cart.dart';
 
 class ItemDetailsView extends ConsumerStatefulWidget {
   final String itemName;
@@ -349,7 +349,7 @@ class _ItemDetailsViewState extends ConsumerState<ItemDetailsView> {
                                                 )),
                                             InkWell(
                                               onTap: () {
-                                                context.push(MyOrderView());
+                                                context.push(CartView());
                                               },
                                               child: Container(
                                                 width: 45,
@@ -424,7 +424,7 @@ class _ItemDetailsViewState extends ConsumerState<ItemDetailsView> {
                 title: "",
                 secondaryWidget: IconButton(
                   onPressed: () {
-                    context.push(MyOrderView());
+                    context.push(CartView());
                   },
                   icon: Image.asset(
                     ImageConst.shoppingCart,

@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projrect_annam/const/static_data.dart';
 import 'package:projrect_annam/ngo/history/history.dart';
-import 'package:projrect_annam/ngo/home/home.dart';
+import 'package:projrect_annam/ngo/menu/home.dart';
 import 'package:projrect_annam/ngo/profile/profile_page.dart';
 import 'package:projrect_annam/utils/helper_methods.dart';
 
@@ -25,7 +26,7 @@ class _NgoMainTabState extends ConsumerState<NgoMainTab> {
   Widget? selectPageView;
   void initState() {
     super.initState();
-    selectPageView = NgoHistory();
+    selectPageView = NgoHome();
   }
 
   int selctTab = 0;
@@ -80,7 +81,9 @@ class _NgoMainTabState extends ConsumerState<NgoMainTab> {
                           onTap: () {
                             if (selctTab != 1) {
                               selctTab = 1;
-                              selectPageView = const NgoHistory();
+                              selectPageView = const NgoHistory(
+                                userRole: UserRole.ngo,
+                              );
                             }
                             if (mounted) {
                               setState(() {});

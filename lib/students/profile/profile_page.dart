@@ -18,7 +18,7 @@ import '../../utils/color_data.dart';
 import '../../utils/custom_network_image.dart';
 import '../../utils/helper_methods.dart';
 import '../../utils/size_data.dart';
-import '../orders/my_order.dart';
+import '../orders/my_cart.dart';
 
 class StudentProfilePage extends ConsumerStatefulWidget {
   const StudentProfilePage({
@@ -91,7 +91,7 @@ class _StudentProfilePageState extends ConsumerState<StudentProfilePage> {
                         ThemeToggle(),
                         IconButton(
                           onPressed: () {
-                            context.push(MyOrderView());
+                            context.push(CartView());
                           },
                           icon: Image.asset(
                             ImageConst.shoppingCart,
@@ -128,11 +128,11 @@ class _StudentProfilePageState extends ConsumerState<StudentProfilePage> {
                                 width: 100, height: 100, fit: BoxFit.cover),
                           )
                         : profileUrl.isNotEmpty
-                            ?  CustomNetworkImage(
-                                  url: profileUrl,
-                                  size: width * 0.9,
-                                  radius: width * 0.9,
-                                )
+                            ? CustomNetworkImage(
+                                url: profileUrl,
+                                size: width * 0.9,
+                                radius: width * 0.9,
+                              )
                             : Icon(Icons.person,
                                 size: 65, color: colorData.primaryColor(.8)),
                   ),

@@ -5,6 +5,7 @@ import 'package:projrect_annam/const/color_extension.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
 
 import '../../utils/color_data.dart';
+import '../../utils/size_data.dart';
 
 class ExpandableCard extends ConsumerStatefulWidget {
   const ExpandableCard(
@@ -12,7 +13,7 @@ class ExpandableCard extends ConsumerStatefulWidget {
       required this.orderedData,
       required this.studentName,
       required this.studentId});
-  final Map<String, dynamic> orderedData;
+  final Map<String, dynamic>? orderedData;
   final String studentName;
   final String studentId;
 
@@ -25,8 +26,19 @@ class ExpandableCardState extends ConsumerState<ExpandableCard> {
   bool checked = false;
   @override
   Widget build(BuildContext context) {
+    CustomSizeData sizeData = CustomSizeData.from(context);
     CustomColorData colorData = CustomColorData.from(ref);
 
+    double height = sizeData.height;
+    double width = sizeData.width;
+    Map<String, dynamic>? filteredData;
+
+    if (widget.orderedData != null) {
+      filteredData = Map.from(widget.orderedData!)
+        ..remove('totalAmount')
+        ..remove('checkOut')
+        ..remove('time');
+    }
     return Padding(
       padding: const EdgeInsets.only(bottom: 10, top: 10),
       child: Card(
@@ -38,10 +50,10 @@ class ExpandableCardState extends ConsumerState<ExpandableCard> {
         child: Column(
           children: <Widget>[
             ListTile(
-              title: const CustomText(
-                text: 'Name: John Doe',
+              title: CustomText(
+                text: widget.studentName,
               ),
-              subtitle: const CustomText(text: 'Time: 2:00 PM'),
+              subtitle: CustomText(text: widget.orderedData!['time']),
               trailing: IconButton(
                 icon: Icon(
                   _isExpanded
@@ -59,84 +71,111 @@ class ExpandableCardState extends ConsumerState<ExpandableCard> {
                 ? Column(
                     children: <Widget>[
                       Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Table(
-                          border: TableBorder.all(
-                              color: colorData.primaryColor(.9)),
-                          children: const [
-                            TableRow(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: CustomText(text: 'Item 1'),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: CustomText(text: 'Description 1'),
-                                ),
-                              ],
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: height * 0.01,
                             ),
-                            TableRow(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: CustomText(text: 'Item 2'),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: CustomText(text: 'Description 2'),
-                                ),
-                              ],
-                            ),
-                            TableRow(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: CustomText(text: 'Item 3'),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: CustomText(text: 'Description 3'),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            const CustomText(
-                              text: 'Amount Paid: 100 Rs',
-                            ),
-                            OutlinedButton(
-                              onPressed: () {
-                                // Handle checkout button press
-                                if (checked == false) {
-                                  setState(() {
-                                    checked = true;
-                                  });
-                                  FirebaseOperations.checkOutItems(
-                                    studentId: widget.studentId,
+                            Container(
+                              decoration: BoxDecoration(
+                                  color: colorData.secondaryColor(.9)),
+                              child: ListView.separated(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                padding: EdgeInsets.zero,
+                                itemCount: filteredData!.length,
+                                separatorBuilder: ((context, index) => Divider(
+                                      indent: 25,
+                                      endIndent: 25,
+                                      color: colorData.primaryColor(1),
+                                      height: 2,
+                                    )),
+                                itemBuilder: ((context, index) {
+                                  List<String> items =
+                                      (filteredData!.keys.toList());
+                                  return Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 15, horizontal: 25),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: CustomText(
+                                            text: filteredData[items[index]]
+                                                    ['name'] +
+                                                "  *  " +
+                                                filteredData[items[index]]
+                                                    ['quantity'],
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 15,
+                                        ),
+                                        CustomText(
+                                          text:
+                                              "${filteredData[items[index]]['price']} \u{20B9}",
+                                        )
+                                      ],
+                                    ),
                                   );
-                                }
-                              },
-                              style: OutlinedButton.styleFrom(
-                                backgroundColor: checked == false
-                                    ? colorData.secondaryColor(1)
-                                    : colorData.primaryColor(.2),
-                                side: BorderSide(
-                                  color: checked == false
-                                      ? colorData.primaryColor(.9)
-                                      : Colors.transparent,
-                                  width: 1.5,
-                                ),
+                                }),
                               ),
-                              child: CustomText(
-                                text: 'Checked Out',
-                                color: colorData.fontColor(1),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 25),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Divider(
+                                    color: colorData.primaryColor(1),
+                                    height: 2,
+                                  ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      CustomText(
+                                        text: "Total",
+                                      ),
+                                      CustomText(
+                                        text: widget.orderedData!['totalAmount']
+                                                .toString() +
+                                            ' \u{20B9}',
+                                      )
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 25,
+                                  ),
+                                  Center(
+                                    child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(),
+                                            backgroundColor:
+                                                colorData.primaryColor(1)),
+                                        child: CustomText(
+                                          text: "Checkout",
+                                          size: sizeData.subHeader,
+                                          color: colorData.secondaryColor(1),
+                                        ),
+                                        onPressed: () {
+                                          FirebaseOperations.checkOutItems(
+                                            studentId: widget.studentId,
+                                          );
+                                        }),
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                ],
                               ),
                             ),
                           ],

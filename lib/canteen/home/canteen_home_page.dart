@@ -40,6 +40,8 @@ class _CanteenMainPageState extends ConsumerState<CanteenMainPage> {
                 height: 20,
                 child: CustomText(
                   text: "Today Items",
+                  size: sizeData.header,
+                  
                 ),
               ),
               Expanded(
@@ -60,6 +62,9 @@ class _CanteenMainPageState extends ConsumerState<CanteenMainPage> {
                         datas[FirebaseOperations.firebaseAuth.currentUser!.uid]
                                 ['todayOrders'] ??
                             [];
+
+                    if (studentsOrder.isEmpty)
+                      return Center(child: CustomText(text: "No Orders Today"));
 
                     return ListView.builder(
                         itemCount: studentsOrder.length,
@@ -89,11 +94,19 @@ class _CanteenMainPageState extends ConsumerState<CanteenMainPage> {
                                         mostinnersnapshot.data!.data()
                                             as Map<String, dynamic>;
 
-                                    return ExpandableCard(
-                                      studentId: studentsOrder[index],
-                                      studentName: studentName,
-                                      orderedData: obj,
-                                    );
+                                    Map<String, dynamic> data = obj[
+                                            FirebaseOperations.firebaseAuth
+                                                .currentUser!.uid] ??
+                                        {};
+                                    if (data.isNotEmpty) {
+                                      return ExpandableCard(
+                                        studentId: studentsOrder[index],
+                                        studentName: studentName,
+                                        orderedData: data,
+                                      );
+                                    } else {
+                                      return SizedBox();
+                                    }
                                   });
                             },
                           );

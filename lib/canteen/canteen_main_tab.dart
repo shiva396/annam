@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projrect_annam/const/static_data.dart';
 import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/canteen/history/canteen_history.dart';
 import 'package:projrect_annam/canteen/home/canteen_home_page.dart';
@@ -117,7 +118,7 @@ class _CanteenOwnerState extends ConsumerState<CanteenOwner> {
                           onTap: () {
                             if (selctTab != 1) {
                               selctTab = 1;
-                              selectPageView = const CanteenHistory();
+                              selectPageView = const CanteenHistory(userRole: UserRole.canteenOwner,);
                             }
                             if (mounted) {
                               setState(() {});

@@ -61,9 +61,6 @@ class _CreationState extends ConsumerState<Creation> {
               GestureDetector(
                 onTap: () async {
                   imageData = await selectFile();
-                  if (imageData != null) {
-                    imageUrl = imageData!.path;
-                  }
                 },
                 child: imageData == null
                     ? CustomNetworkImage(
@@ -128,17 +125,18 @@ class _CreationState extends ConsumerState<Creation> {
                                 imagePath: "assets/rive/loading.riv");
                           });
                       FirebaseOperations.editItems(
+                        oldImagePath: imageUrl,
+                        newImagePath: imageData,
                         categoryName: categoryName,
                         collegeName: widget.collegeName,
                         newitemName: nameController.text.trim(),
                         itemPrice: priceController.text.trim(),
-                        itemImageUrl: imageUrl,
                         olditemName: itemName,
                         stockInHand: selected,
-                      ).whenComplete(
-                        () => Navigator.pop(context),
-                      );
-                      context.pop();
+                      ).whenComplete(() {
+                        context.pop();
+                        context.pop();
+                      });
                     }),
                 ElevatedButton(
                     child: Row(
@@ -237,22 +235,18 @@ class _CreationState extends ConsumerState<Creation> {
                                   context: context,
                                   imagePath: "assets/rive/loading.riv");
                             });
-                        UploadTask dataUploaded = FirebaseOperations
-                            .firebaseStorage
-                            .ref(
-                                'canteenOwners/${FirebaseOperations.firebaseAuth.currentUser!.uid + "1"}/${categoryName}/${nameController.text.trim()}')
-                            .putFile(File(imageData!.path));
-                        TaskSnapshot cases =
-                            await dataUploaded.whenComplete(() {});
-                        String imagePath = await cases.ref.getDownloadURL();
 
                         FirebaseOperations.addItems(
                                 categoryName: categoryName,
                                 collegeName: widget.collegeName,
+                                context: context,
                                 itemName: nameController.text.trim(),
                                 itemPrice: priceController.text.trim(),
                                 itemImageUrl: imageData!)
-                            .whenComplete(() => Navigator.of(context).pop());
+                            .whenComplete(() {
+                          context.pop();
+                          context.pop();
+                        });
                       } else {
                         context.showSnackBar("Add All details");
                       }
@@ -319,10 +313,15 @@ class _CreationState extends ConsumerState<Creation> {
                       ],
                     ),
                     onPressed: () async {
-                      FirebaseOperations.addCategories(
-                              categoryName: categoryName,
-                              collegeName: widget.collegeName)
-                          .whenComplete(() => Navigator.of(context).pop());
+                      if (categoryName.isNotEmpty) {
+                        FirebaseOperations.addCategories(
+                                context: context,
+                                categoryName: categoryName,
+                                collegeName: widget.collegeName)
+                            .whenComplete(() => Navigator.of(context).pop());
+                      } else {
+                        context.showSnackBar("Enter the field");
+                      }
                     }),
                 ElevatedButton(
                     child: Row(
@@ -364,250 +363,264 @@ class _CreationState extends ConsumerState<Creation> {
           right: width * 0.04,
           top: height * 0.02,
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CustomText(
-              text: "Welcome to Products gallery",
-              size: sizeData.header,
-            ),
-            SizedBox(
-              height: height * 0.03,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomText(
-                  text: "All Categories",
-                  size: sizeData.medium,
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomText(
+                text: "Welcome to Products gallery",
+                size: sizeData.header,
+              ),
+              SizedBox(
+                height: height * 0.03,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomText(
+                    text: "All Categories",
+                    size: sizeData.medium,
                   ),
-                  onPressed: () {
-                    showAddCategoryDialog(
-                        context: context,
-                        sizeData: sizeData,
-                        height: height,
-                        width: width);
-                  },
-                  child: const CustomText(
-                    text: "Add Category",
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(),
+                    ),
+                    onPressed: () {
+                      showAddCategoryDialog(
+                          context: context,
+                          sizeData: sizeData,
+                          height: height,
+                          width: width);
+                    },
+                    child: const CustomText(
+                      text: "Add Category",
+                    ),
                   ),
-                ),
-              ],
-            ),
-            StreamBuilder<DocumentSnapshot>(
-                stream: FirebaseOperations.firebaseInstance
-                    .collection('college')
-                    .doc(widget.collegeName)
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) return ShimmerEffect();
-                  Map<String, dynamic> data = snapshot.data!.get(
-                      FirebaseOperations.firebaseAuth.currentUser!
-                          .uid)['categories'] as Map<String, dynamic>;
+                ],
+              ),
+              StreamBuilder<DocumentSnapshot>(
+                  stream: FirebaseOperations.firebaseInstance
+                      .collection('college')
+                      .doc(widget.collegeName)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) return ShimmerEffect();
+                    Map<String, dynamic> data = snapshot.data!.get(
+                        FirebaseOperations.firebaseAuth.currentUser!
+                            .uid)['categories'] as Map<String, dynamic>;
 
-                  List<String> categories = data.keys.toList();
-                  if (categories.isNotEmpty) {
-                    return Column(children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 9),
-                        child: SizedBox(
-                          height: 50,
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            physics: const BouncingScrollPhysics(),
-                            itemCount: categories.length,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (ctx, index) {
-                              return Column(
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        current = index;
-                                        selectedCategory = categories[index];
-                                      });
-                                    },
-                                    child: AnimatedContainer(
-                                      color: Colors.transparent,
-                                      duration:
-                                          const Duration(milliseconds: 300),
-                                      margin: const EdgeInsets.all(5),
-                                      width: 100,
-                                      height: 30,
-                                      child: Center(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            CustomText(
-                                              text:
-                                                  categories[index].toString(),
-                                              size: sizeData.medium,
-                                            ),
-                                          ],
+                    List<String> categories = data.keys.toList();
+                    if (categories.isNotEmpty) {
+                      return Column(children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 9),
+                          child: SizedBox(
+                            height: 50,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: categories.length,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (ctx, index) {
+                                return Column(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          current = index;
+                                          selectedCategory = categories[index];
+                                        });
+                                      },
+                                      child: AnimatedContainer(
+                                        color: Colors.transparent,
+                                        duration:
+                                            const Duration(milliseconds: 300),
+                                        margin: const EdgeInsets.all(5),
+                                        width: 100,
+                                        height: 30,
+                                        child: Center(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              CustomText(
+                                                text: categories[index]
+                                                    .toString(),
+                                                size: sizeData.medium,
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  Visibility(
-                                    visible:
-                                        selectedCategory == categories[index],
-                                    child: Container(
-                                      width: 6,
-                                      height: 6,
-                                      decoration: BoxDecoration(
-                                          color: colorData.primaryColor(1),
-                                          shape: BoxShape.circle),
-                                    ),
-                                  )
-                                ],
-                              );
-                            },
+                                    Visibility(
+                                      visible:
+                                          selectedCategory == categories[index],
+                                      child: Container(
+                                        width: 6,
+                                        height: 6,
+                                        decoration: BoxDecoration(
+                                            color: colorData.primaryColor(1),
+                                            shape: BoxShape.circle),
+                                      ),
+                                    )
+                                  ],
+                                );
+                              },
+                            ),
                           ),
                         ),
-                      ),
-                      selectedCategory.isNotEmpty
-                          ? ListView.builder(
-                              itemCount: data[categories[current]].length + 1,
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                List<String> items =
-                                    data[categories[current]].keys.toList();
+                        selectedCategory.isNotEmpty
+                            ? SizedBox(
+                                height: sizeData.height * 0.60,
+                                child: ListView.builder(
+                                  itemCount:
+                                      data[categories[current]].length + 1,
+                                  shrinkWrap: true,
+                                  // physics: NeverScrollableScrollPhysics(),
+                                  scrollDirection: Axis.vertical,
+                                  itemBuilder: (context, index) {
+                                    List<String> items =
+                                        data[categories[current]].keys.toList();
 
-                                if (index + 1 ==
-                                    data[categories[current]].length + 1) {
-                                  return Card(
-                                    color: colorData.secondaryColor(1),
-                                    margin: EdgeInsets.all(10.0),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    child: ListTile(
-                                        leading: Icon(Icons.add),
-                                        title: CustomText(text: 'Add New Item'),
-                                        onTap: () {
-                                          _addItem(
-                                              sizeData: sizeData,
-                                              categoryName: selectedCategory,
-                                              width: width,
-                                              height: height);
-                                        }),
-                                  );
-                                } else {
-                                  return Card(
-                                    color: colorData.secondaryColor(1),
-                                    margin: EdgeInsets.all(10.0),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    child: ListTile(
-                                      leading: CustomNetworkImage(
-                                        url: data[categories[current]]
-                                                        [items[index]]
-                                                    ['imageUrl'] !=
-                                                "empty"
-                                            ? data[categories[current]]
-                                                [items[index]]['imageUrl']
-                                            : null,
-                                        size: 50,
-                                        radius: 50,
-                                      ),
-                                      title: CustomText(
-                                        text: data[categories[current]]
-                                            [items[index]]['name'],
-                                        size: sizeData.medium,
-                                      ),
-                                      subtitle: CustomText(
-                                        text: data[categories[current]]
-                                            [items[index]]['price'],
-                                        size: sizeData.medium,
-                                      ),
-                                      trailing: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          IconButton(
-                                            icon: Image.asset(
-                                              ImageConst.editPencil,
-                                              height: sizeData.superLarge,
-                                              width: sizeData.superLarge,
-                                            ),
-                                            onPressed: () {
-                                              bool stockData =
-                                                  data[categories[current]]
-                                                          [items[index]]
-                                                      ['stockInHand'];
-
-                                              _editItem(
-                                                  price:
-                                                      data[categories[current]]
-                                                              [items[index]]
-                                                          ['price'],
-                                                  imageUrl:
-                                                      data[categories[current]]
-                                                              [items[index]]
-                                                          ['imageUrl'],
-                                                  height: height,
-                                                  width: width,
-                                                  itemName:
-                                                      data[categories[current]]
-                                                              [items[index]]
-                                                          ['name'],
+                                    if (index + 1 ==
+                                        data[categories[current]].length + 1) {
+                                      return Card(
+                                        color: colorData.secondaryColor(1),
+                                        margin: EdgeInsets.all(10.0),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                        ),
+                                        child: ListTile(
+                                            leading: Icon(Icons.add),
+                                            title: CustomText(
+                                                text: 'Add New Item'),
+                                            onTap: () {
+                                              _addItem(
+                                                  sizeData: sizeData,
                                                   categoryName:
                                                       selectedCategory,
-                                                  data: stockData);
-                                            },
+                                                  width: width,
+                                                  height: height);
+                                            }),
+                                      );
+                                    } else {
+                                      return Card(
+                                        color: colorData.secondaryColor(1),
+                                        margin: EdgeInsets.all(10.0),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                        ),
+                                        child: ListTile(
+                                          leading: CustomNetworkImage(
+                                            url: data[categories[current]]
+                                                            [items[index]]
+                                                        ['imageUrl'] !=
+                                                    "empty"
+                                                ? data[categories[current]]
+                                                    [items[index]]['imageUrl']
+                                                : null,
+                                            size: 50,
+                                            radius: 50,
                                           ),
-                                          IconButton(
-                                            icon: Image.asset(
-                                              ImageConst.delete,
-                                              height: sizeData.superLarge,
-                                              width: sizeData.superLarge,
-                                            ),
-                                            onPressed: () {
-                                              FirebaseOperations.removeItems(
-                                                categoryName: selectedCategory,
-                                                collegeName: widget.collegeName,
-                                                itemName:
-                                                    data[categories[current]]
+                                          title: CustomText(
+                                            text: data[categories[current]]
+                                                [items[index]]['name'],
+                                            size: sizeData.medium,
+                                          ),
+                                          subtitle: CustomText(
+                                            text: data[categories[current]]
+                                                [items[index]]['price'],
+                                            size: sizeData.medium,
+                                          ),
+                                          trailing: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              IconButton(
+                                                icon: Image.asset(
+                                                  ImageConst.editPencil,
+                                                  height: sizeData.superLarge,
+                                                  width: sizeData.superLarge,
+                                                ),
+                                                onPressed: () {
+                                                  bool stockData =
+                                                      data[categories[current]]
+                                                              [items[index]]
+                                                          ['stockInHand'];
+
+                                                  _editItem(
+                                                      price: data[categories[
+                                                                  current]]
+                                                              [items[index]]
+                                                          ['price'],
+                                                      imageUrl:
+                                                          data[categories[current]]
+                                                                  [items[index]]
+                                                              ['imageUrl'],
+                                                      height: height,
+                                                      width: width,
+                                                      itemName:
+                                                          data[categories[current]]
+                                                                  [items[index]]
+                                                              ['name'],
+                                                      categoryName:
+                                                          selectedCategory,
+                                                      data: stockData);
+                                                },
+                                              ),
+                                              IconButton(
+                                                icon: Image.asset(
+                                                  ImageConst.delete,
+                                                  height: sizeData.superLarge,
+                                                  width: sizeData.superLarge,
+                                                ),
+                                                onPressed: () {
+                                                  FirebaseOperations
+                                                      .removeItems(
+                                                    categoryName:
+                                                        selectedCategory,
+                                                    collegeName:
+                                                        widget.collegeName,
+                                                    itemName: data[
+                                                            categories[current]]
                                                         [items[index]]['name'],
-                                              );
-                                            },
+                                                  );
+                                                },
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                }
-                              },
-                            )
-                          : Column(
-                              children: [
-                                Container(
-                                  child:
-                                      Lottie.asset("assets/lottie/person.json"),
+                                        ),
+                                      );
+                                    }
+                                  },
                                 ),
-                                CustomText(
-                                  text: "Choose Category",
-                                  weight: FontWeight.bold,
-                                  size: sizeData.medium,
-                                  color: colorData.fontColor(1),
-                                )
-                              ],
-                            ),
-                    ]);
-                  } else {
-                    return Center(
-                      child: CustomText(text: "No categories"),
-                    );
-                  }
-                })
-          ],
+                              )
+                            : Column(
+                                children: [
+                                  Container(
+                                    child: Lottie.asset(
+                                        "assets/lottie/person.json"),
+                                  ),
+                                  CustomText(
+                                    text: "Choose Category",
+                                    weight: FontWeight.bold,
+                                    size: sizeData.medium,
+                                    color: colorData.fontColor(1),
+                                  )
+                                ],
+                              ),
+                      ]);
+                    } else {
+                      return Center(
+                        child: CustomText(text: "No categories"),
+                      );
+                    }
+                  })
+            ],
+          ),
         ),
       )),
     );

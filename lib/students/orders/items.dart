@@ -12,7 +12,7 @@ import 'package:projrect_annam/utils/page_header.dart';
 
 import '../../utils/color_data.dart';
 import '../../utils/size_data.dart';
-import 'my_order.dart';
+import 'my_cart.dart';
 import 'item_details.dart';
 
 class MenuItemsView extends ConsumerStatefulWidget {
@@ -80,7 +80,7 @@ class _MenuItemsViewState extends ConsumerState<MenuItemsView> {
                   title: widget.selectedCategory,
                   secondaryWidget: IconButton(
                     onPressed: () {
-                      context.push(MyOrderView());
+                      context.push(CartView());
                     },
                     icon: Image.asset(
                       ImageConst.shoppingCart,

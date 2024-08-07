@@ -4,23 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/const/image_const.dart';
+import 'package:projrect_annam/students/orders/my_orders.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
+import 'package:projrect_annam/utils/extension_methods.dart';
 import 'package:projrect_annam/utils/helper_methods.dart';
 import 'package:projrect_annam/utils/page_header.dart';
 
 import '../../utils/color_data.dart';
 import '../../utils/size_data.dart';
 
-class MyOrderView extends ConsumerStatefulWidget {
-  const MyOrderView({
+class CartView extends ConsumerStatefulWidget {
+  const CartView({
     super.key,
   });
 
   @override
-  ConsumerState<MyOrderView> createState() => _MyOrderViewState();
+  ConsumerState<CartView> createState() => _CartViewState();
 }
 
-class _MyOrderViewState extends ConsumerState<MyOrderView> {
+class _CartViewState extends ConsumerState<CartView> {
   bool _showLoading = true;
   @override
   void initState() {
@@ -51,7 +53,19 @@ class _MyOrderViewState extends ConsumerState<MyOrderView> {
           child: SingleChildScrollView(
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              PageHeader(title: "My Orders"),
+              PageHeader(
+                title: "My Carts",
+                secondaryWidget: IconButton(
+                  onPressed: () {
+                    context.push(MyOrders());
+                  },
+                  icon: Image.asset(
+                    ImageConst.shoppingCart,
+                    width: sizeData.superLarge,
+                    height: sizeData.superLarge,
+                  ),
+                ),
+              ),
               StreamBuilder<DocumentSnapshot>(
                   stream: FirebaseOperations.firebaseInstance
                       .collection('student')
@@ -67,7 +81,7 @@ class _MyOrderViewState extends ConsumerState<MyOrderView> {
                         stream: FirebaseOperations.firebaseInstance
                             .collection('student')
                             .doc(FirebaseAuth.instance.currentUser!.uid)
-                            .collection('orders')
+                            .collection('cart')
                             .snapshots(),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
@@ -85,7 +99,8 @@ class _MyOrderViewState extends ConsumerState<MyOrderView> {
                           if (!snapshot.hasData ||
                               snapshot.data!.docs.isEmpty) {
                             return Center(
-                                child: CustomText(text: "No orders found."));
+                              child: CustomText(text: "No orders found."),
+                            );
                           }
                           Map<String, dynamic> canteenOrders =
                               snapshot.data!.docs.first.data()!
@@ -112,6 +127,7 @@ class _MyOrderViewState extends ConsumerState<MyOrderView> {
                                         Map<String, dynamic> obj =
                                             innersnapshot.data!.data()
                                                 as Map<String, dynamic>;
+
                                         String canteenName =
                                             obj[canteenOwners[index]]['name'];
                                         Map<String, dynamic> items =
@@ -293,7 +309,8 @@ class _MyOrderViewState extends ConsumerState<MyOrderView> {
                                                                       .primaryColor(
                                                                           1)),
                                                           child: CustomText(
-                                                            text: "Checkout",
+                                                            text:
+                                                                "Place Orders",
                                                             size: sizeData
                                                                 .subHeader,
                                                             color: colorData
@@ -305,7 +322,10 @@ class _MyOrderViewState extends ConsumerState<MyOrderView> {
                                                             Ordereditems
                                                                 .addAll({
                                                               'canttenName':
-                                                                  canteenName
+                                                                  canteenName,
+                                                              'canttenId':
+                                                                  canteenOwners[
+                                                                      index]
                                                             });
 
                                                             Map<String, dynamic>
@@ -316,6 +336,18 @@ class _MyOrderViewState extends ConsumerState<MyOrderView> {
                                                                   v;
                                                               return MapEntry(
                                                                   k, v);
+                                                            });
+                                                            FirebaseOperations
+                                                                .placeOrders(
+                                                              collegeName:
+                                                                  collegeName,
+                                                              canttenOwnerId:
+                                                                  canteenOwners[
+                                                                      index],
+                                                              data: data,
+                                                            ).whenComplete(() {
+                                                              context.showSnackBar(
+                                                                  "Order Placed Sucessfully");
                                                             });
                                                           }),
                                                     ),
