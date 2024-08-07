@@ -15,6 +15,8 @@ import 'package:projrect_annam/utils/extension_methods.dart';
 import '../../const/color_extension.dart';
 import '../../common_widget/round_textfield.dart';
 import '../../utils/color_data.dart';
+import '../../utils/custom_network_image.dart';
+import '../../utils/helper_methods.dart';
 import '../../utils/size_data.dart';
 import '../orders/my_order.dart';
 
@@ -126,10 +128,11 @@ class _StudentProfilePageState extends ConsumerState<StudentProfilePage> {
                                 width: 100, height: 100, fit: BoxFit.cover),
                           )
                         : profileUrl.isNotEmpty
-                            ? CircleAvatar(
-                                radius: width * 0.9,
-                                backgroundImage: NetworkImage(profileUrl),
-                              )
+                            ?  CustomNetworkImage(
+                                  url: profileUrl,
+                                  size: width * 0.9,
+                                  radius: width * 0.9,
+                                )
                             : Icon(Icons.person,
                                 size: 65, color: colorData.primaryColor(.8)),
                   ),
@@ -259,6 +262,14 @@ class _StudentProfilePageState extends ConsumerState<StudentProfilePage> {
                                 }
 
                                 if (image != null) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return overlayContent(
+                                            context: context,
+                                            imagePath:
+                                                'assets/rive/loading.riv');
+                                      });
                                   UploadTask dataUploaded = FirebaseOperations
                                       .firebaseStorage
                                       .ref(
@@ -281,6 +292,7 @@ class _StudentProfilePageState extends ConsumerState<StudentProfilePage> {
                                   setState(() {
                                     changeData = false;
                                   });
+                                  context.pop();
                                 } else {
                                   setState(() {
                                     changeData = false;

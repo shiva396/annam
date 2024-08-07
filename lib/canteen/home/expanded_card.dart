@@ -4,7 +4,7 @@ import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/const/color_extension.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
 
-import '../utils/color_data.dart';
+import '../../utils/color_data.dart';
 
 class ExpandableCard extends ConsumerStatefulWidget {
   const ExpandableCard(
@@ -25,12 +25,12 @@ class ExpandableCardState extends ConsumerState<ExpandableCard> {
   bool checked = false;
   @override
   Widget build(BuildContext context) {
-        CustomColorData colorData = CustomColorData.from(ref);
+    CustomColorData colorData = CustomColorData.from(ref);
 
     return Padding(
-      padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
+      padding: const EdgeInsets.only(bottom: 10, top: 10),
       child: Card(
-        color: colorData.fontColor(.9),
+        color: colorData.secondaryColor(.9),
         elevation: 4,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
@@ -38,9 +38,8 @@ class ExpandableCardState extends ConsumerState<ExpandableCard> {
         child: Column(
           children: <Widget>[
             ListTile(
-              title: const CustomText(text: 
-                'Name: John Doe',
-             
+              title: const CustomText(
+                text: 'Name: John Doe',
               ),
               subtitle: const CustomText(text: 'Time: 2:00 PM'),
               trailing: IconButton(
@@ -62,7 +61,8 @@ class ExpandableCardState extends ConsumerState<ExpandableCard> {
                       Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Table(
-                          border: TableBorder.all(color: colorData.primaryColor(.9)),
+                          border: TableBorder.all(
+                              color: colorData.primaryColor(.9)),
                           children: const [
                             TableRow(
                               children: [
@@ -108,9 +108,8 @@ class ExpandableCardState extends ConsumerState<ExpandableCard> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            const CustomText(text: 
-                              'Amount Paid: 100 Rs',
-                            
+                            const CustomText(
+                              text: 'Amount Paid: 100 Rs',
                             ),
                             OutlinedButton(
                               onPressed: () {
@@ -126,8 +125,8 @@ class ExpandableCardState extends ConsumerState<ExpandableCard> {
                               },
                               style: OutlinedButton.styleFrom(
                                 backgroundColor: checked == false
-                                    ? Colors.white
-                                    : Colors.grey.shade400,
+                                    ? colorData.secondaryColor(1)
+                                    : colorData.primaryColor(.2),
                                 side: BorderSide(
                                   color: checked == false
                                       ? colorData.primaryColor(.9)
@@ -135,9 +134,9 @@ class ExpandableCardState extends ConsumerState<ExpandableCard> {
                                   width: 1.5,
                                 ),
                               ),
-                              child: CustomText(text: 
-                                'Checked Out',
-                             
+                              child: CustomText(
+                                text: 'Checked Out',
+                                color: colorData.fontColor(1),
                               ),
                             ),
                           ],

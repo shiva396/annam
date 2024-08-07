@@ -2,15 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projrect_annam/firebase/firebase_operations.dart';
-import 'package:projrect_annam/canteen/canteen_history.dart';
-import 'package:projrect_annam/canteen/canteen_home_page.dart';
-import 'package:projrect_annam/canteen/canteen_profile_page.dart';
-import 'package:projrect_annam/canteen/creation.dart';
-import 'package:projrect_annam/const/color_extension.dart';
+import 'package:projrect_annam/canteen/history/canteen_history.dart';
+import 'package:projrect_annam/canteen/home/canteen_home_page.dart';
+import 'package:projrect_annam/canteen/profile/canteen_profile_page.dart';
+import 'package:projrect_annam/canteen/menu/creation.dart';
 import 'package:projrect_annam/common_widget/tab_button.dart';
 import 'package:projrect_annam/const/image_const.dart';
 import 'package:projrect_annam/students/more/more.dart';
 import 'package:projrect_annam/utils/color_data.dart';
+import 'package:projrect_annam/utils/helper_methods.dart';
 
 class CanteenOwner extends ConsumerStatefulWidget {
   const CanteenOwner({
@@ -35,7 +35,7 @@ class _CanteenOwnerState extends ConsumerState<CanteenOwner> {
   PageStorageBucket storageBucket = PageStorageBucket();
   @override
   Widget build(BuildContext context) {
-        CustomColorData colorData = CustomColorData.from(ref);
+    CustomColorData colorData = CustomColorData.from(ref);
     return StreamBuilder<DocumentSnapshot>(
         stream: FirebaseOperations.firebaseInstance
             .collection('college')
@@ -43,7 +43,10 @@ class _CanteenOwnerState extends ConsumerState<CanteenOwner> {
             .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData && selectPageView != null)
-            return CircularProgressIndicator();
+            return Scaffold(
+              body: overlayContent(
+                  context: context, imagePath: "assets/rive/loading.riv"),
+            );
 
           Map<String, dynamic> canteenOwnerData = snapshot.data!
                   .get(FirebaseOperations.firebaseAuth.currentUser!.uid)
@@ -70,8 +73,9 @@ class _CanteenOwnerState extends ConsumerState<CanteenOwner> {
                     }
                   },
                   shape: const CircleBorder(),
-                  backgroundColor:
-                      selctTab == 2 ?  colorData.primaryColor(.9): colorData.primaryColor(.2),
+                  backgroundColor: selctTab == 2
+                      ? colorData.primaryColor(.9)
+                      : colorData.primaryColor(.3),
                   child: Image.asset(
                     ImageConst.hometab,
                     width: 30,

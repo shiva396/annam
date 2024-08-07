@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import 'custom_text.dart';
@@ -22,6 +21,7 @@ extension FlutterNavigation on BuildContext {
       SnackBar(
           content: Center(
         child: CustomText(
+          maxLine: 4,
           text: message,
           color: Colors.white,
           weight: FontWeight.w700,

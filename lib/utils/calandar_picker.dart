@@ -1,8 +1,8 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 
-import '../utils/custom_text.dart';
-import '../utils/size_data.dart';
+import 'custom_text.dart';
+import 'size_data.dart';
 
 class CalandarPicker extends StatefulWidget {
   const CalandarPicker({super.key});

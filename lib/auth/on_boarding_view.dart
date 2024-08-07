@@ -19,25 +19,25 @@ class OnBoardingView extends ConsumerStatefulWidget {
 class _OnBoardingViewState extends ConsumerState<OnBoardingView> {
   int selectPage = 0;
   PageController controller = PageController();
-
   List pageArr = [
     {
-      "title": "Find Food You Love",
+      "title": "Discover Delicious Meals",
       "subtitle":
-          "Discover the best foods from over 1,000\nrestaurants and fast delivery to your\ndoorstep",
+          "Find and order the best meals from canteens with quick delivery to your doorstep",
       "image": ImageConst.onboarding1,
     },
     {
-      "title": "Fast Delivery",
-      "subtitle": "Fast food delivery to your home, office\n wherever you are",
+      "title": "Speedy Service",
+      "subtitle":
+          "Enjoy fast food delivery from local canteens to your home or office",
       "image": ImageConst.onboarding2,
     },
     {
-      "title": "Live Tracking",
+      "title": "Reduce Food Waste",
       "subtitle":
-          "Real time tracking of your food on the app\nonce you placed the order",
+          "Help the environment by diverting waste food to cattle owners, NGOs, and wholesalers",
       "image": ImageConst.onboarding3,
-    },
+    }
   ];
 
   @override

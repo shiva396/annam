@@ -5,6 +5,7 @@ import 'package:projrect_annam/const/static_data.dart';
 import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/canteen/canteen_main_tab.dart';
 import 'package:projrect_annam/const/image_const.dart';
+import 'package:projrect_annam/ngo/home/home.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
 import 'package:projrect_annam/utils/extension_methods.dart';
 import '../students/student_main_tab.dart';
@@ -367,88 +368,105 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                                   UserRole.cattleOwner.asString) {
                               } else if (_selectedRole ==
                                   UserRole.ngo.asString) {
+                                // TODO : Validate them
+                                widget.userData.addAll({
+                                  'organization':
+                                      _organizationController.text.trim(),
+                                  'phoneNumber': _phoneController.text.trim(),
+                                  'co-ordinator-phoneNumber':
+                                      _coordinatorController.text.trim(),
+                                });
                               } else {}
+                              try {
+                                FirebaseOperations.firebaseAuth
+                                    .createUserWithEmailAndPassword(
+                                        email: widget.userData['email'],
+                                        password: widget.userData['password'])
+                                    .onError((e, s) {
+                                  context.showSnackBar(e.toString());
+                                  context.pop();
+                                  throw Error();
+                                }).then((v) async {
+                                  try {
+                                    DocumentReference docRef = FirebaseFirestore
+                                        .instance
+                                        .collection('role')
+                                        .doc('role');
+                                    DocumentSnapshot docSnapshot =
+                                        await docRef.get();
+                                    Map<String, dynamic> roleMap =
+                                        docSnapshot.get('role') ?? {};
+                                    if (docSnapshot.exists) {
+                                      if (!roleMap.containsKey(
+                                          widget.userData['email'])) {
+                                        roleMap[widget.userData['email']] =
+                                            _selectedRole;
 
-                              FirebaseOperations.firebaseAuth
-                                  .createUserWithEmailAndPassword(
-                                      email: widget.userData['email'],
-                                      password: widget.userData['password'])
-                                  .then((v) async {
-                                try {
-                                  DocumentReference docRef = FirebaseFirestore
-                                      .instance
-                                      .collection('role')
-                                      .doc('role');
-                                  DocumentSnapshot docSnapshot =
-                                      await docRef.get();
-                                  Map<String, dynamic> roleMap =
-                                      docSnapshot.get('role') ?? {};
-                                  if (docSnapshot.exists) {
-                                    if (!roleMap.containsKey(
-                                        widget.userData['email'])) {
+                                        await docRef.update({
+                                          'role': roleMap,
+                                        });
+                                      } else {
+                                        context.showSnackBar("Already exist");
+                                      }
+                                    } else {
                                       roleMap[widget.userData['email']] =
                                           _selectedRole;
-
-                                      await docRef.update({
+                                      FirebaseFirestore.instance
+                                          .collection('role')
+                                          .doc('role')
+                                          .set({
                                         'role': roleMap,
                                       });
-                                    } else {
-                                      context.showSnackBar("Already exist");
                                     }
-                                  } else {
-                                    roleMap[widget.userData['email']] =
-                                        _selectedRole;
-                                    FirebaseFirestore.instance
-                                        .collection('role')
-                                        .doc('role')
-                                        .set({
-                                      'role': roleMap,
-                                    });
+                                  } catch (e) {
+                                    context.showSnackBar(e.toString());
                                   }
-                                } catch (e) {
-                                  context.showSnackBar(e.toString());
-                                }
 
-                                if (_selectedRole ==
-                                    UserRole.canteenOwner.asString) {
-                                  Map<String, dynamic> user = {
-                                    FirebaseOperations.firebaseAuth.currentUser!
-                                        .uid: widget.userData
-                                  };
-                                  FirebaseOperations.firebaseInstance
-                                      .collection('college')
-                                      .doc(_selectedCollege.trim())
-                                      .set(user, SetOptions(merge: true));
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => CanteenOwner(
-                                        collegeName: _selectedCollege,
+                                  if (_selectedRole ==
+                                      UserRole.canteenOwner.asString) {
+                                    Map<String, dynamic> user = {
+                                      FirebaseOperations.firebaseAuth
+                                          .currentUser!.uid: widget.userData
+                                    };
+                                    FirebaseOperations.firebaseInstance
+                                        .collection('college')
+                                        .doc(_selectedCollege.trim())
+                                        .set(user, SetOptions(merge: true));
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => CanteenOwner(
+                                          collegeName: _selectedCollege,
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                } else {
-                                  FirebaseOperations.firebaseInstance
-                                      .collection(_selectedRole)
-                                      .doc(FirebaseOperations
-                                          .firebaseAuth.currentUser!.uid
-                                          .trim())
-                                      .set(widget.userData)
-                                      .whenComplete(() {
-                                    if (_selectedRole ==
-                                        UserRole.student.asString) {
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => MainTabView(
+                                    );
+                                  } else {
+                                    FirebaseOperations.firebaseInstance
+                                        .collection(_selectedRole)
+                                        .doc(FirebaseOperations
+                                            .firebaseAuth.currentUser!.uid
+                                            .trim())
+                                        .set(widget.userData)
+                                        .whenComplete(() {
+                                      if (_selectedRole ==
+                                          UserRole.student.asString) {
+                                        context.pushReplacement(
+                                          MainTabView(
                                             role: 'student',
                                           ),
-                                        ),
-                                      );
-                                    } else {}
-                                  });
-                                }
-                              });
+                                        );
+                                      } else if (_selectedRole ==
+                                          UserRole.ngo.asString) {
+                                        context.pushReplacement(NgoHome());
+                                      }
+                                    });
+                                  }
+                                });
+                              } catch (e) {
+                                print("Error");
+                                context.showSnackBar(e.toString());
+                                context.pop();
+                              }
                             },
                             style: ButtonStyle(
                               backgroundColor:

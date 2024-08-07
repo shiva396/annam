@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projrect_annam/const/image_const.dart';
+import 'package:projrect_annam/const/static_data.dart';
 import 'package:projrect_annam/students/more/about_us.dart';
 import 'package:projrect_annam/students/more/payment_details.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
@@ -13,7 +14,9 @@ import '../../utils/size_data.dart';
 import '../orders/my_order.dart';
 
 class MoreView extends ConsumerStatefulWidget {
-  const MoreView({super.key});
+  const MoreView({
+    super.key,
+  });
 
   @override
   ConsumerState<MoreView> createState() => _MoreViewState();
@@ -84,6 +87,7 @@ class _MoreViewState extends ConsumerState<MoreView> {
                     itemBuilder: (context, index) {
                       var mObj = moreArr[index] as Map? ?? {};
                       var countBase = mObj["base"] as int? ?? 0;
+
                       return InkWell(
                         onTap: () {
                           switch (mObj["index"].toString()) {

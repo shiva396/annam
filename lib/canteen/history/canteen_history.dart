@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:projrect_annam/utils/extension_methods.dart';
+import 'package:projrect_annam/utils/calandar_picker.dart';
 
-import '../../utils/calandar_picker.dart';
-import '../../const/image_const.dart';
+import '../../students/orders/my_order.dart';
 import '../../utils/color_data.dart';
 import '../../utils/custom_text.dart';
 import '../../utils/size_data.dart';
-import '../orders/my_order.dart';
 
-class StudentHistory extends ConsumerStatefulWidget {
-  const StudentHistory({super.key});
+class CanteenHistory extends ConsumerStatefulWidget {
+  const CanteenHistory({super.key});
 
   @override
-  ConsumerState<StudentHistory> createState() => _StudentHistoryState();
+  ConsumerState<CanteenHistory> createState() => _CanteenHistoryState();
 }
 
-class _StudentHistoryState extends ConsumerState<StudentHistory> {
+class _CanteenHistoryState extends ConsumerState<CanteenHistory> {
   @override
   Widget build(BuildContext context) {
     CustomSizeData sizeData = CustomSizeData.from(context);
@@ -40,16 +38,6 @@ class _StudentHistoryState extends ConsumerState<StudentHistory> {
                   text: "History",
                   size: sizeData.header,
                   color: colorData.fontColor(1),
-                ),
-                IconButton(
-                  onPressed: () {
-                    context.push(MyOrderView());
-                  },
-                  icon: Image.asset(
-                    ImageConst.shoppingCart,
-                    width: sizeData.superLarge,
-                    height: sizeData.superLarge,
-                  ),
                 ),
               ],
             ),

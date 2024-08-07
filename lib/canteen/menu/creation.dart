@@ -1,0 +1,615 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
+import 'package:projrect_annam/const/image_const.dart';
+import 'package:projrect_annam/firebase/firebase_operations.dart';
+import 'package:projrect_annam/utils/custom_network_image.dart';
+import 'package:projrect_annam/utils/extension_methods.dart';
+import 'package:projrect_annam/utils/helper_methods.dart';
+import 'package:projrect_annam/utils/shimmer_effect.dart';
+
+import '../../utils/color_data.dart';
+import '../../utils/custom_text.dart';
+import '../../utils/size_data.dart';
+
+class Creation extends ConsumerStatefulWidget {
+  final String collegeName;
+  const Creation({super.key, required this.collegeName});
+
+  @override
+  ConsumerState<Creation> createState() => _CreationState();
+}
+
+class _CreationState extends ConsumerState<Creation> {
+  final ImagePicker picker = ImagePicker();
+
+  Future<XFile?> selectFile() async {
+    XFile? image = await picker.pickImage(
+      source: ImageSource.gallery,
+    );
+    return image;
+  }
+
+  void _editItem(
+      {required String itemName,
+      required String categoryName,
+      required String imageUrl,
+      required bool data,
+      required height,
+      required String price,
+      required width}) {
+    TextEditingController nameController =
+        TextEditingController(text: itemName);
+    TextEditingController priceController = TextEditingController(text: price);
+    bool selected = data;
+    XFile? imageData;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: CustomText(
+            text: 'Edit Item',
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              GestureDetector(
+                onTap: () async {
+                  imageData = await selectFile();
+                  if (imageData != null) {
+                    imageUrl = imageData!.path;
+                  }
+                },
+                child: imageData == null
+                    ? CustomNetworkImage(
+                        size: 70,
+                        radius: 70,
+                        url: imageUrl,
+                      )
+                    : CircleAvatar(
+                        radius: 50,
+                        backgroundColor: Colors.amber,
+                        backgroundImage: FileImage(File(imageData!.path)),
+                      ),
+              ),
+              TextField(
+                controller: nameController,
+                decoration: InputDecoration(labelText: 'Name'),
+              ),
+              TextField(
+                controller: priceController,
+                decoration: InputDecoration(labelText: 'Price'),
+              ),
+              StatefulBuilder(builder: (context, state) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CustomText(text: "Stock in Hand"),
+                    Switch(
+                      value: selected,
+                      onChanged: (v) {
+                        state(() {
+                          selected = v;
+                        });
+                      },
+                    ),
+                  ],
+                );
+              })
+            ],
+          ),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text("Save"),
+                        Image.asset(
+                          "assets/images/correct.png",
+                          height: height * 0.03,
+                          width: width * 0.1,
+                        )
+                      ],
+                    ),
+                    onPressed: () async {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return overlayContent(
+                                context: context,
+                                imagePath: "assets/rive/loading.riv");
+                          });
+                      FirebaseOperations.editItems(
+                        categoryName: categoryName,
+                        collegeName: widget.collegeName,
+                        newitemName: nameController.text.trim(),
+                        itemPrice: priceController.text.trim(),
+                        itemImageUrl: imageUrl,
+                        olditemName: itemName,
+                        stockInHand: selected,
+                      ).whenComplete(
+                        () => Navigator.pop(context),
+                      );
+                      context.pop();
+                    }),
+                ElevatedButton(
+                    child: Row(
+                      children: [
+                        Text("Cancel"),
+                        Image.asset(
+                          "assets/images/wrong.png",
+                          height: height * 0.03,
+                          width: width * 0.1,
+                        )
+                      ],
+                    ),
+                    onPressed: () async {
+                      context.pop();
+                    }),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _addItem(
+      {required String categoryName,
+      required double width,
+      required double height,
+      required CustomSizeData sizeData}) {
+    TextEditingController nameController = TextEditingController();
+    TextEditingController priceController = TextEditingController();
+    XFile? imageData;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: CustomText(
+            text: 'Add Item',
+            size: sizeData.subHeader,
+          ),
+          content: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              GestureDetector(
+                onTap: () async {
+                  imageData = await selectFile();
+
+                  if (imageData != null) print(imageData!.path);
+                },
+                child: imageData == null
+                    ? CustomNetworkImage(size: 70, radius: 70)
+                    : CircleAvatar(
+                        radius: 50,
+                        backgroundColor: Colors.amber,
+                        backgroundImage: FileImage(File(imageData!.path)),
+                      ),
+              ),
+              TextField(
+                controller: nameController,
+                decoration: InputDecoration(labelText: 'Name'),
+              ),
+              TextField(
+                controller: priceController,
+                decoration: InputDecoration(labelText: 'Price'),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+            ],
+          ),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text("Save"),
+                        Image.asset(
+                          "assets/images/correct.png",
+                          height: height * 0.03,
+                          width: width * 0.1,
+                        )
+                      ],
+                    ),
+                    onPressed: () async {
+                      if (categoryName.isNotEmpty &&
+                          nameController.text.isNotEmpty &&
+                          priceController.text.isNotEmpty &&
+                          imageData != null) {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return overlayContent(
+                                  context: context,
+                                  imagePath: "assets/rive/loading.riv");
+                            });
+                        UploadTask dataUploaded = FirebaseOperations
+                            .firebaseStorage
+                            .ref(
+                                'canteenOwners/${FirebaseOperations.firebaseAuth.currentUser!.uid + "1"}/${categoryName}/${nameController.text.trim()}')
+                            .putFile(File(imageData!.path));
+                        TaskSnapshot cases =
+                            await dataUploaded.whenComplete(() {});
+                        String imagePath = await cases.ref.getDownloadURL();
+
+                        FirebaseOperations.addItems(
+                                categoryName: categoryName,
+                                collegeName: widget.collegeName,
+                                itemName: nameController.text.trim(),
+                                itemPrice: priceController.text.trim(),
+                                itemImageUrl: imageData!)
+                            .whenComplete(() => Navigator.of(context).pop());
+                      } else {
+                        context.showSnackBar("Add All details");
+                      }
+                    }),
+                ElevatedButton(
+                    child: Row(
+                      children: [
+                        Text("Cancel"),
+                        Image.asset(
+                          "assets/images/wrong.png",
+                          height: height * 0.03,
+                          width: width * 0.1,
+                        )
+                      ],
+                    ),
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                    }),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void initState() {
+    super.initState();
+  }
+
+  Future<void> showAddCategoryDialog(
+      {required BuildContext context,
+      required double width,
+      required double height,
+      required CustomSizeData sizeData}) async {
+    String categoryName = '';
+
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const CustomText(text: 'Add Category'),
+          content: TextField(
+            onChanged: (value) {
+              categoryName = value;
+            },
+            decoration: const InputDecoration(hintText: "Enter category name"),
+          ),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text("Save"),
+                        Image.asset(
+                          "assets/images/correct.png",
+                          height: height * 0.03,
+                          width: width * 0.1,
+                        )
+                      ],
+                    ),
+                    onPressed: () async {
+                      FirebaseOperations.addCategories(
+                              categoryName: categoryName,
+                              collegeName: widget.collegeName)
+                          .whenComplete(() => Navigator.of(context).pop());
+                    }),
+                ElevatedButton(
+                    child: Row(
+                      children: [
+                        Text("Cancel"),
+                        Image.asset(
+                          "assets/images/wrong.png",
+                          height: height * 0.03,
+                          width: width * 0.1,
+                        )
+                      ],
+                    ),
+                    onPressed: () async {
+                      context.pop();
+                    }),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  int current = 0;
+  String selectedCategory = "";
+  @override
+  Widget build(BuildContext context) {
+    CustomSizeData sizeData = CustomSizeData.from(context);
+    CustomColorData colorData = CustomColorData.from(ref);
+
+    double height = sizeData.height;
+    double width = sizeData.width;
+
+    return SafeArea(
+      child: Scaffold(
+          body: Container(
+        margin: EdgeInsets.only(
+          left: width * 0.04,
+          right: width * 0.04,
+          top: height * 0.02,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CustomText(
+              text: "Welcome to Products gallery",
+              size: sizeData.header,
+            ),
+            SizedBox(
+              height: height * 0.03,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomText(
+                  text: "All Categories",
+                  size: sizeData.medium,
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(),
+                  ),
+                  onPressed: () {
+                    showAddCategoryDialog(
+                        context: context,
+                        sizeData: sizeData,
+                        height: height,
+                        width: width);
+                  },
+                  child: const CustomText(
+                    text: "Add Category",
+                  ),
+                ),
+              ],
+            ),
+            StreamBuilder<DocumentSnapshot>(
+                stream: FirebaseOperations.firebaseInstance
+                    .collection('college')
+                    .doc(widget.collegeName)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) return ShimmerEffect();
+                  Map<String, dynamic> data = snapshot.data!.get(
+                      FirebaseOperations.firebaseAuth.currentUser!
+                          .uid)['categories'] as Map<String, dynamic>;
+
+                  List<String> categories = data.keys.toList();
+                  if (categories.isNotEmpty) {
+                    return Column(children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 9),
+                        child: SizedBox(
+                          height: 50,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: const BouncingScrollPhysics(),
+                            itemCount: categories.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (ctx, index) {
+                              return Column(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        current = index;
+                                        selectedCategory = categories[index];
+                                      });
+                                    },
+                                    child: AnimatedContainer(
+                                      color: Colors.transparent,
+                                      duration:
+                                          const Duration(milliseconds: 300),
+                                      margin: const EdgeInsets.all(5),
+                                      width: 100,
+                                      height: 30,
+                                      child: Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            CustomText(
+                                              text:
+                                                  categories[index].toString(),
+                                              size: sizeData.medium,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Visibility(
+                                    visible:
+                                        selectedCategory == categories[index],
+                                    child: Container(
+                                      width: 6,
+                                      height: 6,
+                                      decoration: BoxDecoration(
+                                          color: colorData.primaryColor(1),
+                                          shape: BoxShape.circle),
+                                    ),
+                                  )
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      selectedCategory.isNotEmpty
+                          ? ListView.builder(
+                              itemCount: data[categories[current]].length + 1,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                List<String> items =
+                                    data[categories[current]].keys.toList();
+
+                                if (index + 1 ==
+                                    data[categories[current]].length + 1) {
+                                  return Card(
+                                    color: colorData.secondaryColor(1),
+                                    margin: EdgeInsets.all(10.0),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    child: ListTile(
+                                        leading: Icon(Icons.add),
+                                        title: CustomText(text: 'Add New Item'),
+                                        onTap: () {
+                                          _addItem(
+                                              sizeData: sizeData,
+                                              categoryName: selectedCategory,
+                                              width: width,
+                                              height: height);
+                                        }),
+                                  );
+                                } else {
+                                  return Card(
+                                    color: colorData.secondaryColor(1),
+                                    margin: EdgeInsets.all(10.0),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    child: ListTile(
+                                      leading: CustomNetworkImage(
+                                        url: data[categories[current]]
+                                                        [items[index]]
+                                                    ['imageUrl'] !=
+                                                "empty"
+                                            ? data[categories[current]]
+                                                [items[index]]['imageUrl']
+                                            : null,
+                                        size: 50,
+                                        radius: 50,
+                                      ),
+                                      title: CustomText(
+                                        text: data[categories[current]]
+                                            [items[index]]['name'],
+                                        size: sizeData.medium,
+                                      ),
+                                      subtitle: CustomText(
+                                        text: data[categories[current]]
+                                            [items[index]]['price'],
+                                        size: sizeData.medium,
+                                      ),
+                                      trailing: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          IconButton(
+                                            icon: Image.asset(
+                                              ImageConst.editPencil,
+                                              height: sizeData.superLarge,
+                                              width: sizeData.superLarge,
+                                            ),
+                                            onPressed: () {
+                                              bool stockData =
+                                                  data[categories[current]]
+                                                          [items[index]]
+                                                      ['stockInHand'];
+
+                                              _editItem(
+                                                  price:
+                                                      data[categories[current]]
+                                                              [items[index]]
+                                                          ['price'],
+                                                  imageUrl:
+                                                      data[categories[current]]
+                                                              [items[index]]
+                                                          ['imageUrl'],
+                                                  height: height,
+                                                  width: width,
+                                                  itemName:
+                                                      data[categories[current]]
+                                                              [items[index]]
+                                                          ['name'],
+                                                  categoryName:
+                                                      selectedCategory,
+                                                  data: stockData);
+                                            },
+                                          ),
+                                          IconButton(
+                                            icon: Image.asset(
+                                              ImageConst.delete,
+                                              height: sizeData.superLarge,
+                                              width: sizeData.superLarge,
+                                            ),
+                                            onPressed: () {
+                                              FirebaseOperations.removeItems(
+                                                categoryName: selectedCategory,
+                                                collegeName: widget.collegeName,
+                                                itemName:
+                                                    data[categories[current]]
+                                                        [items[index]]['name'],
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
+                            )
+                          : Column(
+                              children: [
+                                Container(
+                                  child:
+                                      Lottie.asset("assets/lottie/person.json"),
+                                ),
+                                CustomText(
+                                  text: "Choose Category",
+                                  weight: FontWeight.bold,
+                                  size: sizeData.medium,
+                                  color: colorData.fontColor(1),
+                                )
+                              ],
+                            ),
+                    ]);
+                  } else {
+                    return Center(
+                      child: CustomText(text: "No categories"),
+                    );
+                  }
+                })
+          ],
+        ),
+      )),
+    );
+  }
+}
