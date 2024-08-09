@@ -38,8 +38,8 @@ class _CreationState extends ConsumerState<Creation> {
       required String price,
       required width}) {
     //Image Picker Function Logic
-    XFile? imageData;
 
+    XFile? imageData;
     Future selectImageFile(BuildContext context, StateSetter setState) async {
       XFile? image = await picker.pickImage(
         source: ImageSource.gallery,
@@ -54,6 +54,7 @@ class _CreationState extends ConsumerState<Creation> {
     TextEditingController priceController = TextEditingController(text: price);
     TextEditingController countController =
         TextEditingController(text: count.toString());
+
     showDialog(
       context: context,
       builder: (BuildContext context) {

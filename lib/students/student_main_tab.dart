@@ -69,154 +69,112 @@ class _MainTabViewState extends ConsumerState<MainTabView> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      selctTab == 0
-                          ? Container(
-                              height: 50,
-                              width: 70,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.black38.withOpacity(0.2),
-                              ),
-                              child: TabButton(
-                                title: "Orders",
-                                icon: ImageConst.shoppingCart,
-                                onTap: () {
-                                  if (selctTab != 0) {
-                                    setState(() {
-                                      selctTab = 0;
-                                      selectPageView = const PlaceOrders();
-                                    });
-                                  }
-                                },
-                                isSelected: selctTab == 0,
-                              ),
-                            )
-                          : TabButton(
-                              title: "Orders",
-                              icon: ImageConst.shoppingCart,
-                              onTap: () {
-                                if (selctTab != 0) {
-                                  setState(() {
-                                    selctTab = 0;
-                                    selectPageView = const PlaceOrders();
-                                  });
-                                }
-                              },
-                              isSelected: selctTab == 0,
-                            ),
-                      selctTab == 1
-                          ? Container(
-                              height: 50,
-                              width: 70,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.black38.withOpacity(0.2),
-                              ),
-                              child: TabButton(
-                                title: "History",
-                                icon: ImageConst.offertab,
-                                onTap: () {
-                                  if (selctTab != 1) {
-                                    setState(() {
-                                      selctTab = 1;
-                                      selectPageView = StudentHistory(
-                                        userRole: UserRole.student,
-                                      );
-                                    });
-                                  }
-                                },
-                                isSelected: selctTab == 1,
-                              ),
-                            )
-                          : TabButton(
-                              title: "History",
-                              icon: ImageConst.offertab,
-                              onTap: () {
-                                if (selctTab != 1) {
-                                  setState(() {
-                                    selctTab = 1;
-                                    selectPageView = StudentHistory(
-                                      userRole: UserRole.student,
-                                    );
-                                  });
-                                }
-                              },
-                              isSelected: selctTab == 1,
-                            ),
-                      selctTab == 3
-                          ? Container(
-                              height: 50,
-                              width: 70,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.black38.withOpacity(0.2),
-                              ),
-                              child: TabButton(
-                                title: "Profile",
-                                icon: ImageConst.profiletab,
-                                onTap: () {
-                                  if (selctTab != 3) {
-                                    setState(() {
-                                      selctTab = 3;
-                                      selectPageView = StudentProfilePage(
-                                        studentData: studentData,
-                                      );
-                                    });
-                                  }
-                                },
-                                isSelected: selctTab == 3,
-                              ),
-                            )
-                          : TabButton(
-                              title: "Profile",
-                              icon: ImageConst.profiletab,
-                              onTap: () {
-                                if (selctTab != 3) {
-                                  setState(() {
-                                    selctTab = 3;
-                                    selectPageView = StudentProfilePage(
-                                      studentData: studentData,
-                                    );
-                                  });
-                                }
-                              },
-                              isSelected: selctTab == 3,
-                            ),
-                      selctTab == 4
-                          ? Container(
-                              height: 50,
-                              width: 70,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.black38.withOpacity(0.2),
-                              ),
-                              child: TabButton(
-                                title: "More",
-                                icon: ImageConst.moretab,
-                                onTap: () {
-                                  if (selctTab != 4) {
-                                    setState(() {
-                                      selctTab = 4;
-                                      selectPageView = const MoreView();
-                                    });
-                                  }
-                                },
-                                isSelected: selctTab == 4,
-                              ),
-                            )
-                          : TabButton(
-                              title: "More",
-                              icon: ImageConst.moretab,
-                              onTap: () {
-                                if (selctTab != 4) {
-                                  setState(() {
-                                    selctTab = 4;
-                                    selectPageView = const MoreView();
-                                  });
-                                }
-                              },
-                              isSelected: selctTab == 4,
-                            )
+                      AnimatedContainer(
+                        duration:
+                            Duration(milliseconds: 300), 
+                        curve: Curves.easeInOut, 
+                        height:
+                            selctTab == 0 ? 60 : 50, 
+                        width: selctTab == 0 ? 80 : 70,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: selctTab == 0
+                              ? Colors.black38.withOpacity(0.2)
+                              : Colors.transparent, 
+                        ),
+                        child: TabButton(
+                          title: "Orders",
+                          icon: ImageConst.shoppingCart,
+                          onTap: () {
+                            if (selctTab != 0) {
+                              setState(() {
+                                selctTab = 0;
+                                selectPageView = const PlaceOrders();
+                              });
+                            }
+                          },
+                          isSelected: selctTab == 0,
+                        ),
+                      ),
+                      AnimatedContainer(
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                        height: selctTab == 1 ? 60 : 50,
+                        width: selctTab == 1 ? 80 : 70,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: selctTab == 1
+                              ? Colors.black38.withOpacity(0.2)
+                              : Colors.transparent,
+                        ),
+                        child: TabButton(
+                          title: "History",
+                          icon: ImageConst.offertab,
+                          onTap: () {
+                            if (selctTab != 1) {
+                              setState(() {
+                                selctTab = 1;
+                                selectPageView = StudentHistory(
+                                  userRole: UserRole.student,
+                                );
+                              });
+                            }
+                          },
+                          isSelected: selctTab == 1,
+                        ),
+                      ),
+                      AnimatedContainer(
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                        height: selctTab == 3 ? 60 : 50,
+                        width: selctTab == 3 ? 80 : 70,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: selctTab == 3
+                              ? Colors.black38.withOpacity(0.2)
+                              : Colors.transparent,
+                        ),
+                        child: TabButton(
+                          title: "Profile",
+                          icon: ImageConst.profiletab,
+                          onTap: () {
+                            if (selctTab != 3) {
+                              setState(() {
+                                selctTab = 3;
+                                selectPageView = StudentProfilePage(
+                                  studentData: studentData,
+                                );
+                              });
+                            }
+                          },
+                          isSelected: selctTab == 3,
+                        ),
+                      ),
+                      AnimatedContainer(
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                        height: selctTab == 4 ? 60 : 50,
+                        width: selctTab == 4 ? 80 : 70,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: selctTab == 4
+                              ? Colors.black38.withOpacity(0.2)
+                              : Colors.transparent,
+                        ),
+                        child: TabButton(
+                          title: "More",
+                          icon: ImageConst.moretab,
+                          onTap: () {
+                            if (selctTab != 4) {
+                              setState(() {
+                                selctTab = 4;
+                                selectPageView = const MoreView();
+                              });
+                            }
+                          },
+                          isSelected: selctTab == 4,
+                        ),
+                      ),
                     ],
                   ),
                 ),
