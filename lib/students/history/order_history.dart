@@ -33,32 +33,34 @@ class _StudentHistoryState extends ConsumerState<StudentHistory> {
           right: width * 0.04,
           top: height * 0.02,
         ),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomText(
-                  text: "History",
-                  size: sizeData.header,
-                  color: colorData.fontColor(1),
-                ),
-                IconButton(
-                  onPressed: () {
-                    context.push(CartView());
-                  },
-                  icon: Image.asset(
-                    ImageConst.shoppingCart,
-                    width: sizeData.superLarge,
-                    height: sizeData.superLarge,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomText(
+                    text: "History",
+                    size: sizeData.header,
+                    color: colorData.fontColor(1),
                   ),
-                ),
-              ],
-            ),
-            CalandarPicker(
-              userRole: widget.userRole,
-            ),
-          ],
+                  IconButton(
+                    onPressed: () {
+                      context.push(CartView());
+                    },
+                    icon: Image.asset(
+                      ImageConst.shoppingCart,
+                      width: sizeData.superLarge,
+                      height: sizeData.superLarge,
+                    ),
+                  ),
+                ],
+              ),
+              CalandarPicker(
+                userRole: widget.userRole,
+              ),
+            ],
+          ),
         ),
       )),
     );

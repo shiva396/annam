@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
@@ -212,138 +213,181 @@ class FirebaseOperations {
     }
   }
 
+  static Future<void> checkIfOrdersPlaceable(
+      {required BuildContext context,
+      required Map<String, dynamic> data,
+      required String canttenOwnerId,
+      required String collegeName}) async {
+    DocumentReference collegeData =
+        await firebaseInstance.collection('college').doc(collegeName);
+
+    try {
+      await firebaseInstance.runTransaction((transaction) async {
+        // Get the current data
+        DocumentSnapshot snapshot = await transaction.get(collegeData);
+
+        Map<String, dynamic> existingData =
+            snapshot.data() as Map<String, dynamic>;
+        Map<String, dynamic> oldData = existingData[canttenOwnerId];
+        Map<String, dynamic> itemData = (Map.from(data)
+          ..remove('totalAmount')
+          ..remove('checkOut')
+          ..remove('canteenId')
+          ..remove('canteenName')
+          ..remove('time'))
+          ..remove('studentId')
+          ..remove('studentName');
+
+        for (int i = 0; i < itemData.length; i++) {
+          String categoryName = itemData[i.toString()]['category'];
+          String itemName = itemData[i.toString()]['name'];
+          int quantity = int.parse(itemData[i.toString()]['quantity']);
+
+          if (snapshot.exists) {
+            Map<String, dynamic> categories =
+                oldData['categories'] as Map<String, dynamic>;
+
+            Map<String, dynamic> items =
+                categories[categoryName] as Map<String, dynamic>;
+            Map<String, dynamic> itemData =
+                items[itemName] as Map<String, dynamic>;
+
+            int currentCount = itemData['count'];
+
+            if (quantity <= currentCount) {
+              transaction.update(
+                collegeData,
+                {
+                  '$canttenOwnerId.categories.$categoryName.$itemName.count':
+                      currentCount - quantity,
+                },
+              ).update(collegeData, {
+                '$canttenOwnerId.todayOrders':
+                    FieldValue.arrayUnion([firebaseAuth.currentUser!.uid])
+              });
+              if (currentCount - quantity == 0) {
+                transaction.update(
+                  collegeData,
+                  {
+                    '$canttenOwnerId.categories.$categoryName.$itemName.stockInHand':
+                        false,
+                  },
+                );
+              }
+            } else {
+              if (currentCount == 0) {
+                throw Exception(" $itemName not availabe");
+              } else {
+                throw Exception(
+                    "Item available for $itemName is $currentCount only ");
+              }
+            }
+          } else {
+            throw Exception('Institution does not exist');
+          }
+        }
+      });
+    } catch (e) {
+      context.showSnackBar(e.toString());
+      rethrow;
+    }
+  }
+
   static Future<void> placeOrders(
       {required Map<String, dynamic> data,
       required BuildContext context,
       required String canttenOwnerId,
       required String collegeName}) async {
-    DocumentSnapshot<Map<String, dynamic>> existingIds = await firebaseInstance
-        .collection('student_orders_id')
-        .doc('orders_id')
-        .get();
+    FirebaseOperations.checkIfOrdersPlaceable(
+            context: context,
+            data: data,
+            canttenOwnerId: canttenOwnerId,
+            collegeName: collegeName)
+        .then((v) async {
+      // Order id Generating
+      DocumentSnapshot<Map<String, dynamic>> existingIds =
+          await firebaseInstance
+              .collection('student_orders_id')
+              .doc('orders_id')
+              .get();
+      List<dynamic> existingUniqueIds = existingIds.get('orders_id');
 
-    List<dynamic> existingUniqueIds = existingIds.get('orders_id');
+      var random = Random();
+      String orderId;
+      do {
+        int part1 = random.nextInt(90000) + 10000; // 5-digit number
+        int part2 = random.nextInt(90000) + 10000; // 5-digit number
+        orderId = '$part1$part2';
+      } while (existingUniqueIds.contains(orderId));
+      firebaseInstance.collection('student_orders_id').doc('orders_id').set({
+        'orders_id': FieldValue.arrayUnion([orderId.toString()])
+      }, SetOptions(merge: true));
 
-    var random = Random();
-    String orderId;
-    do {
-      int part1 = random.nextInt(90000) + 10000; // 5-digit number
-      int part2 = random.nextInt(90000) + 10000; // 5-digit number
-      orderId = '$part1$part2';
-    } while (existingUniqueIds.contains(orderId));
-    firebaseInstance.collection('student_orders_id').doc('orders_id').set({
-      'orders_id': FieldValue.arrayUnion([orderId.toString()])
-    }, SetOptions(merge: true));
+      // Removing from cart and storing it to orders
 
+      firebaseInstance
+          .collection('student')
+          .doc(firebaseAuth.currentUser!.uid)
+          .collection('cart')
+          .doc(firebaseAuth.currentUser!.uid)
+          .set({canttenOwnerId: FieldValue.delete()},
+              SetOptions(merge: true)).then((v) {
+        firebaseInstance
+            .collection('student')
+            .doc(firebaseAuth.currentUser!.uid)
+            .collection('orders')
+            .doc(firebaseAuth.currentUser!.uid)
+            .set({orderId.toString(): data}, SetOptions(merge: true)).then((v) {
+         
+        });
+      });
+    }).onError((e, s) {
+      
+    });
+  }
+
+  static Future<void> addCountForItems(
+      {required String canteenOwnerId,
+      required String itemName,
+      required String increOrdec,
+      required String quantity,
+      required int totalAmount}) async {
     firebaseInstance
         .collection('student')
         .doc(firebaseAuth.currentUser!.uid)
         .collection('cart')
         .doc(firebaseAuth.currentUser!.uid)
-        .set({canttenOwnerId: FieldValue.delete()},
-            SetOptions(merge: true)).then((v) {
+        .update({'$canteenOwnerId.$itemName.quantity': quantity}).then((v) {
       firebaseInstance
           .collection('student')
           .doc(firebaseAuth.currentUser!.uid)
-          .collection('orders')
+          .collection('cart')
           .doc(firebaseAuth.currentUser!.uid)
-          .set({orderId.toString(): data}, SetOptions(merge: true)).then(
-              (v) async {
-        DocumentReference collegeData =
-            await firebaseInstance.collection('college').doc(collegeName);
-
-        await firebaseInstance.runTransaction((transaction) async {
-          // Get the current data
-          DocumentSnapshot snapshot = await transaction.get(collegeData);
-          Map<String, dynamic> existingData =
-              snapshot.data() as Map<String, dynamic>;
-          Map<String, dynamic> oldData = existingData[canttenOwnerId];
-          Map<String, dynamic> itemData = (Map.from(data)
-            ..remove('totalAmount')
-            ..remove('checkOut')
-            ..remove('canteenId')
-            ..remove('canteenName')
-            ..remove('time'));
-          print(existingData);
-          for (int i = 0; i < itemData.length; i++) {
-            String categoryName = itemData[i.toString()]['category'];
-            String itemName = itemData[i.toString()]['name'];
-            int quantity = int.parse(itemData[i.toString()]['quantity']);
-
-            if (snapshot.exists) {
-              Map<String, dynamic> categories =
-                  oldData['categories'] as Map<String, dynamic>;
-
-              Map<String, dynamic> items =
-                  categories[categoryName] as Map<String, dynamic>;
-              Map<String, dynamic> itemData =
-                  items[itemName] as Map<String, dynamic>;
-
-              int currentCount = itemData['count'];
-
-              if (quantity <= currentCount) {
-                transaction.update(
-                  collegeData,
-                  {
-                    '$canttenOwnerId.categories.$categoryName.$itemName.count':
-                        currentCount - quantity,
-                  },
-                ).update(collegeData, {
-                  '$canttenOwnerId.todayOrders':
-                      FieldValue.arrayUnion([firebaseAuth.currentUser!.uid])
-                });
-                if (currentCount - quantity == 0) {
-                  transaction.update(
-                    collegeData,
-                    {
-                      '$canttenOwnerId.categories.$categoryName.$itemName.stockInHand':
-                          false,
-                    },
-                  );
-                }
-              } else {
-                if (currentCount == 0) {
-                  context.showSnackBar(" $itemName not availabe");
-                } else {
-                  context.showSnackBar(
-                      "Item available for $itemName is $currentCount only ");
-                }
-              }
-            } else {
-              print('Institution $collegeName does not exist');
-            }
-          }
-        });
-      });
+          .update({'$canteenOwnerId.totalAmount': totalAmount});
     });
   }
 
-  static Future<void> checkOutItems({required String studentId}) async {
+  static Future<void> checkOutItems(
+      {required String studentId, required String orderId}) async {
     DocumentSnapshot<Map<String, dynamic>> data = await firebaseInstance
         .collection('student')
         .doc(studentId)
         .collection('orders')
         .doc(studentId)
         .get();
-    Map<String, dynamic> orderedItems =
-        data.data()![firebaseAuth.currentUser!.uid];
+    Map<String, dynamic> orderedItems = data.data()![orderId];
     orderedItems['checkOut'] = true;
     orderedItems['canteenId'] = firebaseAuth.currentUser!.uid;
 
-    firebaseInstance
-        .collection('student')
-        .doc(studentId)
-        .collection('history')
-        .doc(studentId)
-        .set({DateTime.now().toString(): orderedItems},
-            SetOptions(merge: true)).then((v) {
+    firebaseInstance.collection('orders_history').doc(orderId).set({
+      DateTime.now().toString(): orderedItems,
+    }, SetOptions(merge: true)).then((v) {
       firebaseInstance
           .collection('student')
           .doc(studentId)
           .collection('orders')
           .doc(studentId)
-          .set({firebaseAuth.currentUser!.uid: FieldValue.delete()},
-              SetOptions(merge: true));
+          .set({orderId: FieldValue.delete()}, SetOptions(merge: true));
     });
   }
 

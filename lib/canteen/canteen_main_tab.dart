@@ -30,11 +30,11 @@ class CanteenOwner extends ConsumerStatefulWidget {
 class _CanteenOwnerState extends ConsumerState<CanteenOwner> {
   Widget? selectPageView;
   void initState() {
-    selectPageView = Creation(collegeName: widget.collegeName);
+    selectPageView = CanteenHistory(userRole: UserRole.canteenOwner);
     super.initState();
   }
 
-  int selctTab = 0;
+  int selctTab = 1;
   PageStorageBucket storageBucket = PageStorageBucket();
   @override
   Widget build(BuildContext context) {
@@ -118,7 +118,9 @@ class _CanteenOwnerState extends ConsumerState<CanteenOwner> {
                           onTap: () {
                             if (selctTab != 1) {
                               selctTab = 1;
-                              selectPageView = const CanteenHistory(userRole: UserRole.canteenOwner,);
+                              selectPageView = const CanteenHistory(
+                                userRole: UserRole.canteenOwner,
+                              );
                             }
                             if (mounted) {
                               setState(() {});
