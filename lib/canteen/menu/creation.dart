@@ -37,6 +37,7 @@ class _CreationState extends ConsumerState<Creation> {
 
   void _editItem(
       {required String itemName,
+      required int count,
       required String categoryName,
       required String imageUrl,
       required bool data,
@@ -46,7 +47,9 @@ class _CreationState extends ConsumerState<Creation> {
     TextEditingController nameController =
         TextEditingController(text: itemName);
     TextEditingController priceController = TextEditingController(text: price);
-    bool selected = data;
+    TextEditingController countController =
+        TextEditingController(text: count.toString());
+    // bool selected = data;
     XFile? imageData;
     showDialog(
       context: context,
@@ -80,24 +83,28 @@ class _CreationState extends ConsumerState<Creation> {
               ),
               TextField(
                 controller: priceController,
-                decoration: InputDecoration(labelText: 'Price'),
+                decoration: InputDecoration(labelText: 'Price '),
               ),
-              StatefulBuilder(builder: (context, state) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomText(text: "Stock in Hand"),
-                    Switch(
-                      value: selected,
-                      onChanged: (v) {
-                        state(() {
-                          selected = v;
-                        });
-                      },
-                    ),
-                  ],
-                );
-              })
+              TextField(
+                controller: countController,
+                decoration: InputDecoration(labelText: 'Count'),
+              ),
+              // StatefulBuilder(builder: (context, state) {
+              //   return Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //     children: [
+              //       CustomText(text: "Stock in Hand"),
+              //       Switch(
+              //         value: selected,
+              //         onChanged: (v) {
+              //           state(() {
+              //             selected = v;
+              //           });
+              //         },
+              //       ),
+              //     ],
+              //   );
+              // })
             ],
           ),
           actions: [
@@ -125,6 +132,7 @@ class _CreationState extends ConsumerState<Creation> {
                                 imagePath: "assets/rive/loading.riv");
                           });
                       FirebaseOperations.editItems(
+                        count: int.parse(countController.text.trim()),
                         oldImagePath: imageUrl,
                         newImagePath: imageData,
                         categoryName: categoryName,
@@ -132,7 +140,6 @@ class _CreationState extends ConsumerState<Creation> {
                         newitemName: nameController.text.trim(),
                         itemPrice: priceController.text.trim(),
                         olditemName: itemName,
-                        stockInHand: selected,
                       ).whenComplete(() {
                         context.pop();
                         context.pop();
@@ -167,6 +174,7 @@ class _CreationState extends ConsumerState<Creation> {
       required CustomSizeData sizeData}) {
     TextEditingController nameController = TextEditingController();
     TextEditingController priceController = TextEditingController();
+    TextEditingController countController = TextEditingController();
     XFile? imageData;
     showDialog(
       context: context,
@@ -183,8 +191,6 @@ class _CreationState extends ConsumerState<Creation> {
               GestureDetector(
                 onTap: () async {
                   imageData = await selectFile();
-
-              
                 },
                 child: imageData == null
                     ? CustomNetworkImage(size: 70, radius: 70)
@@ -200,7 +206,11 @@ class _CreationState extends ConsumerState<Creation> {
               ),
               TextField(
                 controller: priceController,
-                decoration: InputDecoration(labelText: 'Price'),
+                decoration: InputDecoration(labelText: 'Price \u20B9'),
+              ),
+              TextField(
+                controller: countController,
+                decoration: InputDecoration(labelText: 'Count '),
               ),
               SizedBox(
                 height: 10,
@@ -227,6 +237,7 @@ class _CreationState extends ConsumerState<Creation> {
                       if (categoryName.isNotEmpty &&
                           nameController.text.isNotEmpty &&
                           priceController.text.isNotEmpty &&
+                          countController.text.isNotEmpty &&
                           imageData != null) {
                         showDialog(
                             context: context,
@@ -237,6 +248,7 @@ class _CreationState extends ConsumerState<Creation> {
                             });
 
                         FirebaseOperations.addItems(
+                                count: int.parse(countController.text.trim()),
                                 categoryName: categoryName,
                                 collegeName: widget.collegeName,
                                 context: context,
@@ -478,7 +490,6 @@ class _CreationState extends ConsumerState<Creation> {
                                   itemCount:
                                       data[categories[current]].length + 1,
                                   shrinkWrap: true,
-                                  // physics: NeverScrollableScrollPhysics(),
                                   scrollDirection: Axis.vertical,
                                   itemBuilder: (context, index) {
                                     List<String> items =
@@ -533,12 +544,19 @@ class _CreationState extends ConsumerState<Creation> {
                                           ),
                                           subtitle: CustomText(
                                             text: data[categories[current]]
-                                                [items[index]]['price'],
+                                                    [items[index]]['price'] +
+                                                "  " +
+                                                '\u20B9',
                                             size: sizeData.medium,
                                           ),
                                           trailing: Row(
                                             mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
                                             children: [
+                                              CustomText(
+                                                  text:
+                                                      "Count : ${data[categories[current]][items[index]]['count'].toString()}"),
                                               IconButton(
                                                 icon: Image.asset(
                                                   ImageConst.editPencil,
@@ -552,10 +570,14 @@ class _CreationState extends ConsumerState<Creation> {
                                                           ['stockInHand'];
 
                                                   _editItem(
-                                                      price: data[categories[
-                                                                  current]]
-                                                              [items[index]]
-                                                          ['price'],
+                                                      count:
+                                                          data[categories[current]]
+                                                                  [items[index]]
+                                                              ['count'],
+                                                      price:
+                                                          data[categories[current]]
+                                                                  [items[index]]
+                                                              ['price'],
                                                       imageUrl:
                                                           data[categories[current]]
                                                                   [items[index]]

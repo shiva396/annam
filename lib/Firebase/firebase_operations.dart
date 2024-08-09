@@ -41,6 +41,7 @@ class FirebaseOperations {
 
   static Future<void> addItems(
       {required String categoryName,
+      required int count,
       required String itemName,
       required String itemPrice,
       required String collegeName,
@@ -69,9 +70,10 @@ class FirebaseOperations {
       } catch (r) {}
       update[itemName] = {
         "name": itemName,
+        "count": count,
         "price": itemPrice,
         "imageUrl": imagePath != null ? imagePath : "empty",
-        "stockInHand": true,
+        "stockInHand": count <= 0 ? false : true,
       };
 
       await firebaseInstance.collection('college').doc(collegeName).set({
@@ -84,15 +86,16 @@ class FirebaseOperations {
     }
   }
 
-  static Future<void> editItems(
-      {required String categoryName,
-      required String collegeName,
-      required String newitemName,
-      required String oldImagePath,
-      required String itemPrice,
-      required XFile? newImagePath,
-      required String olditemName,
-      required bool stockInHand}) async {
+  static Future<void> editItems({
+    required String categoryName,
+    required String collegeName,
+    required String newitemName,
+    required String oldImagePath,
+    required String itemPrice,
+    required XFile? newImagePath,
+    required int count,
+    required String olditemName,
+  }) async {
     DocumentSnapshot<Map<String, dynamic>> data =
         await firebaseInstance.collection('college').doc(collegeName).get();
     Map<String, dynamic> obj = data.data() as Map<String, dynamic>;
@@ -115,8 +118,9 @@ class FirebaseOperations {
     update[newitemName] = {
       "name": newitemName,
       "price": itemPrice,
+      "count": count,
       "imageUrl": imagePath,
-      "stockInHand": stockInHand,
+      "stockInHand": count <= 0 ? false : true,
     };
 
     await firebaseInstance.collection('college').doc(collegeName).set({
@@ -210,51 +214,52 @@ class FirebaseOperations {
       {required Map<String, dynamic> data,
       required String canttenOwnerId,
       required String collegeName}) async {
-    DocumentSnapshot<Map<String, dynamic>> existingIds = await firebaseInstance
-        .collection('student_orders_id')
-        .doc('orders_id')
-        .get();
+    // DocumentSnapshot<Map<String, dynamic>> existingIds = await firebaseInstance
+    //     .collection('student_orders_id')
+    //     .doc('orders_id')
+    //     .get();
 
-    List<dynamic> existingUniqueIds = existingIds.get('orders_id');
+    // List<dynamic> existingUniqueIds = existingIds.get('orders_id');
 
-    var random = Random();
-    String orderId;
-    do {
-      int part1 = random.nextInt(90000) + 10000; // 5-digit number
-      int part2 = random.nextInt(90000) + 10000; // 5-digit number
-      orderId = '$part1$part2';
-    } while (existingUniqueIds.contains(orderId));
-    firebaseInstance.collection('student_orders_id').doc('orders_id').set({
-      'orders_id': FieldValue.arrayUnion([orderId.toString()])
-    }, SetOptions(merge: true));
+    // var random = Random();
+    // String orderId;
+    // do {
+    //   int part1 = random.nextInt(90000) + 10000; // 5-digit number
+    //   int part2 = random.nextInt(90000) + 10000; // 5-digit number
+    //   orderId = '$part1$part2';
+    // } while (existingUniqueIds.contains(orderId));
+    // firebaseInstance.collection('student_orders_id').doc('orders_id').set({
+    //   'orders_id': FieldValue.arrayUnion([orderId.toString()])
+    // }, SetOptions(merge: true));
 
-    firebaseInstance
-        .collection('student')
-        .doc(firebaseAuth.currentUser!.uid)
-        .collection('cart')
-        .doc(firebaseAuth.currentUser!.uid)
-        .set({canttenOwnerId: FieldValue.delete()},
-            SetOptions(merge: true)).then((v) {
-      firebaseInstance
-          .collection('student')
-          .doc(firebaseAuth.currentUser!.uid)
-          .collection('orders')
-          .doc(firebaseAuth.currentUser!.uid)
-          .set({orderId.toString(): data}, SetOptions(merge: true)).then(
-              (v) async {
-        DocumentSnapshot<Map<String, dynamic>> collegeData =
-            await firebaseInstance.collection('college').doc(collegeName).get();
-        Map<String, dynamic> obj = collegeData.data() as Map<String, dynamic>;
+    // firebaseInstance
+    //     .collection('student')
+    //     .doc(firebaseAuth.currentUser!.uid)
+    //     .collection('cart')
+    //     .doc(firebaseAuth.currentUser!.uid)
+    //     .set({canttenOwnerId: FieldValue.delete()},
+    //         SetOptions(merge: true)).then((v) {
+    //   firebaseInstance
+    //       .collection('student')
+    //       .doc(firebaseAuth.currentUser!.uid)
+    //       .collection('orders')
+    //       .doc(firebaseAuth.currentUser!.uid)
+    //       .set({orderId.toString(): data}, SetOptions(merge: true)).then(
+    //           (v) async {
+    DocumentSnapshot<Map<String, dynamic>> collegeData =
+        await firebaseInstance.collection('college').doc(collegeName).get();
+    Map<String, dynamic> obj = collegeData.data() as Map<String, dynamic>;
+    print(obj);
 
-        Map<String, dynamic> update = (obj[canttenOwnerId]);
-        update['todayOrders'] =
-            FieldValue.arrayUnion([firebaseAuth.currentUser!.uid]);
-        firebaseInstance
-            .collection('college')
-            .doc(collegeName)
-            .set({canttenOwnerId: update}, SetOptions(merge: true));
-      });
-    });
+    // Map<String, dynamic> update = (obj[canttenOwnerId]);
+    // update['todayOrders'] =
+    //     FieldValue.arrayUnion([firebaseAuth.currentUser!.uid]);
+    // firebaseInstance
+    //     .collection('college')
+    //     .doc(collegeName)
+    //     .set({canttenOwnerId: update}, SetOptions(merge: true));
+    //   });
+    // });
   }
 
   static Future<void> checkOutItems({required String studentId}) async {
