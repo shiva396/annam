@@ -17,8 +17,8 @@ import '../../const/color_extension.dart';
 import '../../common_widget/round_textfield.dart';
 import '../../const/image_const.dart';
 import '../../students/orders/my_cart.dart';
-import '../../students/profile/color_palette.dart';
-import '../../students/profile/theme_toggle.dart';
+import '../../theme/color_palette.dart';
+import '../../theme/theme_toggle.dart';
 import '../../utils/size_data.dart';
 
 class CanteenProfilePage extends ConsumerStatefulWidget {
@@ -41,15 +41,12 @@ class _CanteenProfilePageState extends ConsumerState<CanteenProfilePage> {
   TextEditingController txtName = TextEditingController();
   TextEditingController txtMobile = TextEditingController();
   TextEditingController txtAddress = TextEditingController();
-  TextEditingController txtPassword = TextEditingController();
-  TextEditingController txtConfirmPassword = TextEditingController();
 
   void dispose() {
     super.dispose();
     txtAddress.dispose();
-    txtConfirmPassword.dispose();
+
     txtMobile.dispose();
-    txtPassword.dispose();
     txtName.dispose();
   }
 
@@ -65,6 +62,7 @@ class _CanteenProfilePageState extends ConsumerState<CanteenProfilePage> {
     String email = widget.canteenOwnerData['email'] ?? '';
     String collegeName = widget.canteenOwnerData['collegeName'] ?? '';
     String profileUrl = widget.canteenOwnerData['image'] ?? '';
+    String address = widget.canteenOwnerData['address'] ?? '';
     return SafeArea(
       child: Scaffold(
         body: Container(
@@ -215,7 +213,7 @@ class _CanteenProfilePageState extends ConsumerState<CanteenProfilePage> {
                     child: RoundTitleTextfield(
                       title: "Address",
                       readOnly: !changeData,
-                      hintText: "Enter Address",
+                      hintText: changeData ? "Enter Address" : address,
                       controller: txtAddress,
                     ),
                   ),
@@ -255,6 +253,9 @@ class _CanteenProfilePageState extends ConsumerState<CanteenProfilePage> {
                                   }
                                   if (txtMobile.text.trim().isNotEmpty) {
                                     data['phoneNumber'] = txtMobile.text.trim();
+                                  }
+                                  if (txtAddress.text.trim().isNotEmpty) {
+                                    data['address'] = txtAddress.text.trim();
                                   }
                                   // Editing data
                                   if (image != null) {

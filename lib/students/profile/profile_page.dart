@@ -7,8 +7,8 @@ import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/auth/login_signup.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:projrect_annam/const/image_const.dart';
-import 'package:projrect_annam/students/profile/color_palette.dart';
-import 'package:projrect_annam/students/profile/theme_toggle.dart';
+import 'package:projrect_annam/theme/color_palette.dart';
+import 'package:projrect_annam/theme/theme_toggle.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
 import 'package:projrect_annam/utils/extension_methods.dart';
 
@@ -40,16 +40,10 @@ class _StudentProfilePageState extends ConsumerState<StudentProfilePage> {
   TextEditingController txtName = TextEditingController();
 
   TextEditingController txtMobile = TextEditingController();
-  TextEditingController txtAddress = TextEditingController();
-  TextEditingController txtPassword = TextEditingController();
-  TextEditingController txtConfirmPassword = TextEditingController();
 
   void dispose() {
     super.dispose();
-    txtAddress.dispose();
-    txtConfirmPassword.dispose();
     txtMobile.dispose();
-    txtPassword.dispose();
     txtName.dispose();
   }
 
@@ -66,6 +60,7 @@ class _StudentProfilePageState extends ConsumerState<StudentProfilePage> {
     String email = widget.studentData['email'] ?? '';
     String collegeName = widget.studentData['collegeName'] ?? '';
     String profileUrl = widget.studentData['image'] ?? '';
+    
     return SafeArea(
       child: Scaffold(
         body: Container(

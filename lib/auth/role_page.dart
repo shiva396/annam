@@ -25,8 +25,6 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
-  TextEditingController _cityController = TextEditingController();
-  TextEditingController _stateController = TextEditingController();
   TextEditingController _organizationController = TextEditingController();
   TextEditingController _coordinatorController = TextEditingController();
 
@@ -59,8 +57,6 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
     _nameController.dispose();
     _phoneController.dispose();
     _addressController.dispose();
-    _cityController.dispose();
-    _stateController.dispose();
     _organizationController.dispose();
     _coordinatorController.dispose();
     super.dispose();
@@ -221,21 +217,6 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                               ),
                             ),
                             const SizedBox(height: 10),
-                            TextField(
-                              controller: _cityController,
-                              decoration: const InputDecoration(
-                                labelText: 'City',
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            TextField(
-                              controller: _stateController,
-                              decoration: const InputDecoration(
-                                labelText: 'State',
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
                           ],
                           if (_selectedRole ==
                               UserRole.canteenOwner.asString) ...[
@@ -287,22 +268,6 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                               controller: _addressController,
                               decoration: const InputDecoration(
                                 labelText: 'Address',
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            TextField(
-                              controller: _cityController,
-                              decoration: const InputDecoration(
-                                labelText: 'City',
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            TextField(
-                              controller: _stateController,
-                              decoration: const InputDecoration(
-                                labelText: 'State',
                                 border: OutlineInputBorder(),
                               ),
                             ),
@@ -358,8 +323,6 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                                   'collegeName': _selectedCollege,
                                   'phoneNumber': _phoneController.text.trim(),
                                   'address': _addressController.text.trim(),
-                                  'city': _cityController.text.trim(),
-                                  'state': _stateController.text.trim(),
                                   'image': "",
                                   'categories': {},
                                   'todayOrders': []
@@ -463,7 +426,6 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                                   }
                                 });
                               } catch (e) {
-                            
                                 context.showSnackBar(e.toString());
                                 context.pop();
                               }

@@ -17,8 +17,8 @@ import '../../const/color_extension.dart';
 import '../../common_widget/round_textfield.dart';
 import '../../const/image_const.dart';
 import '../../students/orders/my_cart.dart';
-import '../../students/profile/color_palette.dart';
-import '../../students/profile/theme_toggle.dart';
+import '../../theme/color_palette.dart';
+import '../../theme/theme_toggle.dart';
 import '../../utils/size_data.dart';
 
 class NgoProfilePage extends ConsumerStatefulWidget {

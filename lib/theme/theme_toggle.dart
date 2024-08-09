@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../theme/theme_provider.dart';
-import '../../utils/color_data.dart';
-import '../../utils/custom_icon.dart';
-import '../../utils/size_data.dart';
+import 'theme_provider.dart';
+import '../utils/color_data.dart';
+import '../utils/custom_icon.dart';
+import '../utils/size_data.dart';
 
 class ThemeToggle extends ConsumerWidget {
   const ThemeToggle({
