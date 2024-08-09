@@ -28,13 +28,6 @@ class Creation extends ConsumerStatefulWidget {
 class _CreationState extends ConsumerState<Creation> {
   final ImagePicker picker = ImagePicker();
 
-  Future<XFile?> selectFile() async {
-    XFile? image = await picker.pickImage(
-      source: ImageSource.gallery,
-    );
-    return image;
-  }
-
   void _editItem(
       {required String itemName,
       required int count,
@@ -44,124 +37,142 @@ class _CreationState extends ConsumerState<Creation> {
       required height,
       required String price,
       required width}) {
+    //Image Picker Function Logic
+    XFile? imageData;
+
+    Future selectImageFile(BuildContext context, StateSetter setState) async {
+      XFile? image = await picker.pickImage(
+        source: ImageSource.gallery,
+      );
+      setState(() {
+        imageData = image;
+      });
+    }
+
     TextEditingController nameController =
         TextEditingController(text: itemName);
     TextEditingController priceController = TextEditingController(text: price);
     TextEditingController countController =
         TextEditingController(text: count.toString());
-    // bool selected = data;
-    XFile? imageData;
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: CustomText(
-            text: 'Edit Item',
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              GestureDetector(
-                onTap: () async {
-                  imageData = await selectFile();
-                },
-                child: imageData == null
-                    ? CustomNetworkImage(
-                        size: 70,
-                        radius: 70,
-                        url: imageUrl,
-                      )
-                    : CircleAvatar(
-                        radius: 50,
-                        backgroundColor: Colors.amber,
-                        backgroundImage: FileImage(File(imageData!.path)),
-                      ),
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: CustomText(
+                text: 'Edit Item',
               ),
-              TextField(
-                controller: nameController,
-                decoration: InputDecoration(labelText: 'Name'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      selectImageFile(context, setState);
+                    },
+                    child: imageData == null
+                        ? CustomNetworkImage(
+                            size: 70,
+                            radius: 70,
+                            url: imageUrl,
+                          )
+                        : CircleAvatar(
+                            radius: 50,
+                            backgroundColor: Colors.amber,
+                            backgroundImage: FileImage(File(imageData!.path)),
+                          ),
+                  ),
+                  TextField(
+                    controller: nameController,
+                    decoration: InputDecoration(labelText: 'Name'),
+                  ),
+                  TextField(
+                    controller: priceController,
+                    decoration: InputDecoration(labelText: 'Price '),
+                  ),
+                  TextField(
+                    controller: countController,
+                    decoration: InputDecoration(labelText: 'Count'),
+                  ),
+                  // StatefulBuilder(builder: (context, state) {
+                  //   return Row(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //     children: [
+                  //       CustomText(text: "Stock in Hand"),
+                  //       Switch(
+                  //         value: selected,
+                  //         onChanged: (v) {
+                  //           state(() {
+                  //             selected = v;
+                  //           });
+                  //         },
+                  //       ),
+                  //     ],
+                  //   );
+                  // })
+                ],
               ),
-              TextField(
-                controller: priceController,
-                decoration: InputDecoration(labelText: 'Price '),
-              ),
-              TextField(
-                controller: countController,
-                decoration: InputDecoration(labelText: 'Count'),
-              ),
-              // StatefulBuilder(builder: (context, state) {
-              //   return Row(
-              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //     children: [
-              //       CustomText(text: "Stock in Hand"),
-              //       Switch(
-              //         value: selected,
-              //         onChanged: (v) {
-              //           state(() {
-              //             selected = v;
-              //           });
-              //         },
-              //       ),
-              //     ],
-              //   );
-              // })
-            ],
-          ),
-          actions: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ElevatedButton(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text("Save"),
-                        Image.asset(
-                          "assets/images/correct.png",
-                          height: height * 0.03,
-                          width: width * 0.1,
-                        )
-                      ],
-                    ),
-                    onPressed: () async {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return overlayContent(
-                                context: context,
-                                imagePath: "assets/rive/loading.riv");
+              actions: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ElevatedButton(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text("Save"),
+                            Image.asset(
+                              "assets/images/correct.png",
+                              height: height * 0.03,
+                              width: width * 0.1,
+                            )
+                          ],
+                        ),
+                        onPressed: () async {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return overlayContent(
+                                    context: context,
+                                    imagePath: "assets/rive/loading.riv");
+                              });
+                          FirebaseOperations.editItems(
+                            count: int.parse(countController.text.trim()),
+                            oldImagePath: imageUrl,
+                            newImagePath: imageData,
+                            categoryName: categoryName,
+                            collegeName: widget.collegeName,
+                            newitemName: nameController.text.trim(),
+                            itemPrice: priceController.text.trim(),
+                            olditemName: itemName,
+                          ).whenComplete(() {
+                            context.pop();
+                            context.pop();
                           });
-                      FirebaseOperations.editItems(
-                        count: int.parse(countController.text.trim()),
-                        oldImagePath: imageUrl,
-                        newImagePath: imageData,
-                        categoryName: categoryName,
-                        collegeName: widget.collegeName,
-                        newitemName: nameController.text.trim(),
-                        itemPrice: priceController.text.trim(),
-                        olditemName: itemName,
-                      ).whenComplete(() {
-                        context.pop();
-                        context.pop();
-                      });
-                    }),
-                ElevatedButton(
-                    child: Row(
-                      children: [
-                        Text("Cancel"),
-                        Image.asset(
-                          "assets/images/wrong.png",
-                          height: height * 0.03,
-                          width: width * 0.1,
-                        )
-                      ],
-                    ),
-                    onPressed: () async {
-                      context.pop();
-                    }),
+                        }),
+                    ElevatedButton(
+                        child: Row(
+                          children: [
+                            Text("Cancel"),
+                            Image.asset(
+                              "assets/images/wrong.png",
+                              height: height * 0.03,
+                              width: width * 0.1,
+                            )
+                          ],
+                        ),
+                        onPressed: () {
+                          //Clear the image if cancelled without saving
+                          setState(() {
+                            imageData = null;
+                          });
+                          context.pop();
+                        }),
+                  ],
+                ),
               ],
-            ),
-          ],
+            );
+          },
         );
       },
     );
@@ -175,111 +186,130 @@ class _CreationState extends ConsumerState<Creation> {
     TextEditingController nameController = TextEditingController();
     TextEditingController priceController = TextEditingController();
     TextEditingController countController = TextEditingController();
+
+//Seletimg image logic.
     XFile? imageData;
+    Future selectImageFile(BuildContext context, StateSetter setState) async {
+      XFile? image = await picker.pickImage(
+        source: ImageSource.gallery,
+      );
+      setState(() {
+        imageData = image;
+      });
+    }
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: CustomText(
-            text: 'Add Item',
-            size: sizeData.subHeader,
-          ),
-          content: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              GestureDetector(
-                onTap: () async {
-                  imageData = await selectFile();
-                },
-                child: imageData == null
-                    ? CustomNetworkImage(size: 70, radius: 70)
-                    : CircleAvatar(
-                        radius: 50,
-                        backgroundColor: Colors.amber,
-                        backgroundImage: FileImage(File(imageData!.path)),
-                      ),
+        return StatefulBuilder(
+          builder: (BuildContext context, setState) {
+            return AlertDialog(
+              title: CustomText(
+                text: 'Add Item',
+                size: sizeData.subHeader,
               ),
-              TextField(
-                controller: nameController,
-                decoration: InputDecoration(labelText: 'Name'),
+              content: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  GestureDetector(
+                    onTap: () async {
+                      selectImageFile(context, setState);
+                    },
+                    child: imageData == null
+                        ? CustomNetworkImage(size: 70, radius: 70)
+                        : CircleAvatar(
+                            radius: 50,
+                            backgroundColor: Colors.amber,
+                            backgroundImage: FileImage(File(imageData!.path)),
+                          ),
+                  ),
+                  TextField(
+                    controller: nameController,
+                    decoration: InputDecoration(labelText: 'Name'),
+                  ),
+                  TextField(
+                    controller: priceController,
+                    decoration: InputDecoration(labelText: 'Price \u20B9'),
+                  ),
+                  TextField(
+                    controller: countController,
+                    decoration: InputDecoration(labelText: 'Count '),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                ],
               ),
-              TextField(
-                controller: priceController,
-                decoration: InputDecoration(labelText: 'Price \u20B9'),
-              ),
-              TextField(
-                controller: countController,
-                decoration: InputDecoration(labelText: 'Count '),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-            ],
-          ),
-          actions: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ElevatedButton(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text("Save"),
-                        Image.asset(
-                          "assets/images/correct.png",
-                          height: height * 0.03,
-                          width: width * 0.1,
-                        )
-                      ],
-                    ),
-                    onPressed: () async {
-                      if (categoryName.isNotEmpty &&
-                          nameController.text.isNotEmpty &&
-                          priceController.text.isNotEmpty &&
-                          countController.text.isNotEmpty &&
-                          imageData != null) {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return overlayContent(
-                                  context: context,
-                                  imagePath: "assets/rive/loading.riv");
-                            });
-
-                        FirebaseOperations.addItems(
-                                count: int.parse(countController.text.trim()),
-                                categoryName: categoryName,
-                                collegeName: widget.collegeName,
+              actions: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ElevatedButton(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text("Save"),
+                            Image.asset(
+                              "assets/images/correct.png",
+                              height: height * 0.03,
+                              width: width * 0.1,
+                            )
+                          ],
+                        ),
+                        onPressed: () async {
+                          if (categoryName.isNotEmpty &&
+                              nameController.text.isNotEmpty &&
+                              priceController.text.isNotEmpty &&
+                              countController.text.isNotEmpty &&
+                              imageData != null) {
+                            showDialog(
                                 context: context,
-                                itemName: nameController.text.trim(),
-                                itemPrice: priceController.text.trim(),
-                                itemImageUrl: imageData!)
-                            .whenComplete(() {
-                          context.pop();
-                          context.pop();
-                        });
-                      } else {
-                        context.showSnackBar("Add All details");
-                      }
-                    }),
-                ElevatedButton(
-                    child: Row(
-                      children: [
-                        Text("Cancel"),
-                        Image.asset(
-                          "assets/images/wrong.png",
-                          height: height * 0.03,
-                          width: width * 0.1,
-                        )
-                      ],
-                    ),
-                    onPressed: () async {
-                      Navigator.of(context).pop();
-                    }),
+                                builder: (context) {
+                                  return overlayContent(
+                                      context: context,
+                                      imagePath: "assets/rive/loading.riv");
+                                });
+
+                            FirebaseOperations.addItems(
+                                    count:
+                                        int.parse(countController.text.trim()),
+                                    categoryName: categoryName,
+                                    collegeName: widget.collegeName,
+                                    context: context,
+                                    itemName: nameController.text.trim(),
+                                    itemPrice: priceController.text.trim(),
+                                    itemImageUrl: imageData!)
+                                .whenComplete(() {
+                              context.pop();
+                              context.pop();
+                            });
+                          } else {
+                            context.showSnackBar("Add All details");
+                          }
+                        }),
+                    ElevatedButton(
+                        child: Row(
+                          children: [
+                            Text("Cancel"),
+                            Image.asset(
+                              "assets/images/wrong.png",
+                              height: height * 0.03,
+                              width: width * 0.1,
+                            )
+                          ],
+                        ),
+                        onPressed: () async {
+                          setState(() {
+                            imageData = null;
+                          });
+                          Navigator.of(context).pop();
+                        }),
+                  ],
+                ),
               ],
-            ),
-          ],
+            );
+          },
         );
       },
     );
