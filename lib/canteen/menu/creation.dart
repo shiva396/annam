@@ -184,7 +184,7 @@ class _CreationState extends ConsumerState<Creation> {
                 onTap: () async {
                   imageData = await selectFile();
 
-                  if (imageData != null) print(imageData!.path);
+              
                 },
                 child: imageData == null
                     ? CustomNetworkImage(size: 70, radius: 70)

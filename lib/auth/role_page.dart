@@ -463,7 +463,7 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                                   }
                                 });
                               } catch (e) {
-                                print("Error");
+                            
                                 context.showSnackBar(e.toString());
                                 context.pop();
                               }

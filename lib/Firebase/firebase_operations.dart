@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -50,7 +51,7 @@ class FirebaseOperations {
     Map<String, dynamic> obj = data.data() as Map<String, dynamic>;
     Map<String, dynamic> update = obj[firebaseAuth.currentUser!.uid]
         ['categories'][categoryName] as Map<String, dynamic>;
-    print(update.keys.toList());
+
     List<String> existingData = update.keys.toList();
     List<String> items = [];
     existingData.forEach((e) {
@@ -155,8 +156,7 @@ class FirebaseOperations {
       "price": price,
       "quantity": quantity,
     };
-    itemdata['time'] = DateTime.now().toString();
-    itemdata['checkOut'] = false;
+
     itemdata['totalAmount'] =
         FieldValue.increment(int.parse(price) * int.parse(quantity));
     QuerySnapshot<Map<String, dynamic>> obj = await firebaseInstance
@@ -206,11 +206,28 @@ class FirebaseOperations {
     }
   }
 
-  static Future<void> placeOrders({
-    required Map<String, dynamic> data,
-    required String canttenOwnerId,
-    required String collegeName
-  }) async {
+  static Future<void> placeOrders(
+      {required Map<String, dynamic> data,
+      required String canttenOwnerId,
+      required String collegeName}) async {
+    DocumentSnapshot<Map<String, dynamic>> existingIds = await firebaseInstance
+        .collection('student_orders_id')
+        .doc('orders_id')
+        .get();
+
+    List<dynamic> existingUniqueIds = existingIds.get('orders_id');
+
+    var random = Random();
+    String orderId;
+    do {
+      int part1 = random.nextInt(90000) + 10000; // 5-digit number
+      int part2 = random.nextInt(90000) + 10000; // 5-digit number
+      orderId = '$part1$part2';
+    } while (existingUniqueIds.contains(orderId));
+    firebaseInstance.collection('student_orders_id').doc('orders_id').set({
+      'orders_id': FieldValue.arrayUnion([orderId.toString()])
+    }, SetOptions(merge: true));
+
     firebaseInstance
         .collection('student')
         .doc(firebaseAuth.currentUser!.uid)
@@ -223,22 +240,20 @@ class FirebaseOperations {
           .doc(firebaseAuth.currentUser!.uid)
           .collection('orders')
           .doc(firebaseAuth.currentUser!.uid)
-          .set({DateTime.now().toString(): data}, SetOptions(merge: true)).then((v) async {
-          DocumentSnapshot<Map<String, dynamic>> collegeData =
-              await firebaseInstance
-                  .collection('college')
-                  .doc(collegeName)
-                  .get();
-          Map<String, dynamic> obj = collegeData.data() as Map<String, dynamic>;
+          .set({orderId.toString(): data}, SetOptions(merge: true)).then(
+              (v) async {
+        DocumentSnapshot<Map<String, dynamic>> collegeData =
+            await firebaseInstance.collection('college').doc(collegeName).get();
+        Map<String, dynamic> obj = collegeData.data() as Map<String, dynamic>;
 
-          Map<String, dynamic> update = (obj[canttenOwnerId]);
-          update['todayOrders'] =
-              FieldValue.arrayUnion([firebaseAuth.currentUser!.uid]);
-          firebaseInstance
-              .collection('college')
-              .doc(collegeName)
-              .set({canttenOwnerId: update}, SetOptions(merge: true));
-        });
+        Map<String, dynamic> update = (obj[canttenOwnerId]);
+        update['todayOrders'] =
+            FieldValue.arrayUnion([firebaseAuth.currentUser!.uid]);
+        firebaseInstance
+            .collection('college')
+            .doc(collegeName)
+            .set({canttenOwnerId: update}, SetOptions(merge: true));
+      });
     });
   }
 

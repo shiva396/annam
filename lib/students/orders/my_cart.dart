@@ -155,8 +155,6 @@ class _CartViewState extends ConsumerState<CartView> {
                                             }),
                                             itemElements);
 
-                                        String time = items['time'];
-                                        bool checkOut = items['checkOut'];
                                         int amount = int.parse(
                                             items['totalAmount'].toString());
 
@@ -321,11 +319,18 @@ class _CartViewState extends ConsumerState<CartView> {
                                                             // History Push
                                                             Ordereditems
                                                                 .addAll({
-                                                              'canttenName':
+                                                              'canteenName':
                                                                   canteenName,
-                                                              'canttenId':
+                                                              'canteenId':
                                                                   canteenOwners[
-                                                                      index]
+                                                                      index],
+                                                              'checkOut': false,
+                                                              'totalAmount':
+                                                                  amount
+                                                                      .toString(),
+                                                              'time': DateTime
+                                                                      .now()
+                                                                  .toString()
                                                             });
 
                                                             Map<String, dynamic>

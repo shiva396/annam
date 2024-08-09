@@ -30,7 +30,9 @@ class _MainTabViewState extends ConsumerState<MainTabView> {
   void initState() {
     super.initState();
 
-    selectPageView = const StudentHistory(userRole: UserRole.student,);
+    selectPageView = const StudentHistory(
+      userRole: UserRole.student,
+    );
   }
 
   @override
@@ -117,7 +119,9 @@ class _MainTabViewState extends ConsumerState<MainTabView> {
                                   if (selctTab != 1) {
                                     setState(() {
                                       selctTab = 1;
-                                      selectPageView = const StudentHistory();
+                                      selectPageView = StudentHistory(
+                                        userRole: UserRole.student,
+                                      );
                                     });
                                   }
                                 },
@@ -131,7 +135,9 @@ class _MainTabViewState extends ConsumerState<MainTabView> {
                                 if (selctTab != 1) {
                                   setState(() {
                                     selctTab = 1;
-                                    selectPageView = const StudentHistory();
+                                    selectPageView = StudentHistory(
+                                      userRole: UserRole.student,
+                                    );
                                   });
                                 }
                               },

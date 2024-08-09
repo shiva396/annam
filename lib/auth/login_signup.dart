@@ -190,7 +190,7 @@ class _EmailBarState extends State<EmailBar> {
                     .doc('role')
                     .get();
                 Map<String, dynamic> res = (docSnapshot.get('role'));
-          
+
                 if (res
                     .containsKey(emailController.text.trim().toLowerCase())) {
                   String role = res[emailController.text.trim().toLowerCase()];
@@ -227,6 +227,7 @@ class _EmailBarState extends State<EmailBar> {
                       context.showSnackBar('Error checking documents: $e');
                     }
                   } else if (role = UserRole.ngo.asString) {
+                    print("Here");
                     context.push(NgoMainTab());
                   }
                 } else {
