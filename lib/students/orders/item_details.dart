@@ -17,10 +17,12 @@ class ItemDetailsView extends ConsumerStatefulWidget {
   final String itemName;
   final String price;
   final String selectedCanteen;
+  final String categoryName;
   final String collegeName;
   final String imagePath;
   const ItemDetailsView(
       {super.key,
+      required this.categoryName,
       required this.itemName,
       required this.price,
       required this.imagePath,
@@ -326,6 +328,9 @@ class _ItemDetailsViewState extends ConsumerState<ItemDetailsView> {
                                                               .primaryColor(.9),
                                                           onPressed: () {
                                                             FirebaseOperations.addCartItems(
+                                                                    categoryName:
+                                                                        widget
+                                                                            .categoryName,
                                                                     collegeName:
                                                                         widget
                                                                             .collegeName,

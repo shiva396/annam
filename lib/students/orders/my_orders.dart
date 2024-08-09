@@ -268,23 +268,6 @@ class _MyOrdersState extends ConsumerState<MyOrders> {
                                               const SizedBox(
                                                 height: 25,
                                               ),
-                                              Center(
-                                                child: ElevatedButton(
-                                                    style: ElevatedButton.styleFrom(
-                                                        shape:
-                                                            RoundedRectangleBorder(),
-                                                        backgroundColor:
-                                                            colorData
-                                                                .primaryColor(
-                                                                    1)),
-                                                    child: CustomText(
-                                                      text: "Cancel Orders",
-                                                      size: sizeData.subHeader,
-                                                      color: colorData
-                                                          .secondaryColor(1),
-                                                    ),
-                                                    onPressed: () {}),
-                                              ),
                                               const SizedBox(
                                                 height: 20,
                                               ),

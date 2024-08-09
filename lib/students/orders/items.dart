@@ -17,11 +17,13 @@ import 'item_details.dart';
 
 class MenuItemsView extends ConsumerStatefulWidget {
   final Map<String, dynamic> canteenData;
+  final String categoryName;
   final String collegeName;
   final String selectedCanteen;
   final String selectedCategory;
   const MenuItemsView(
       {super.key,
+      required this.categoryName,
       required this.canteenData,
       required this.selectedCanteen,
       required this.collegeName,
@@ -135,6 +137,7 @@ class _MenuItemsViewState extends ConsumerState<MenuItemsView> {
                             onTap: () {
                               context.push(
                                 ItemDetailsView(
+                                  categoryName: widget.categoryName,
                                   imagePath: widget.canteenData[items[index]]
                                       ['imageUrl'],
                                   collegeName: widget.collegeName,

@@ -200,6 +200,8 @@ class _PlaceOrdersState extends ConsumerState<PlaceOrders> {
                                               return GestureDetector(
                                                 onTap: () {
                                                   context.push(MenuItemsView(
+                                                    categoryName:
+                                                        allCategories[index],
                                                     collegeName: collegeName,
                                                     selectedCategory:
                                                         allCategories[index],

@@ -344,16 +344,14 @@ class _CartViewState extends ConsumerState<CartView> {
                                                             });
                                                             FirebaseOperations
                                                                 .placeOrders(
+                                                              context: context,
                                                               collegeName:
                                                                   collegeName,
                                                               canttenOwnerId:
                                                                   canteenOwners[
                                                                       index],
                                                               data: data,
-                                                            ).whenComplete(() {
-                                                              context.showSnackBar(
-                                                                  "Order Placed Sucessfully");
-                                                            });
+                                                            );
                                                           }),
                                                     ),
                                                     const SizedBox(

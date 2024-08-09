@@ -150,6 +150,7 @@ class FirebaseOperations {
 
   static Future<void> addCartItems(
       {required String canteenName,
+      required String categoryName,
       required String itemName,
       required String collegeName,
       required String price,
@@ -159,6 +160,7 @@ class FirebaseOperations {
       "name": itemName,
       "price": price,
       "quantity": quantity,
+      "category": categoryName
     };
 
     itemdata['totalAmount'] =
@@ -212,54 +214,108 @@ class FirebaseOperations {
 
   static Future<void> placeOrders(
       {required Map<String, dynamic> data,
+      required BuildContext context,
       required String canttenOwnerId,
       required String collegeName}) async {
-    // DocumentSnapshot<Map<String, dynamic>> existingIds = await firebaseInstance
-    //     .collection('student_orders_id')
-    //     .doc('orders_id')
-    //     .get();
+    DocumentSnapshot<Map<String, dynamic>> existingIds = await firebaseInstance
+        .collection('student_orders_id')
+        .doc('orders_id')
+        .get();
 
-    // List<dynamic> existingUniqueIds = existingIds.get('orders_id');
+    List<dynamic> existingUniqueIds = existingIds.get('orders_id');
 
-    // var random = Random();
-    // String orderId;
-    // do {
-    //   int part1 = random.nextInt(90000) + 10000; // 5-digit number
-    //   int part2 = random.nextInt(90000) + 10000; // 5-digit number
-    //   orderId = '$part1$part2';
-    // } while (existingUniqueIds.contains(orderId));
-    // firebaseInstance.collection('student_orders_id').doc('orders_id').set({
-    //   'orders_id': FieldValue.arrayUnion([orderId.toString()])
-    // }, SetOptions(merge: true));
+    var random = Random();
+    String orderId;
+    do {
+      int part1 = random.nextInt(90000) + 10000; // 5-digit number
+      int part2 = random.nextInt(90000) + 10000; // 5-digit number
+      orderId = '$part1$part2';
+    } while (existingUniqueIds.contains(orderId));
+    firebaseInstance.collection('student_orders_id').doc('orders_id').set({
+      'orders_id': FieldValue.arrayUnion([orderId.toString()])
+    }, SetOptions(merge: true));
 
-    // firebaseInstance
-    //     .collection('student')
-    //     .doc(firebaseAuth.currentUser!.uid)
-    //     .collection('cart')
-    //     .doc(firebaseAuth.currentUser!.uid)
-    //     .set({canttenOwnerId: FieldValue.delete()},
-    //         SetOptions(merge: true)).then((v) {
-    //   firebaseInstance
-    //       .collection('student')
-    //       .doc(firebaseAuth.currentUser!.uid)
-    //       .collection('orders')
-    //       .doc(firebaseAuth.currentUser!.uid)
-    //       .set({orderId.toString(): data}, SetOptions(merge: true)).then(
-    //           (v) async {
-    DocumentSnapshot<Map<String, dynamic>> collegeData =
-        await firebaseInstance.collection('college').doc(collegeName).get();
-    Map<String, dynamic> obj = collegeData.data() as Map<String, dynamic>;
-    print(obj);
+    firebaseInstance
+        .collection('student')
+        .doc(firebaseAuth.currentUser!.uid)
+        .collection('cart')
+        .doc(firebaseAuth.currentUser!.uid)
+        .set({canttenOwnerId: FieldValue.delete()},
+            SetOptions(merge: true)).then((v) {
+      firebaseInstance
+          .collection('student')
+          .doc(firebaseAuth.currentUser!.uid)
+          .collection('orders')
+          .doc(firebaseAuth.currentUser!.uid)
+          .set({orderId.toString(): data}, SetOptions(merge: true)).then(
+              (v) async {
+        DocumentReference collegeData =
+            await firebaseInstance.collection('college').doc(collegeName);
 
-    // Map<String, dynamic> update = (obj[canttenOwnerId]);
-    // update['todayOrders'] =
-    //     FieldValue.arrayUnion([firebaseAuth.currentUser!.uid]);
-    // firebaseInstance
-    //     .collection('college')
-    //     .doc(collegeName)
-    //     .set({canttenOwnerId: update}, SetOptions(merge: true));
-    //   });
-    // });
+        await firebaseInstance.runTransaction((transaction) async {
+          // Get the current data
+          DocumentSnapshot snapshot = await transaction.get(collegeData);
+          Map<String, dynamic> existingData =
+              snapshot.data() as Map<String, dynamic>;
+          Map<String, dynamic> oldData = existingData[canttenOwnerId];
+          Map<String, dynamic> itemData = (Map.from(data)
+            ..remove('totalAmount')
+            ..remove('checkOut')
+            ..remove('canteenId')
+            ..remove('canteenName')
+            ..remove('time'));
+          print(existingData);
+          for (int i = 0; i < itemData.length; i++) {
+            String categoryName = itemData[i.toString()]['category'];
+            String itemName = itemData[i.toString()]['name'];
+            int quantity = int.parse(itemData[i.toString()]['quantity']);
+
+            if (snapshot.exists) {
+              Map<String, dynamic> categories =
+                  oldData['categories'] as Map<String, dynamic>;
+
+              Map<String, dynamic> items =
+                  categories[categoryName] as Map<String, dynamic>;
+              Map<String, dynamic> itemData =
+                  items[itemName] as Map<String, dynamic>;
+
+              int currentCount = itemData['count'];
+
+              if (quantity <= currentCount) {
+                transaction.update(
+                  collegeData,
+                  {
+                    '$canttenOwnerId.categories.$categoryName.$itemName.count':
+                        currentCount - quantity,
+                  },
+                ).update(collegeData, {
+                  '$canttenOwnerId.todayOrders':
+                      FieldValue.arrayUnion([firebaseAuth.currentUser!.uid])
+                });
+                if (currentCount - quantity == 0) {
+                  transaction.update(
+                    collegeData,
+                    {
+                      '$canttenOwnerId.categories.$categoryName.$itemName.stockInHand':
+                          false,
+                    },
+                  );
+                }
+              } else {
+                if (currentCount == 0) {
+                  context.showSnackBar(" $itemName not availabe");
+                } else {
+                  context.showSnackBar(
+                      "Item available for $itemName is $currentCount only ");
+                }
+              }
+            } else {
+              print('Institution $collegeName does not exist');
+            }
+          }
+        });
+      });
+    });
   }
 
   static Future<void> checkOutItems({required String studentId}) async {
