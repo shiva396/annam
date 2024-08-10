@@ -35,6 +35,12 @@ class NgoProfilePage extends ConsumerStatefulWidget {
 class _NgoProfilePageState extends ConsumerState<NgoProfilePage> {
   final ImagePicker picker = ImagePicker();
   XFile? image;
+  Future<void> selectProfileImage() async {
+    dynamic imageFile = await picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      image = imageFile;
+    });
+  }
 
   bool changeData = false;
 
@@ -98,11 +104,8 @@ class _NgoProfilePageState extends ConsumerState<NgoProfilePage> {
                     ),
                     alignment: Alignment.center,
                     child: GestureDetector(
-                      onTap: () async {
-                        changeData
-                            ? image = await picker.pickImage(
-                                source: ImageSource.gallery)
-                            : null;
+                      onTap: () {
+                        selectProfileImage();
                       },
                       child: image != null
                           ? ClipRRect(
@@ -309,6 +312,7 @@ class _NgoProfilePageState extends ConsumerState<NgoProfilePage> {
                                 ),
                                 onPressed: () async {
                                   setState(() {
+                                    image = null;
                                     changeData = false;
                                   });
                                 }),
