@@ -41,6 +41,13 @@ class _StudentProfilePageState extends ConsumerState<StudentProfilePage> {
 
   TextEditingController txtMobile = TextEditingController();
 
+  Future<void> selectProfileImage() async {
+    dynamic imageFile = await picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      image = imageFile;
+    });
+  }
+
   void dispose() {
     super.dispose();
     txtMobile.dispose();
@@ -60,7 +67,7 @@ class _StudentProfilePageState extends ConsumerState<StudentProfilePage> {
     String email = widget.studentData['email'] ?? '';
     String collegeName = widget.studentData['collegeName'] ?? '';
     String profileUrl = widget.studentData['image'] ?? '';
-    
+
     return SafeArea(
       child: Scaffold(
         body: Container(
@@ -111,11 +118,7 @@ class _StudentProfilePageState extends ConsumerState<StudentProfilePage> {
                   alignment: Alignment.center,
                   child: GestureDetector(
                     onTap: () async {
-                      
-                      changeData
-                          ? image = await picker.pickImage(
-                              source: ImageSource.gallery)
-                          : null;
+                      selectProfileImage();
                     },
                     child: image != null
                         ? ClipRRect(
@@ -308,6 +311,7 @@ class _StudentProfilePageState extends ConsumerState<StudentProfilePage> {
                               ),
                               onPressed: () async {
                                 setState(() {
+                                  image = null;
                                   changeData = false;
                                 });
                               }),
