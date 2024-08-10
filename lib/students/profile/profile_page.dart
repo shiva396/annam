@@ -116,6 +116,7 @@ class _StudentProfilePageState extends ConsumerState<StudentProfilePage> {
                   alignment: Alignment.center,
                   child: GestureDetector(
                     onTap: () async {
+                      
                       changeData
                           ? image = await picker.pickImage(
                               source: ImageSource.gallery)

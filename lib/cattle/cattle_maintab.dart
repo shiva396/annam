@@ -1,47 +1,33 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:projrect_annam/const/static_data.dart';
-import 'package:projrect_annam/firebase/firebase_operations.dart';
-import 'package:projrect_annam/const/color_extension.dart';
+import 'package:projrect_annam/Firebase/firebase_operations.dart';
+import 'package:projrect_annam/cattle/history/history.dart';
+import 'package:projrect_annam/cattle/menu/home.dart';
+import 'package:projrect_annam/cattle/profile/profile.dart';
 import 'package:projrect_annam/common_widget/tab_button.dart';
 import 'package:projrect_annam/const/image_const.dart';
+import 'package:projrect_annam/utils/color_data.dart';
 import 'package:projrect_annam/utils/helper_methods.dart';
+import 'package:projrect_annam/utils/size_data.dart';
+import 'package:flutter_riverpod/src/consumer.dart';
 
-import '../utils/color_data.dart';
-import '../utils/size_data.dart';
-import 'orders/place_orders.dart';
-import 'more/more.dart';
-import 'history/order_history.dart';
-import 'profile/profile_page.dart';
-
-class MainTabView extends ConsumerStatefulWidget {
-  const MainTabView({super.key, required this.role});
-  final String role;
+class CattleOwner extends ConsumerStatefulWidget {
+  const CattleOwner({super.key});
 
   @override
-  ConsumerState<MainTabView> createState() => _MainTabViewState();
+  ConsumerState<CattleOwner> createState() => _CattleOwnerState();
 }
 
-class _MainTabViewState extends ConsumerState<MainTabView> {
+class _CattleOwnerState extends ConsumerState<CattleOwner> {
   int selctTab = 1;
-  PageStorageBucket storageBucket = PageStorageBucket();
   Widget? selectPageView;
-
+  PageStorageBucket storageBucket = PageStorageBucket();
   @override
   void initState() {
+    // selectPageView = const
     super.initState();
-
-    selectPageView = const StudentHistory(
-      userRole: UserRole.student,
-    );
   }
 
-  @override
-  void dispose() {
-    // Clean up any resources here if necessary
-    super.dispose();
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -52,51 +38,48 @@ class _MainTabViewState extends ConsumerState<MainTabView> {
     double width = sizeData.width;
 
     return StreamBuilder<Object>(
-      stream: FirebaseOperations.firebaseInstance
-          .collection('student')
-          .doc(FirebaseOperations.firebaseAuth.currentUser!.uid)
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData && selectPageView != null) {
-          return overlayContent(
-              context: context, imagePath: 'assets/rive/loading.riv');
-        }
+        stream: FirebaseOperations.firebaseInstance
+            .collection('cattle')
+            .doc(FirebaseOperations.firebaseAuth.currentUser!.uid)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData && selectPageView != null) {
+            return overlayContent(
+                context: context, imagePath: 'assets/rive/loading.riv');
+          }
 
-        DocumentSnapshot obj = snapshot.data as DocumentSnapshot;
-        Map<String, dynamic> studentData = (obj.data()) as Map<String, dynamic>;
-
-        return SafeArea(
-          child: Scaffold(
+          return SafeArea(
+              child: Scaffold(
             body: PageStorage(bucket: storageBucket, child: selectPageView!),
-            backgroundColor: const Color(0xfff5f5f5),
-            bottomNavigationBar: BottomAppBar(
-              surfaceTintColor: colorData.primaryColor(.9),
+            bottomNavigationBar: BottomAppBar( 
+                 surfaceTintColor: colorData.primaryColor(.9),
               shadowColor: Colors.black,
               elevation: 1,
               height: 64,
               shape: const CircularNotchedRectangle(),
+              
               child: SafeArea(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     _buildTabButton(
                       context,
-                      "Orders",
-                      ImageConst.shoppingCart,
+                      "History",
+                      ImageConst.offertab,
                       selctTab == 0,
                       () {
-                        _onTabSelected(0, const PlaceOrders());
+                        _onTabSelected(0, const CattleHistory());
                       },
                     ),
                     _buildTabButton(
                       context,
-                      "History",
-                      ImageConst.offertab,
+                      "Home",
+                      ImageConst.hometab,
                       selctTab == 1,
                       () {
                         _onTabSelected(
                           1,
-                          StudentHistory(userRole: UserRole.student),
+                          CattleHome(),
                         );
                       },
                     ),
@@ -108,19 +91,11 @@ class _MainTabViewState extends ConsumerState<MainTabView> {
                       () {
                         _onTabSelected(
                           3,
-                          StudentProfilePage(studentData: studentData),
+                          CattleProfile(),
                         );
                       },
                     ),
-                    _buildTabButton(
-                      context,
-                      "More",
-                      ImageConst.moretab,
-                      selctTab == 4,
-                      () {
-                        _onTabSelected(4, const MoreView());
-                      },
-                    ),
+             
                   ],
                 ),
               ),
@@ -166,3 +141,5 @@ class _MainTabViewState extends ConsumerState<MainTabView> {
     );
   }
 }
+
+
