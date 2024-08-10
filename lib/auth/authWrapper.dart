@@ -81,7 +81,10 @@ class AuthWrapper extends StatelessWidget {
                     }
                   } else if (role == UserRole.ngo.asString) {
                     return NgoMainTab();
-                  } else {
+                  } else if (role == UserRole.cattleOwner.asString) {
+                    return SizedBox();
+                  }
+                  {
                     return SizedBox();
                   }
                 } else {

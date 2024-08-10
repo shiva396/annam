@@ -1,7 +1,11 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:projrect_annam/utils/shimmer.dart';
 
+import '../canteen/home/expanded_card.dart';
 import '../const/static_data.dart';
+import '../firebase/firebase_operations.dart';
 import 'custom_text.dart';
 import 'size_data.dart';
 
@@ -98,6 +102,7 @@ class _CalandarPickerState extends State<CalandarPicker> {
       firstDate: DateTime(DateTime.now().year - 5),
       lastDate: DateTime.now(),
     );
+
     return SizedBox(
       width: 900,
       child: Column(
@@ -127,10 +132,100 @@ class _CalandarPickerState extends State<CalandarPicker> {
                   _singleDatePickerValueWithDefaultValue,
                 ),
               ),
-              if (UserRole.canteenOwner == widget.userRole) ...[]
             ],
           ),
-          const SizedBox(height: 25),
+          if (UserRole.canteenOwner == widget.userRole) ...[
+            StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                stream: FirebaseOperations.firebaseInstance
+                    .collection('orders_history')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) return ShimmerEffect();
+                  List<ExpandableCard> orderWidgets = [];
+
+                  for (var doc in snapshot.data!.docs) {
+                    Map<String, dynamic> dataMap = doc.data();
+                    String orderId = doc.id;
+
+                    // Access the single map field in the document
+                    String mapFieldName = dataMap.keys.first;
+
+                    // Check if the target date exists as a key in the map
+                    if (mapFieldName.startsWith(
+                      _getValueText(
+                        config.calendarType,
+                        _singleDatePickerValueWithDefaultValue,
+                      ),
+                    )) {
+                      Map<String, dynamic> historyData = dataMap[mapFieldName];
+
+                      if (historyData['canteenId'] ==
+                          FirebaseOperations.firebaseAuth.currentUser!.uid) {
+                        orderWidgets.add(ExpandableCard(
+                            orderedData: historyData,
+                            studentName: historyData['studentName'],
+                            orderId: orderId,
+                            studentId: historyData['studentId']));
+                      }
+                    }
+                  }
+                  if (orderWidgets.isNotEmpty)
+                    return SizedBox(
+                      height: 200,
+                      child: ListView(
+                        children: orderWidgets,
+                      ),
+                    );
+                  return CustomText(
+                      text: "No Orders placed at this selected Date");
+                }),
+          ],
+          if (UserRole.student == widget.userRole) ...[
+            CustomText(text: "Data"),
+            StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                stream: FirebaseOperations.firebaseInstance
+                    .collection('orders_history')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) return ShimmerEffect();
+                  List<ExpandableCard> orderWidgets = [];
+
+                  for (var doc in snapshot.data!.docs) {
+                    Map<String, dynamic> dataMap = doc.data();
+                    String orderId = doc.id;
+
+                    // Access the single map field in the document
+                    String mapFieldName = dataMap.keys.first;
+
+                    // Check if the target date exists as a key in the map
+                    if (mapFieldName.startsWith(
+                      _getValueText(
+                        config.calendarType,
+                        _singleDatePickerValueWithDefaultValue,
+                      ),
+                    )) {
+                      Map<String, dynamic> historyData = dataMap[mapFieldName];
+                      if (historyData['studentId'] ==
+                          FirebaseOperations.firebaseAuth.currentUser!.uid) {
+                        orderWidgets.add(ExpandableCard(
+                            orderedData: historyData,
+                            studentName: historyData['canteenName'],
+                            orderId: orderId,
+                            studentId: historyData['studentId']));
+                      }
+                    }
+                  }
+                  if (orderWidgets.isNotEmpty)
+                    return SizedBox(
+                      height: 200,
+                      child: ListView(
+                        children: orderWidgets,
+                      ),
+                    );
+                  return CustomText(
+                      text: "No Orders placed at this selected Date");
+                })
+          ]
         ],
       ),
     );

@@ -33,11 +33,11 @@ class _CanteenOwnerState extends ConsumerState<CanteenOwner> {
 
   @override
   void initState() {
-    selectPageView = Creation(collegeName: widget.collegeName);
+    selectPageView = CanteenHistory(userRole: UserRole.canteenOwner);
     super.initState();
   }
 
-  int selctTab = 0;
+  int selctTab = 1;
   PageStorageBucket storageBucket = PageStorageBucket();
 
   @override

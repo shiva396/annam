@@ -41,7 +41,6 @@ class _CanteenMainPageState extends ConsumerState<CanteenMainPage> {
                 child: CustomText(
                   text: "Today Items",
                   size: sizeData.header,
-                  
                 ),
               ),
               Expanded(
@@ -93,13 +92,21 @@ class _CanteenMainPageState extends ConsumerState<CanteenMainPage> {
                                     Map<String, dynamic> obj =
                                         mostinnersnapshot.data!.data()
                                             as Map<String, dynamic>;
+                                    String orderId = "";
+                                    obj.forEach((key, value) {
+                                      if (value['canteenId'] ==
+                                          FirebaseOperations
+                                              .firebaseAuth.currentUser!.uid) {
+                                        orderId = key;
+                                      }
+                                    });
 
-                                    Map<String, dynamic> data = obj[
-                                            FirebaseOperations.firebaseAuth
-                                                .currentUser!.uid] ??
-                                        {};
+                                    Map<String, dynamic> data =
+                                        obj[orderId] ?? {};
+                                    
                                     if (data.isNotEmpty) {
                                       return ExpandableCard(
+                                        orderId: orderId,
                                         studentId: studentsOrder[index],
                                         studentName: studentName,
                                         orderedData: data,

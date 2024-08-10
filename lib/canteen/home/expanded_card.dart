@@ -12,8 +12,10 @@ class ExpandableCard extends ConsumerStatefulWidget {
       {super.key,
       required this.orderedData,
       required this.studentName,
+      required this.orderId,
       required this.studentId});
   final Map<String, dynamic>? orderedData;
+  final String orderId;
   final String studentName;
   final String studentId;
 
@@ -37,7 +39,11 @@ class ExpandableCardState extends ConsumerState<ExpandableCard> {
       filteredData = Map.from(widget.orderedData!)
         ..remove('totalAmount')
         ..remove('checkOut')
-        ..remove('time');
+        ..remove('time')
+        ..remove('canteenName')
+        ..remove('canteenId')
+        ..remove('studentId')
+        ..remove('studentName');
     }
     return Padding(
       padding: const EdgeInsets.only(bottom: 10, top: 10),
@@ -50,8 +56,17 @@ class ExpandableCardState extends ConsumerState<ExpandableCard> {
         child: Column(
           children: <Widget>[
             ListTile(
-              title: CustomText(
-                text: widget.studentName,
+              title: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomText(
+                    text: widget.orderId,
+                  ),
+                  CustomText(
+                    text: widget.studentName,
+                  ),
+                ],
               ),
               subtitle: CustomText(text: widget.orderedData!['time']),
               trailing: IconButton(
@@ -168,6 +183,7 @@ class ExpandableCardState extends ConsumerState<ExpandableCard> {
                                         ),
                                         onPressed: () {
                                           FirebaseOperations.checkOutItems(
+                                            orderId: widget.orderId,
                                             studentId: widget.studentId,
                                           );
                                         }),

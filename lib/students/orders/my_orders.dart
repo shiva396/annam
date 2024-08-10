@@ -92,7 +92,7 @@ class _MyOrdersState extends ConsumerState<MyOrders> {
                           }
                           Map<String, dynamic> data = snapshot.data!.docs.first
                               .data()! as Map<String, dynamic>;
-                          print(data);
+
                           List<String> orderedIds = data.keys.toList();
                           List<String> canteenName = [];
                           List<String> canteenIds = [];
@@ -112,9 +112,10 @@ class _MyOrdersState extends ConsumerState<MyOrders> {
                               ..remove('checkOut')
                               ..remove('canteenId')
                               ..remove('canteenName')
+                              ..remove('studentId')
+                              ..remove('studentName')
                               ..remove('time'));
                           }
-                          print(filteredData);
 
                           return SizedBox(
                             height: 750,
@@ -267,23 +268,6 @@ class _MyOrdersState extends ConsumerState<MyOrders> {
                                               ),
                                               const SizedBox(
                                                 height: 25,
-                                              ),
-                                              Center(
-                                                child: ElevatedButton(
-                                                    style: ElevatedButton.styleFrom(
-                                                        shape:
-                                                            RoundedRectangleBorder(),
-                                                        backgroundColor:
-                                                            colorData
-                                                                .primaryColor(
-                                                                    1)),
-                                                    child: CustomText(
-                                                      text: "Cancel Orders",
-                                                      size: sizeData.subHeader,
-                                                      color: colorData
-                                                          .secondaryColor(1),
-                                                    ),
-                                                    onPressed: () {}),
                                               ),
                                               const SizedBox(
                                                 height: 20,

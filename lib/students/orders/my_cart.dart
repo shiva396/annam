@@ -77,6 +77,7 @@ class _CartViewState extends ConsumerState<CartView> {
                           context: context,
                           imagePath: "assets/rive/loading.riv");
                     String collegeName = outersnapshot.data!.get('collegeName');
+                    String studentName = outersnapshot.data!.get('name');
                     return StreamBuilder<QuerySnapshot>(
                         stream: FirebaseOperations.firebaseInstance
                             .collection('student')
@@ -93,7 +94,8 @@ class _CartViewState extends ConsumerState<CartView> {
 
                           if (snapshot.hasError && collegeName.isNotEmpty) {
                             return overlayContent(
-                                context: context, imagePath: "");
+                                context: context,
+                                imagePath: "assets/rive/loading.riv");
                           }
 
                           if (!snapshot.hasData ||
@@ -112,6 +114,7 @@ class _CartViewState extends ConsumerState<CartView> {
                             child: ListView.builder(
                                 itemCount: canteenOwners.length,
                                 itemBuilder: (context, index) {
+                                  String canttenOwnerId = canteenOwners[index];
                                   return StreamBuilder<DocumentSnapshot>(
                                       stream: FirebaseOperations
                                           .firebaseInstance
@@ -218,6 +221,24 @@ class _CartViewState extends ConsumerState<CartView> {
                                                           const SizedBox(
                                                             width: 15,
                                                           ),
+                                                          Items(
+                                                              itemName: Ordereditems[
+                                                                          index]
+                                                                      ["name"]
+                                                                  .toString(),
+                                                              quantity: Ordereditems[
+                                                                          index]
+                                                                      [
+                                                                      "quantity"]
+                                                                  .toString(),
+                                                              canteenOwnerId:
+                                                                  canttenOwnerId,
+                                                              totalAmount:
+                                                                  amount,
+                                                              price: Ordereditems[
+                                                                          index]
+                                                                      ["price"]
+                                                                  .toString()),
                                                           CustomText(
                                                             text:
                                                                 "${Ordereditems[index]["price"].toString()} \u{20B9}",
@@ -330,7 +351,14 @@ class _CartViewState extends ConsumerState<CartView> {
                                                                       .toString(),
                                                               'time': DateTime
                                                                       .now()
-                                                                  .toString()
+                                                                  .toString(),
+                                                              'studentId':
+                                                                  FirebaseOperations
+                                                                      .firebaseAuth
+                                                                      .currentUser!
+                                                                      .uid,
+                                                              'studentName':
+                                                                  studentName,
                                                             });
 
                                                             Map<String, dynamic>
@@ -344,16 +372,14 @@ class _CartViewState extends ConsumerState<CartView> {
                                                             });
                                                             FirebaseOperations
                                                                 .placeOrders(
+                                                              context: context,
                                                               collegeName:
                                                                   collegeName,
                                                               canttenOwnerId:
                                                                   canteenOwners[
                                                                       index],
                                                               data: data,
-                                                            ).whenComplete(() {
-                                                              context.showSnackBar(
-                                                                  "Order Placed Sucessfully");
-                                                            });
+                                                            );
                                                           }),
                                                     ),
                                                     const SizedBox(
@@ -374,6 +400,126 @@ class _CartViewState extends ConsumerState<CartView> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class Items extends ConsumerStatefulWidget {
+  final String canteenOwnerId;
+  final String itemName;
+  final String quantity;
+  final String price;
+  final int totalAmount;
+  Items(
+      {super.key,
+      required this.price,
+      required this.totalAmount,
+      required this.canteenOwnerId,
+      required this.itemName,
+      required this.quantity});
+
+  @override
+  ConsumerState<Items> createState() => _ItemsState();
+}
+
+class _ItemsState extends ConsumerState<Items> {
+  int? qty;
+
+  @override
+  void initState() {
+    qty = int.parse(widget.quantity);
+    super.initState();
+  }
+
+  void changeData({required String increOrDec}) {
+    int total = int.parse(widget.price) * int.parse(widget.quantity);
+    int totalAmount = widget.totalAmount - total;
+
+    int updatedAmount = totalAmount + (int.parse(widget.price) * qty!);
+
+    FirebaseOperations.addCountForItems(
+        increOrdec: increOrDec,
+        canteenOwnerId: widget.canteenOwnerId,
+        itemName: widget.itemName,
+        quantity: qty!.toString(),
+        totalAmount: updatedAmount);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    CustomSizeData sizeData = CustomSizeData.from(context);
+    CustomColorData colorData = CustomColorData.from(ref);
+
+    double height = sizeData.height;
+    double width = sizeData.width;
+    return Row(
+      children: [
+        InkWell(
+          onTap: () {
+            setState(() {
+              qty = qty! - 1;
+
+              if (qty! < 0) {
+                qty = 0;
+              }
+            });
+            changeData(increOrDec: 'dec');
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            height: 25,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+                color: colorData.primaryColor(.9),
+                borderRadius: BorderRadius.circular(12.5)),
+            child: CustomText(
+              text: "-",
+              color: Colors.white,
+              size: 20,
+            ),
+          ),
+        ),
+        const SizedBox(
+          width: 8,
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          height: 25,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              border: Border.all(
+                color: colorData.primaryColor(.9),
+              ),
+              borderRadius: BorderRadius.circular(12.5)),
+          child: CustomText(
+            text: qty.toString(),
+          ),
+        ),
+        const SizedBox(
+          width: 8,
+        ),
+        InkWell(
+          onTap: () {
+            setState(() {
+              qty = qty! + 1;
+            });
+            changeData(increOrDec: 'inc');
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            height: 25,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+                color: colorData.primaryColor(.9),
+                borderRadius: BorderRadius.circular(12.5)),
+            child: CustomText(
+              text: "+",
+              size: 20,
+              color: Colors.white,
+            ),
+          ),
+        )
+      ],
     );
   }
 }

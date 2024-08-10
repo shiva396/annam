@@ -32,22 +32,24 @@ class _CanteenHistoryState extends ConsumerState<CanteenHistory> {
           right: width * 0.04,
           top: height * 0.02,
         ),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomText(
-                  text: "History",
-                  size: sizeData.header,
-                  color: colorData.fontColor(1),
-                ),
-              ],
-            ),
-            CalandarPicker(
-              userRole: widget.userRole,
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomText(
+                    text: "History",
+                    size: sizeData.header,
+                    color: colorData.fontColor(1),
+                  ),
+                ],
+              ),
+              CalandarPicker(
+                userRole: widget.userRole,
+              ),
+            ],
+          ),
         ),
       )),
     );
