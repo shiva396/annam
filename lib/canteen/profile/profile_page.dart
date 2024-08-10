@@ -36,6 +36,13 @@ class _CanteenProfilePageState extends ConsumerState<CanteenProfilePage> {
   final ImagePicker picker = ImagePicker();
   XFile? image;
 
+  Future<void> selectImageProfile() async {
+    dynamic imageFile = await picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      image = imageFile;
+    });
+  }
+
   bool changeData = false;
 
   TextEditingController txtName = TextEditingController();
@@ -99,10 +106,7 @@ class _CanteenProfilePageState extends ConsumerState<CanteenProfilePage> {
                     alignment: Alignment.center,
                     child: GestureDetector(
                       onTap: () async {
-                        changeData
-                            ? image = await picker.pickImage(
-                                source: ImageSource.gallery)
-                            : null;
+                        selectImageProfile();
                       },
                       child: image != null
                           ? ClipRRect(
@@ -312,6 +316,7 @@ class _CanteenProfilePageState extends ConsumerState<CanteenProfilePage> {
                                 ),
                                 onPressed: () async {
                                   setState(() {
+                                    image = null;
                                     changeData = false;
                                   });
                                 }),
