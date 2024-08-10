@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
 import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/const/image_const.dart';
+import 'package:projrect_annam/utils/search.dart';
 import 'package:projrect_annam/utils/shimmer_effect.dart';
 import 'package:projrect_annam/theme/theme_provider.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
@@ -34,21 +35,15 @@ class _PlaceOrdersState extends ConsumerState<PlaceOrders> {
     super.dispose();
   }
 
-  bool _showLoading = true;
   @override
   void initState() {
     super.initState();
-
-    Future.delayed(Duration(seconds: 2), () {
-      setState(() {
-        _showLoading = false;
-      });
-    });
   }
 
   List<String> allId = [];
   List<String> allCanteenOwners = [];
   List<String> allCategories = [];
+  List<String> searchedCategories = [];
   String _selectedCanteenId = "";
   bool keyboardOn = true;
 
@@ -100,8 +95,7 @@ class _PlaceOrdersState extends ConsumerState<PlaceOrders> {
                       .doc(FirebaseOperations.firebaseAuth.currentUser!.uid)
                       .snapshots(),
                   builder: (context, snapshot) {
-                    if (!snapshot.hasData || _showLoading)
-                      return ShimmerEffect();
+                    if (!snapshot.hasData) return ShimmerEffect();
 
                     Map<String, dynamic> data =
                         (snapshot.data!.data() as Map<String, dynamic>);
@@ -162,12 +156,34 @@ class _PlaceOrdersState extends ConsumerState<PlaceOrders> {
                                   _selectedCanteenId = allId.elementAt(
                                       allCanteenOwners
                                           .indexOf(_selectedCanteen));
+
                                   allCategories = [];
+
                                   allCategories.addAll(
                                       canteenOwnersId[_selectedCanteenId]
                                               ['categories']
                                           .keys);
+                                  searchedCategories = allCategories;
                                 });
+
+                                // print(allCategories);
+                                // allCategories.forEach((v) {
+                                //   searchedCategories.add(
+                                //       v.startsWith(txtSearch.text.toString()));
+                                // });
+                                // print(searchedCategories);
+
+                                // for (var element
+                                //     in canteenOwnersId[_selectedCanteenId]
+                                //             ['categories']
+                                //         .keys) {
+                                //   print(element);
+                                //   if (element
+                                //       .toString()
+                                //       .startsWith(txtSearch.text)) {
+                                //     allCategories.addAll(element);
+                                //   }
+                                // }
                               },
                               dropdownMenuEntries: item,
                             ),
@@ -175,144 +191,227 @@ class _PlaceOrdersState extends ConsumerState<PlaceOrders> {
                                 ? SizedBox(
                                     height: height * 0.9,
                                     child: allCategories.length != 0
-                                        ? ListView.builder(
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 10,
-                                            ),
-                                            itemCount: allCategories.length,
-                                            itemBuilder: ((context, index) {
-                                              int stockInHand = 0;
-                                              Map<String, dynamic> datas =
-                                                  canteenOwnersId[
-                                                              _selectedCanteenId]
-                                                          ['categories']
-                                                      [allCategories[index]];
-
-                                              datas.keys.forEach((e) {
-                                                if (datas[e]['stockInHand'] ==
-                                                    true) {
-                                                  stockInHand += 1;
-                                                }
-                                                return (datas[e]
-                                                    ['stockInHand']);
-                                              });
-
-                                              return GestureDetector(
-                                                onTap: () {
-                                                  context.push(MenuItemsView(
-                                                    categoryName:
-                                                        allCategories[index],
-                                                    collegeName: collegeName,
-                                                    selectedCategory:
-                                                        allCategories[index],
-                                                    selectedCanteen:
-                                                        _selectedCanteenId,
-                                                    canteenData: canteenOwnersId[
-                                                                _selectedCanteenId]
-                                                            ['categories']
-                                                        [allCategories[index]],
-                                                  ));
-                                                },
-                                                child: Container(
-                                                  alignment:
-                                                      Alignment.bottomCenter,
-                                                  margin: const EdgeInsets.only(
-                                                      top: 15,
-                                                      bottom: 8,
-                                                      left: 10,
-                                                      right: 10),
-                                                  height: height * 0.08,
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                          color: Colors.white,
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                            Radius.circular(10),
-                                                          ),
-                                                          boxShadow: [
-                                                        BoxShadow(
-                                                          color: Colors.black12,
-                                                          blurRadius: 7,
-                                                          offset: Offset(0, 4),
-                                                        )
-                                                      ]),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      const SizedBox(
-                                                        width: 25,
-                                                      ),
-                                                      Expanded(
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            SizedBox(
-                                                              height: 10,
-                                                            ),
-                                                            CustomText(
-                                                              text:
-                                                                  allCategories[
-                                                                      index],
-                                                              size: sizeData
-                                                                  .medium,
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 4,
-                                                            ),
-                                                            CustomText(
-                                                              text: "Items Available :   " +
-                                                                  stockInHand
-                                                                      .toString(),
-                                                              size: sizeData
-                                                                  .small,
-                                                            ),
-                                                          ],
+                                        ? Column(
+                                            children: [
+                                              SizedBox(
+                                                height: height * 0.02,
+                                              ),
+                                              CustomSearchBar(
+                                                  onClear: () {
+                                                    setState(() {
+                                                      searchedCategories =
+                                                          allCategories;
+                                                    });
+                                                  },
+                                                  onSubmitted: (c) {
+                                                    if (txtSearch
+                                                        .text.isEmpty) {
+                                                      setState(() {
+                                                        searchedCategories =
+                                                            allCategories;
+                                                      });
+                                                    }
+                                                    if (c.isNotEmpty &&
+                                                        !allCategories
+                                                            .contains(c)) {
+                                                      setState(() {
+                                                        searchedCategories = [];
+                                                      });
+                                                    }
+                                                  },
+                                                  onChanged: (v) {
+                                                    if (v.isEmpty) {
+                                                      setState(() {});
+                                                    }
+                                                    allCategories.forEach((e) {
+                                                      if (e
+                                                          .toLowerCase()
+                                                          .startsWith(v
+                                                              .toLowerCase())) {
+                                                        setState(() {});
+                                                        searchedCategories = [];
+                                                        searchedCategories
+                                                            .add(e);
+                                                      }
+                                                    });
+                                                  },
+                                                  controller: txtSearch,
+                                                  hintText: "Search Category"),
+                                              searchedCategories.length != 0
+                                                  ? Expanded(
+                                                      child: ListView.builder(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                          vertical: 10,
                                                         ),
+                                                        itemCount:
+                                                            searchedCategories
+                                                                .length,
+                                                        itemBuilder:
+                                                            ((context, index) {
+                                                          int stockInHand = 0;
+
+                                                          Map<String, dynamic>
+                                                              datas =
+                                                              canteenOwnersId[
+                                                                          _selectedCanteenId]
+                                                                      [
+                                                                      'categories']
+                                                                  [
+                                                                  searchedCategories[
+                                                                      index]];
+
+                                                          datas.keys
+                                                              .forEach((e) {
+                                                            if (datas[e][
+                                                                    'stockInHand'] ==
+                                                                true) {
+                                                              stockInHand += 1;
+                                                            }
+                                                            return (datas[e][
+                                                                'stockInHand']);
+                                                          });
+
+                                                          return GestureDetector(
+                                                            onTap: () {
+                                                              context.push(
+                                                                  MenuItemsView(
+                                                                categoryName:
+                                                                    searchedCategories[
+                                                                        index],
+                                                                collegeName:
+                                                                    collegeName,
+                                                                selectedCategory:
+                                                                    searchedCategories[
+                                                                        index],
+                                                                selectedCanteen:
+                                                                    _selectedCanteenId,
+                                                                canteenData: canteenOwnersId[
+                                                                            _selectedCanteenId]
+                                                                        [
+                                                                        'categories']
+                                                                    [
+                                                                    allCategories[
+                                                                        index]],
+                                                              ));
+                                                            },
+                                                            child: Container(
+                                                              alignment: Alignment
+                                                                  .bottomCenter,
+                                                              margin:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      top: 15,
+                                                                      bottom: 8,
+                                                                      left: 10,
+                                                                      right:
+                                                                          10),
+                                                              height:
+                                                                  height * 0.08,
+                                                              decoration:
+                                                                  const BoxDecoration(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      borderRadius:
+                                                                          BorderRadius
+                                                                              .all(
+                                                                        Radius.circular(
+                                                                            10),
+                                                                      ),
+                                                                      boxShadow: [
+                                                                    BoxShadow(
+                                                                      color: Colors
+                                                                          .black12,
+                                                                      blurRadius:
+                                                                          7,
+                                                                      offset:
+                                                                          Offset(
+                                                                              0,
+                                                                              4),
+                                                                    )
+                                                                  ]),
+                                                              child: Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .center,
+                                                                children: [
+                                                                  const SizedBox(
+                                                                    width: 25,
+                                                                  ),
+                                                                  Expanded(
+                                                                    child:
+                                                                        Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        SizedBox(
+                                                                          height:
+                                                                              10,
+                                                                        ),
+                                                                        CustomText(
+                                                                          text:
+                                                                              searchedCategories[index],
+                                                                          size:
+                                                                              sizeData.medium,
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          height:
+                                                                              4,
+                                                                        ),
+                                                                        CustomText(
+                                                                          text: "Items Available :   " +
+                                                                              stockInHand.toString(),
+                                                                          size:
+                                                                              sizeData.small,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  Container(
+                                                                    width: 35,
+                                                                    height: 35,
+                                                                    decoration: BoxDecoration(
+                                                                        color: Colors
+                                                                            .white,
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(17.5),
+                                                                        boxShadow: const [
+                                                                          BoxShadow(
+                                                                              color: Colors.black12,
+                                                                              blurRadius: 4,
+                                                                              offset: Offset(0, 2)),
+                                                                          BoxShadow(
+                                                                              color: Colors.black45,
+                                                                              blurRadius: 4,
+                                                                              offset: Offset(0, 2))
+                                                                        ]),
+                                                                    alignment:
+                                                                        Alignment
+                                                                            .center,
+                                                                    child: Image
+                                                                        .asset(
+                                                                      ImageConst
+                                                                          .backNext,
+                                                                      width: 15,
+                                                                      height:
+                                                                          15,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          );
+                                                        }),
                                                       ),
-                                                      Container(
-                                                        width: 35,
-                                                        height: 35,
-                                                        decoration: BoxDecoration(
-                                                            color: Colors.white,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        17.5),
-                                                            boxShadow: const [
-                                                              BoxShadow(
-                                                                  color: Colors
-                                                                      .black12,
-                                                                  blurRadius: 4,
-                                                                  offset:
-                                                                      Offset(0,
-                                                                          2)),
-                                                              BoxShadow(
-                                                                  color: Colors
-                                                                      .black45,
-                                                                  blurRadius: 4,
-                                                                  offset:
-                                                                      Offset(
-                                                                          0, 2))
-                                                            ]),
-                                                        alignment:
-                                                            Alignment.center,
-                                                        child: Image.asset(
-                                                          ImageConst.backNext,
-                                                          width: 15,
-                                                          height: 15,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              );
-                                            }),
+                                                    )
+                                                  : CustomText(
+                                                      text: "No Match Found"),
+                                            ],
                                           )
                                         : Column(
                                             children: [

@@ -11,6 +11,7 @@ import 'package:projrect_annam/utils/extension_methods.dart';
 import 'package:projrect_annam/utils/page_header.dart';
 
 import '../../utils/color_data.dart';
+import '../../utils/search.dart';
 import '../../utils/size_data.dart';
 import 'my_cart.dart';
 import 'item_details.dart';
@@ -36,6 +37,7 @@ class MenuItemsView extends ConsumerStatefulWidget {
 class _MenuItemsViewState extends ConsumerState<MenuItemsView> {
   TextEditingController txtSearch = TextEditingController();
   List<String> items = [];
+  List<String> searchedItems = [];
   @override
   void dispose() {
     txtSearch.dispose();
@@ -47,6 +49,7 @@ class _MenuItemsViewState extends ConsumerState<MenuItemsView> {
   void initState() {
     super.initState();
     function();
+    searchedItems = List.from(items);
   }
 
   void function() {
@@ -94,21 +97,38 @@ class _MenuItemsViewState extends ConsumerState<MenuItemsView> {
                 SizedBox(
                   height: height * 0.02,
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: RoundTextfield(
-                    hintText: "Search Food",
-                    controller: txtSearch,
-                    left: Container(
-                      alignment: Alignment.center,
-                      width: width * 0.08,
-                      child: Image.asset(
-                        ImageConst.search,
-                        width: sizeData.superLarge,
-                        height: sizeData.superLarge,
-                      ),
-                    ),
-                  ),
+                CustomSearchBar(
+                  onClear: () {
+                    setState(() {
+                      searchedItems = List.from(items);
+                    });
+                  },
+                  onChanged: (v) {
+                    if (v.isEmpty) {
+                      setState(() {});
+                    }
+                    items.forEach((e) {
+                      if (e.toLowerCase().startsWith(v.toLowerCase())) {
+                        setState(() {});
+                        searchedItems = [];
+                        searchedItems.add(e);
+                      }
+                    });
+                  },
+                  onSubmitted: (v) {
+                    if (txtSearch.text.isEmpty) {
+                      setState(() {
+                        searchedItems = List.from(items);
+                      });
+                    }
+                    if (v.isNotEmpty && !items.contains(v)) {
+                      setState(() {
+                        searchedItems = [];
+                      });
+                    }
+                  },
+                  controller: txtSearch,
+                  hintText: "Search for Food",
                 ),
                 SizedBox(
                   height: height * 0.02,
@@ -131,21 +151,24 @@ class _MenuItemsViewState extends ConsumerState<MenuItemsView> {
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         padding: EdgeInsets.zero,
-                        itemCount: items.length,
+                        itemCount: searchedItems.length,
                         itemBuilder: ((context, index) {
                           return GestureDetector(
                             onTap: () {
                               context.push(
                                 ItemDetailsView(
                                   categoryName: widget.categoryName,
-                                  imagePath: widget.canteenData[items[index]]
-                                      ['imageUrl'],
+                                  imagePath:
+                                      widget.canteenData[searchedItems[index]]
+                                          ['imageUrl'],
                                   collegeName: widget.collegeName,
                                   selectedCanteen: widget.selectedCanteen,
-                                  itemName: widget.canteenData[items[index]]
-                                      ['name'],
-                                  price: widget.canteenData[items[index]]
-                                      ['price'],
+                                  itemName:
+                                      widget.canteenData[searchedItems[index]]
+                                          ['name'],
+                                  price:
+                                      widget.canteenData[searchedItems[index]]
+                                          ['price'],
                                 ),
                               );
                             },
@@ -181,9 +204,9 @@ class _MenuItemsViewState extends ConsumerState<MenuItemsView> {
                                       padding: const EdgeInsets.all(8.0),
                                       child: CircleAvatar(
                                         radius: width * 0.085,
-                                        backgroundImage: NetworkImage(
-                                            widget.canteenData[items[index]]
-                                                ['imageUrl']),
+                                        backgroundImage: NetworkImage(widget
+                                                .canteenData[
+                                            searchedItems[index]]['imageUrl']),
                                       ),
                                     ),
                                     const SizedBox(
@@ -195,18 +218,16 @@ class _MenuItemsViewState extends ConsumerState<MenuItemsView> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           CustomText(
-                                            text:
-                                                widget.canteenData[items[index]]
-                                                    ['name'],
+                                            text: widget.canteenData[
+                                                searchedItems[index]]['name'],
                                             size: sizeData.header,
                                           ),
                                           const SizedBox(
                                             height: 4,
                                           ),
                                           CustomText(
-                                            text:
-                                                widget.canteenData[items[index]]
-                                                    ['price'],
+                                            text: widget.canteenData[
+                                                searchedItems[index]]['price'],
                                             size: sizeData.medium,
                                           ),
                                         ],

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projrect_annam/utils/color_data.dart';
@@ -26,8 +25,8 @@ class CustomBackButton extends ConsumerWidget {
         //         context, MaterialPageRoute(builder: (context) => tomove!))
         //     : Navigator.pop(context);
         Navigator.pop(context);
-        method != null ? method!(ref) : null;
-        otherMethod != null ? otherMethod!() : null;
+        // method != null ? method!(ref) : null;
+        // otherMethod != null ? otherMethod!() : null;
       },
       child: Container(
         padding: EdgeInsets.all(aspectRatio * 10),

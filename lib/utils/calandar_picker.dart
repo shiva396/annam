@@ -1,6 +1,7 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:projrect_annam/utils/search.dart';
 import 'package:projrect_annam/utils/shimmer.dart';
 
 import '../canteen/home/expanded_card.dart';
@@ -20,9 +21,17 @@ class CalandarPicker extends StatefulWidget {
 class _CalandarPickerState extends State<CalandarPicker> {
   List<DateTime?> _singleDatePickerValueWithDefaultValue = [DateTime.now()];
 
+  TextEditingController searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -30,7 +39,8 @@ class _CalandarPickerState extends State<CalandarPicker> {
     CustomSizeData sizeData = CustomSizeData.from(context);
     double height = sizeData.height;
     double width = sizeData.width;
-    return SingleChildScrollView(child: _buildSingleDatePickerWithValue());
+    return SingleChildScrollView(
+        child: _buildSingleDatePickerWithValue(height: height));
   }
 
   String _getValueText(
@@ -65,7 +75,7 @@ class _CalandarPickerState extends State<CalandarPicker> {
     // return valueText;
   }
 
-  Widget _buildSingleDatePickerWithValue() {
+  Widget _buildSingleDatePickerWithValue({required double height}) {
     final config = CalendarDatePicker2Config(
       selectedDayHighlightColor: Colors.amber[900],
       weekdayLabels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
@@ -135,6 +145,12 @@ class _CalandarPickerState extends State<CalandarPicker> {
             ],
           ),
           if (UserRole.canteenOwner == widget.userRole) ...[
+            CustomSearchBar(
+                onClear: () {},
+                onSubmitted: (c) {},
+                onChanged: (v) {},
+                controller: searchController,
+                hintText: "Search by Order Id"),
             StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                 stream: FirebaseOperations.firebaseInstance
                     .collection('orders_history')
@@ -181,7 +197,18 @@ class _CalandarPickerState extends State<CalandarPicker> {
                 }),
           ],
           if (UserRole.student == widget.userRole) ...[
-            CustomText(text: "Data"),
+            SizedBox(
+              height: height * 0.02,
+            ),
+            CustomSearchBar(
+                onClear: () {},
+                onSubmitted: (c) {},
+                onChanged: (v) {},
+                controller: searchController,
+                hintText: "Search by Order Id"),
+            SizedBox(
+              height: height * 0.02,
+            ),
             StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                 stream: FirebaseOperations.firebaseInstance
                     .collection('orders_history')

@@ -5,7 +5,7 @@ import 'package:shimmer/shimmer.dart';
 import 'color_data.dart';
 import 'size_data.dart';
 
-class ShimmerEffect extends ConsumerWidget {
+class ShimmerEffect extends ConsumerWidget  {
   const ShimmerEffect({super.key});
 
   @override

@@ -7,20 +7,26 @@ import '../utils/custom_text.dart';
 import '../utils/size_data.dart';
 
 class RoundTextfield extends ConsumerWidget {
+  final void Function(String)? onChanged;
+   final void Function(String)? onSubmitted;
   final TextEditingController? controller;
   final String hintText;
   final TextInputType? keyboardType;
   final bool obscureText;
   final Color? bgColor;
   final Widget? left;
+  final Widget? right;
 
   const RoundTextfield(
       {super.key,
       required this.hintText,
+      this.onChanged,
+      this.onSubmitted,
       this.controller,
       this.keyboardType,
       this.bgColor,
       this.left,
+      this.right,
       this.obscureText = false});
 
   @override
@@ -46,6 +52,8 @@ class RoundTextfield extends ConsumerWidget {
             ),
           Expanded(
             child: TextField(
+              onSubmitted: onSubmitted,
+              onChanged: onChanged,
               autocorrect: false,
               controller: controller,
               obscureText: obscureText,
@@ -63,6 +71,13 @@ class RoundTextfield extends ConsumerWidget {
               ),
             ),
           ),
+          if (right != null)
+            Padding(
+              padding: const EdgeInsets.only(
+                right: 15,
+              ),
+              child: right!,
+            ),
         ],
       ),
     );
