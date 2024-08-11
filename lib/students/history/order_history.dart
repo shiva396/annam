@@ -44,15 +44,29 @@ class _StudentHistoryState extends ConsumerState<StudentHistory> {
                     size: sizeData.header,
                     color: colorData.fontColor(1),
                   ),
-                  IconButton(
-                    onPressed: () {
-                      context.push(CartView());
-                    },
-                    icon: Image.asset(
-                      ImageConst.shoppingCart,
-                      width: sizeData.superLarge,
-                      height: sizeData.superLarge,
-                    ),
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          context.push(CartView());
+                        },
+                        icon: Image.asset(
+                          ImageConst.calendar,
+                          width: sizeData.superLarge,
+                          height: sizeData.superLarge,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          context.push(CartView());
+                        },
+                        icon: Image.asset(
+                          ImageConst.shoppingCart,
+                          width: sizeData.superLarge,
+                          height: sizeData.superLarge,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
