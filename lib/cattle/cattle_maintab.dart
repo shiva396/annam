@@ -27,8 +27,6 @@ class _CattleOwnerState extends ConsumerState<CattleOwner> {
     super.initState();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     CustomSizeData sizeData = CustomSizeData.from(context);
@@ -38,26 +36,25 @@ class _CattleOwnerState extends ConsumerState<CattleOwner> {
     double width = sizeData.width;
 
     return StreamBuilder<Object>(
-        stream: FirebaseOperations.firebaseInstance
-            .collection('cattle')
-            .doc(FirebaseOperations.firebaseAuth.currentUser!.uid)
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData && selectPageView != null) {
-            return overlayContent(
-                context: context, imagePath: 'assets/rive/loading.riv');
-          }
+      stream: FirebaseOperations.firebaseInstance
+          .collection('cattle')
+          .doc(FirebaseOperations.firebaseAuth.currentUser!.uid)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData && selectPageView != null) {
+          return overlayContent(
+              context: context, imagePath: 'assets/rive/loading.riv');
+        }
 
-          return SafeArea(
-              child: Scaffold(
+        return SafeArea(
+          child: Scaffold(
             body: PageStorage(bucket: storageBucket, child: selectPageView!),
-            bottomNavigationBar: BottomAppBar( 
-                 surfaceTintColor: colorData.primaryColor(.9),
+            bottomNavigationBar: BottomAppBar(
+              surfaceTintColor: colorData.primaryColor(.9),
               shadowColor: Colors.black,
               elevation: 1,
               height: 64,
               shape: const CircularNotchedRectangle(),
-              
               child: SafeArea(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -95,7 +92,6 @@ class _CattleOwnerState extends ConsumerState<CattleOwner> {
                         );
                       },
                     ),
-             
                   ],
                 ),
               ),
@@ -141,5 +137,3 @@ class _CattleOwnerState extends ConsumerState<CattleOwner> {
     );
   }
 }
-
-

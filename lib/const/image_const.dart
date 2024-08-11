@@ -17,6 +17,8 @@ class ImageConst {
   static const String moretab = "assets/images/more.png";
 
 // extra
+
+  static const String calendar = "assets/images/calendar.png";
   static const String wrong = "assets/images/wrong.png";
   static const String delete = "assets/images/delete.png";
   static const String shoppingCart = "assets/images/cart.png";
