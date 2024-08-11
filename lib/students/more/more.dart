@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projrect_annam/canteen/canteen%20NGO/ngo.dart';
 import 'package:projrect_annam/const/image_const.dart';
 import 'package:projrect_annam/const/static_data.dart';
 import 'package:projrect_annam/students/more/about_us.dart';
@@ -140,6 +141,7 @@ class _MoreViewState extends ConsumerState<MoreView> {
                               case "5":
                                 break;
                               case "6":
+                                context.push(CanteenNgo());
                                 break;
 
                               default:
