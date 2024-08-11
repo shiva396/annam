@@ -152,7 +152,11 @@ class _CanteenOwnerState extends ConsumerState<CanteenOwner> {
                       ImageConst.moretab,
                       selctTab == 4,
                       () {
-                        _onTabSelected(4, const MoreView());
+                        _onTabSelected(
+                            4,
+                            const MoreView(
+                              from: UserRole.canteenOwner,
+                            ));
                       },
                     ),
                   ],

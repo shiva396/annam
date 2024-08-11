@@ -226,8 +226,7 @@ class _EmailBarState extends State<EmailBar> {
                     } catch (e) {
                       context.showSnackBar('Error checking documents: $e');
                     }
-                  } else if (role = UserRole.ngo.asString) {
-                   
+                  } else if (role == UserRole.ngo.asString) {
                     context.push(NgoMainTab());
                   }
                 } else {

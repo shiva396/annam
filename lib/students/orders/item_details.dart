@@ -7,7 +7,6 @@ import 'package:projrect_annam/utils/custom_text.dart';
 import 'package:projrect_annam/utils/extension_methods.dart';
 import 'package:projrect_annam/utils/page_header.dart';
 
-import '../../const/color_extension.dart';
 import '../../const/image_const.dart';
 import '../../utils/color_data.dart';
 import '../../utils/size_data.dart';

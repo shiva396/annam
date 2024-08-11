@@ -12,7 +12,6 @@ import 'package:projrect_annam/theme/theme_toggle.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
 import 'package:projrect_annam/utils/extension_methods.dart';
 
-import '../../const/color_extension.dart';
 import '../../common_widget/round_textfield.dart';
 import '../../utils/color_data.dart';
 import '../../utils/custom_network_image.dart';

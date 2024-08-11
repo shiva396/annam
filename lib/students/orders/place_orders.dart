@@ -11,7 +11,6 @@ import 'package:projrect_annam/utils/custom_text.dart';
 import 'package:projrect_annam/utils/extension_methods.dart';
 import 'package:projrect_annam/utils/helper_methods.dart';
 
-import '../../const/color_extension.dart';
 import '../../utils/color_data.dart';
 import '../../utils/size_data.dart';
 import 'my_cart.dart';
@@ -166,24 +165,7 @@ class _PlaceOrdersState extends ConsumerState<PlaceOrders> {
                                   searchedCategories = allCategories;
                                 });
 
-                                // print(allCategories);
-                                // allCategories.forEach((v) {
-                                //   searchedCategories.add(
-                                //       v.startsWith(txtSearch.text.toString()));
-                                // });
-                                // print(searchedCategories);
-
-                                // for (var element
-                                //     in canteenOwnersId[_selectedCanteenId]
-                                //             ['categories']
-                                //         .keys) {
-                                //   print(element);
-                                //   if (element
-                                //       .toString()
-                                //       .startsWith(txtSearch.text)) {
-                                //     allCategories.addAll(element);
-                                //   }
-                                // }
+                    
                               },
                               dropdownMenuEntries: item,
                             ),

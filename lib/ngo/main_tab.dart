@@ -102,7 +102,7 @@ class _NgoMainTabState extends ConsumerState<NgoMainTab> {
                       ImageConst.moretab,
                       selctTab == 4,
                       () {
-                        _onTabSelected(4, const MoreView());
+                        _onTabSelected(4, const MoreView(from: UserRole.ngo,));
                       },
                     ),
                   ],

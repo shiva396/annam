@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projrect_annam/const/static_data.dart';
 import 'package:projrect_annam/firebase/firebase_operations.dart';
-import 'package:projrect_annam/const/color_extension.dart';
+
 import 'package:projrect_annam/common_widget/tab_button.dart';
 import 'package:projrect_annam/const/image_const.dart';
 import 'package:projrect_annam/utils/helper_methods.dart';
@@ -118,7 +118,7 @@ class _MainTabViewState extends ConsumerState<MainTabView> {
                       ImageConst.moretab,
                       selctTab == 4,
                       () {
-                        _onTabSelected(4, const MoreView());
+                        _onTabSelected(4, const MoreView(from:  UserRole.student,));
                       },
                     ),
                   ],

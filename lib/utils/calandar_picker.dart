@@ -22,6 +22,7 @@ class _CalandarPickerState extends State<CalandarPicker> {
   List<DateTime?> _singleDatePickerValueWithDefaultValue = [DateTime.now()];
 
   TextEditingController searchController = TextEditingController();
+  String studentSearchText = "";
 
   @override
   void initState() {
@@ -146,9 +147,18 @@ class _CalandarPickerState extends State<CalandarPicker> {
           ),
           if (UserRole.canteenOwner == widget.userRole) ...[
             CustomSearchBar(
-                onClear: () {},
+                onClear: () {
+                  setState(() {
+                    studentSearchText = "";
+                  });
+                },
                 onSubmitted: (c) {},
-                onChanged: (v) {},
+                onChanged: (v) {
+                  setState(() {
+                    studentSearchText = "";
+                    studentSearchText = v;
+                  });
+                },
                 controller: searchController,
                 hintText: "Search by Order Id"),
             StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
@@ -158,6 +168,7 @@ class _CalandarPickerState extends State<CalandarPicker> {
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) return ShimmerEffect();
                   List<ExpandableCard> orderWidgets = [];
+                  int count = 0;
 
                   for (var doc in snapshot.data!.docs) {
                     Map<String, dynamic> dataMap = doc.data();
@@ -177,11 +188,17 @@ class _CalandarPickerState extends State<CalandarPicker> {
 
                       if (historyData['canteenId'] ==
                           FirebaseOperations.firebaseAuth.currentUser!.uid) {
-                        orderWidgets.add(ExpandableCard(
-                            orderedData: historyData,
-                            studentName: historyData['studentName'],
-                            orderId: orderId,
-                            studentId: historyData['studentId']));
+                        count += 1;
+                        if (orderId
+                            .toLowerCase()
+                            .startsWith(studentSearchText.toLowerCase())) {
+                          orderWidgets.add(ExpandableCard(
+                              from: From.history,
+                              orderedData: historyData,
+                              studentName: historyData['studentName'],
+                              orderId: orderId,
+                              studentId: historyData['studentId']));
+                        }
                       }
                     }
                   }
@@ -192,8 +209,11 @@ class _CalandarPickerState extends State<CalandarPicker> {
                         children: orderWidgets,
                       ),
                     );
-                  return CustomText(
-                      text: "No Orders placed at this selected Date");
+                  if (count == 0 && orderWidgets.isEmpty) {
+                    return CustomText(
+                        text: "No Orders placed at this selected Date");
+                  }
+                  return CustomText(text: "Search not Found");
                 }),
           ],
           if (UserRole.student == widget.userRole) ...[
@@ -201,11 +221,20 @@ class _CalandarPickerState extends State<CalandarPicker> {
               height: height * 0.02,
             ),
             CustomSearchBar(
-                onClear: () {},
+                onClear: () {
+                  setState(() {
+                    studentSearchText = "";
+                  });
+                },
                 onSubmitted: (c) {},
-                onChanged: (v) {},
+                onChanged: (v) {
+                  setState(() {
+                    studentSearchText = "";
+                    studentSearchText = v;
+                  });
+                },
                 controller: searchController,
-                hintText: "Search by Order Id"),
+                hintText: "Search by Canteen Name"),
             SizedBox(
               height: height * 0.02,
             ),
@@ -216,15 +245,14 @@ class _CalandarPickerState extends State<CalandarPicker> {
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) return ShimmerEffect();
                   List<ExpandableCard> orderWidgets = [];
+                  int count = 0;
 
                   for (var doc in snapshot.data!.docs) {
                     Map<String, dynamic> dataMap = doc.data();
                     String orderId = doc.id;
 
-                    // Access the single map field in the document
                     String mapFieldName = dataMap.keys.first;
 
-                    // Check if the target date exists as a key in the map
                     if (mapFieldName.startsWith(
                       _getValueText(
                         config.calendarType,
@@ -234,23 +262,33 @@ class _CalandarPickerState extends State<CalandarPicker> {
                       Map<String, dynamic> historyData = dataMap[mapFieldName];
                       if (historyData['studentId'] ==
                           FirebaseOperations.firebaseAuth.currentUser!.uid) {
-                        orderWidgets.add(ExpandableCard(
-                            orderedData: historyData,
-                            studentName: historyData['canteenName'],
-                            orderId: orderId,
-                            studentId: historyData['studentId']));
+                        count += 1;
+                        if (historyData['canteenName']
+                            .toString()
+                            .toLowerCase()
+                            .startsWith(studentSearchText.toLowerCase())) {
+                          orderWidgets.add(ExpandableCard(
+                              from: From.history,
+                              orderedData: historyData,
+                              studentName: historyData['canteenName'],
+                              orderId: orderId,
+                              studentId: historyData['studentId']));
+                        }
                       }
                     }
                   }
-                  if (orderWidgets.isNotEmpty)
+                  if (orderWidgets.isNotEmpty) {
                     return SizedBox(
                       height: 200,
                       child: ListView(
                         children: orderWidgets,
                       ),
                     );
-                  return CustomText(
-                      text: "No Orders placed at this selected Date");
+                  }
+                  if (orderWidgets.isEmpty && count == 0)
+                    return CustomText(
+                        text: "No Orders placed at this selected Date");
+                  return CustomText(text: "Search Not Found");
                 })
           ]
         ],

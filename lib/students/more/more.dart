@@ -7,14 +7,16 @@ import 'package:projrect_annam/students/more/payment_details.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
 import 'package:projrect_annam/utils/extension_methods.dart';
 
-import '../../const/color_extension.dart';
 import '../../utils/color_data.dart';
 import '../../utils/page_header.dart';
 import '../../utils/size_data.dart';
 import '../orders/my_cart.dart';
+import '../orders/my_orders.dart';
 
 class MoreView extends ConsumerStatefulWidget {
+  final UserRole from;
   const MoreView({
+    required this.from,
     super.key,
   });
 
@@ -23,21 +25,52 @@ class MoreView extends ConsumerStatefulWidget {
 }
 
 class _MoreViewState extends ConsumerState<MoreView> {
-  List moreArr = [
-    {
-      "index": "1",
-      "name": "Payment Details",
-      "image": ImageConst.more_pay,
-      "base": 0
-    },
-    {
-      "index": "2",
-      "name": "My Orders",
-      "image": ImageConst.myOrders,
-      "base": 0
-    },
-    {"index": "3", "name": "About Us", "image": ImageConst.aboutUs, "base": 0},
-  ];
+  List moreArr = [];
+
+  @override
+  void initState() {
+    super.initState();
+    moreArr.addAll(
+      [
+        {
+          "index": "1",
+          "name": "Payment Details",
+          "image": ImageConst.more_pay,
+          "base": 0
+        },
+        widget.from == UserRole.student
+            ? {
+                "index": "2",
+                "name": "My Orders",
+                "image": ImageConst.myOrders,
+                "base": 0
+              }
+            : {},
+        {
+          "index": "3",
+          "name": "About Us",
+          "image": ImageConst.aboutUs,
+          "base": 0
+        },
+        UserRole.canteenOwner == widget.from
+            ? {
+                "index": "5",
+                "name": "Cattle",
+                "image": ImageConst.aboutUs,
+                "base": 0
+              }
+            : {},
+        UserRole.canteenOwner == widget.from
+            ? {
+                "index": "6",
+                "name": "NGO",
+                "image": ImageConst.aboutUs,
+                "base": 0
+              }
+            : {},
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,112 +118,119 @@ class _MoreViewState extends ConsumerState<MoreView> {
                     shrinkWrap: true,
                     itemCount: moreArr.length,
                     itemBuilder: (context, index) {
-                      var mObj = moreArr[index] as Map? ?? {};
-                      var countBase = mObj["base"] as int? ?? 0;
+                      if (moreArr[index].isNotEmpty) {
+                        var mObj = moreArr[index] as Map? ?? {};
+                        var countBase = mObj["base"] as int? ?? 0;
 
-                      return InkWell(
-                        onTap: () {
-                          switch (mObj["index"].toString()) {
-                            case "1":
-                              context.push(const PaymentDetailsView());
+                        return InkWell(
+                          onTap: () {
+                            switch (mObj["index"].toString()) {
+                              case "1":
+                                context.push(const PaymentDetailsView());
 
-                              break;
+                                break;
 
-                            case "2":
-                              context.push(const CartView());
-                              break;
+                              case "2":
+                                context.push(MyOrders());
+                                break;
 
-                            case "3":
-                              context.push(AboutUsView());
-                              break;
+                              case "3":
+                                context.push(AboutUsView());
+                                break;
+                              case "5":
+                                break;
+                              case "6":
+                                break;
 
-                            default:
-                              context.push(const PaymentDetailsView());
-                              break;
-                          }
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 10),
-                          child: Stack(
-                            alignment: Alignment.centerRight,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 12),
-                                decoration: BoxDecoration(
-                                    color: colorData.secondaryColor(.9),
-                                    borderRadius: BorderRadius.circular(5)),
-                                margin: const EdgeInsets.only(right: 15),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      height: height * 0.05,
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                          color: colorData.primaryColor(.6),
-                                          borderRadius:
-                                              BorderRadius.circular(25)),
-                                      alignment: Alignment.center,
-                                      child: Image.asset(
-                                          mObj["image"].toString(),
-                                          width: 25,
-                                          height: 25,
-                                          fit: BoxFit.contain),
-                                    ),
-                                    const SizedBox(
-                                      width: 15,
-                                    ),
-                                    Expanded(
-                                        child: CustomText(
-                                      text: mObj["name"].toString(),
-                                    )),
-                                    const SizedBox(
-                                      width: 15,
-                                    ),
-                                    if (countBase > 0)
+                              default:
+                                break;
+                            }
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 10),
+                            child: Stack(
+                              alignment: Alignment.centerRight,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 12, horizontal: 12),
+                                  decoration: BoxDecoration(
+                                      color: colorData.secondaryColor(.9),
+                                      borderRadius: BorderRadius.circular(5)),
+                                  margin: const EdgeInsets.only(right: 15),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
                                       Container(
-                                        padding: const EdgeInsets.all(4),
+                                        height: height * 0.05,
+                                        padding: const EdgeInsets.all(8),
                                         decoration: BoxDecoration(
-                                            color: Colors.red,
+                                            color: colorData.primaryColor(.6),
                                             borderRadius:
-                                                BorderRadius.circular(12.5)),
+                                                BorderRadius.circular(25)),
                                         alignment: Alignment.center,
-                                        child: CustomText(
-                                          text: countBase.toString(),
-                                        ),
+                                        child: Image.asset(
+                                            mObj["image"].toString(),
+                                            width: 25,
+                                            height: 25,
+                                            fit: BoxFit.contain),
                                       ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                    color: colorData.secondaryColor(.9),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                          color: Colors.black12,
-                                          blurRadius: 4,
-                                          offset: Offset(0, 2)),
-                                      BoxShadow(
-                                          color: Colors.black45,
-                                          blurRadius: 4,
-                                          offset: Offset(0, 2))
+                                      const SizedBox(
+                                        width: 15,
+                                      ),
+                                      Expanded(
+                                          child: CustomText(
+                                        text: mObj["name"].toString(),
+                                      )),
+                                      const SizedBox(
+                                        width: 15,
+                                      ),
+                                      if (countBase > 0)
+                                        Container(
+                                          padding: const EdgeInsets.all(4),
+                                          decoration: BoxDecoration(
+                                              color: Colors.red,
+                                              borderRadius:
+                                                  BorderRadius.circular(12.5)),
+                                          alignment: Alignment.center,
+                                          child: CustomText(
+                                            text: countBase.toString(),
+                                          ),
+                                        ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
                                     ],
-                                    borderRadius: BorderRadius.circular(15)),
-                                child: Image.asset(ImageConst.backNext,
-                                    width: 10,
-                                    height: 10,
-                                    color: colorData.primaryColor(1)),
-                              ),
-                            ],
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                      color: colorData.secondaryColor(.9),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                            color: Colors.black12,
+                                            blurRadius: 4,
+                                            offset: Offset(0, 2)),
+                                        BoxShadow(
+                                            color: Colors.black45,
+                                            blurRadius: 4,
+                                            offset: Offset(0, 2))
+                                      ],
+                                      borderRadius: BorderRadius.circular(15)),
+                                  child: Image.asset(ImageConst.backNext,
+                                      width: 10,
+                                      height: 10,
+                                      color: colorData.primaryColor(1)),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
+                        );
+                      } else {
+                        return SizedBox();
+                      }
                     })
               ],
             ),

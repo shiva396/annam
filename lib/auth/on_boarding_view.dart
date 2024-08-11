@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projrect_annam/auth/authWrapper.dart';
-import 'package:projrect_annam/const/color_extension.dart';
 import 'package:projrect_annam/const/image_const.dart';
 import 'package:projrect_annam/utils/color_data.dart';
 import 'package:projrect_annam/utils/extension_methods.dart';

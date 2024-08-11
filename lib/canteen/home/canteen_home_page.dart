@@ -5,6 +5,7 @@ import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/canteen/home/expanded_card.dart';
 import 'package:projrect_annam/utils/shimmer_effect.dart';
 
+import '../../const/static_data.dart';
 import '../../utils/color_data.dart';
 import '../../utils/custom_text.dart';
 import '../../utils/size_data.dart';
@@ -103,9 +104,10 @@ class _CanteenMainPageState extends ConsumerState<CanteenMainPage> {
 
                                     Map<String, dynamic> data =
                                         obj[orderId] ?? {};
-                                    
+
                                     if (data.isNotEmpty) {
                                       return ExpandableCard(
+                                        from: From.orders,
                                         orderId: orderId,
                                         studentId: studentsOrder[index],
                                         studentName: studentName,

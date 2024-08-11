@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projrect_annam/firebase/firebase_operations.dart';
-import 'package:projrect_annam/const/color_extension.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
 
+import '../../const/static_data.dart';
 import '../../utils/color_data.dart';
 import '../../utils/size_data.dart';
 
 class ExpandableCard extends ConsumerStatefulWidget {
   const ExpandableCard(
       {super.key,
+      required this.from,
       required this.orderedData,
       required this.studentName,
       required this.orderId,
@@ -18,6 +19,7 @@ class ExpandableCard extends ConsumerStatefulWidget {
   final String orderId;
   final String studentName;
   final String studentId;
+  final From from;
 
   @override
   ExpandableCardState createState() => ExpandableCardState();
@@ -167,30 +169,40 @@ class ExpandableCardState extends ConsumerState<ExpandableCard> {
                                       )
                                     ],
                                   ),
-                                  const SizedBox(
-                                    height: 25,
-                                  ),
-                                  Center(
-                                    child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                            shape: RoundedRectangleBorder(),
-                                            backgroundColor:
-                                                colorData.primaryColor(1)),
-                                        child: CustomText(
-                                          text: "Checkout",
-                                          size: sizeData.subHeader,
-                                          color: colorData.secondaryColor(1),
-                                        ),
-                                        onPressed: () {
-                                          FirebaseOperations.checkOutItems(
-                                            orderId: widget.orderId,
-                                            studentId: widget.studentId,
-                                          );
-                                        }),
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
+                                  widget.from == From.orders
+                                      ? Column(
+                                          children: [
+                                            const SizedBox(
+                                              height: 25,
+                                            ),
+                                            Center(
+                                              child: ElevatedButton(
+                                                  style: ElevatedButton.styleFrom(
+                                                      shape:
+                                                          RoundedRectangleBorder(),
+                                                      backgroundColor: colorData
+                                                          .primaryColor(1)),
+                                                  child: CustomText(
+                                                    text: "Checkout",
+                                                    size: sizeData.subHeader,
+                                                    color: colorData
+                                                        .secondaryColor(1),
+                                                  ),
+                                                  onPressed: () {
+                                                    FirebaseOperations
+                                                        .checkOutItems(
+                                                      orderId: widget.orderId,
+                                                      studentId:
+                                                          widget.studentId,
+                                                    );
+                                                  }),
+                                            ),
+                                            const SizedBox(
+                                              height: 20,
+                                            ),
+                                          ],
+                                        )
+                                      : SizedBox(),
                                 ],
                               ),
                             ),

@@ -28,3 +28,8 @@ const List<Color> primaryColors = [
   Color(0XFFFA61D7),
   Color(0XFF2ADDC7),
 ];
+
+enum From {
+  history,
+  orders
+}
