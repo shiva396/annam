@@ -6,6 +6,7 @@ import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/canteen/canteen_main_tab.dart';
 import 'package:projrect_annam/const/image_const.dart';
 import 'package:projrect_annam/ngo/main_tab.dart';
+import 'package:projrect_annam/utils/terms_and_conditions.dart';
 
 import 'package:projrect_annam/students/student_main_tab.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
@@ -409,6 +410,7 @@ class _SignUpFieldsState extends State<SignUpFields> {
         SizedBox(
           height: 25,
         ),
+        TermsOfUse(key: UniqueKey()),
         TextButton(
           style: ButtonStyle(
             padding: WidgetStateProperty.all(
