@@ -19,6 +19,20 @@ class StudentHistory extends ConsumerStatefulWidget {
 }
 
 class _StudentHistoryState extends ConsumerState<StudentHistory> {
+  DateTime selectedDate = DateTime.now();
+
+  _showDatePicker() {
+    showDatePicker(
+            context: context,
+            firstDate: DateTime(2024),
+            lastDate: DateTime.now())
+        .then((value) {
+      setState(() {
+        selectedDate = value!;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     CustomSizeData sizeData = CustomSizeData.from(context);
@@ -47,15 +61,10 @@ class _StudentHistoryState extends ConsumerState<StudentHistory> {
                   Row(
                     children: [
                       IconButton(
-                        onPressed: () {
-                          context.push(CartView());
-                        },
-                        icon: Image.asset(
-                          ImageConst.calendar,
-                          width: sizeData.superLarge,
-                          height: sizeData.superLarge,
-                        ),
-                      ),
+                          onPressed: () {
+                            _showDatePicker();
+                          },
+                          icon: Icon(Icons.sort_outlined)),
                       IconButton(
                         onPressed: () {
                           context.push(CartView());
@@ -71,6 +80,7 @@ class _StudentHistoryState extends ConsumerState<StudentHistory> {
                 ],
               ),
               CalandarPicker(
+                selectedDate: selectedDate,
                 userRole: widget.userRole,
               ),
             ],

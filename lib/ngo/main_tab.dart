@@ -83,7 +83,7 @@ class _NgoMainTabState extends ConsumerState<NgoMainTab> {
                       () {
                         _onTabSelected(
                           1,
-                          const NgoHistory(userRole: UserRole.ngo),
+                           NgoHistory(userRole: UserRole.ngo),
                         );
                       },
                     ),

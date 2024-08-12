@@ -18,6 +18,20 @@ class CanteenHistory extends ConsumerStatefulWidget {
 }
 
 class _CanteenHistoryState extends ConsumerState<CanteenHistory> {
+  DateTime selectedDate = DateTime.now();
+
+  _showDatePicker() {
+    showDatePicker(
+            context: context,
+            firstDate: DateTime(2024),
+            lastDate: DateTime.now())
+        .then((value) {
+      setState(() {
+        selectedDate = value!;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     CustomSizeData sizeData = CustomSizeData.from(context);
@@ -43,9 +57,15 @@ class _CanteenHistoryState extends ConsumerState<CanteenHistory> {
                     size: sizeData.header,
                     color: colorData.fontColor(1),
                   ),
+                  IconButton(
+                      onPressed: () {
+                        _showDatePicker();
+                      },
+                      icon: Icon(Icons.sort))
                 ],
               ),
               CalandarPicker(
+                selectedDate: selectedDate,
                 userRole: widget.userRole,
               ),
             ],

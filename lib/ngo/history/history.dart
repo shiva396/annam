@@ -10,13 +10,28 @@ import '../../utils/size_data.dart';
 
 class NgoHistory extends ConsumerStatefulWidget {
   final UserRole userRole;
-  const NgoHistory({required this.userRole, super.key});
+  // DateTime selectedDate = DateTime.now();
+   NgoHistory({required this.userRole, super.key});
 
   @override
   ConsumerState<NgoHistory> createState() => _NgoHistoryState();
 }
 
 class _NgoHistoryState extends ConsumerState<NgoHistory> {
+
+    DateTime selectedDate = DateTime.now();
+
+  _showDatePicker() {
+    showDatePicker(
+            context: context,
+            firstDate: DateTime(2024),
+            lastDate: DateTime.now())
+        .then((value) {
+      setState(() {
+        selectedDate = value!;
+      });
+    });
+  }
   @override
   Widget build(BuildContext context) {
     CustomSizeData sizeData = CustomSizeData.from(context);
@@ -41,10 +56,17 @@ class _NgoHistoryState extends ConsumerState<NgoHistory> {
                   size: sizeData.header,
                   color: colorData.fontColor(1),
                 ),
+                 IconButton(
+                          onPressed: () {
+                            _showDatePicker();
+                          },
+                          icon: Icon(Icons.sort_outlined)),
               ],
             ),
+
             CalandarPicker(
-              userRole: widget. userRole,
+              selectedDate: selectedDate,
+              userRole: widget.userRole,
             ),
           ],
         ),
