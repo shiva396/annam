@@ -71,6 +71,7 @@ class CattleHome extends ConsumerWidget {
                   child: ListView.builder(
                     itemCount: todayData.length,
                     itemBuilder: (context, index) {
+                      print(todayData);
                       return CardModel(
                         phoneNumber: todayData[index]['phoneNumber'],
                         time: todayData[index]['time'],

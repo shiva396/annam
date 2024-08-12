@@ -144,7 +144,7 @@ class _CanteenCattleState extends ConsumerState<CanteenCattle> {
                         .doc(FirebaseOperations.firebaseAuth.currentUser!.uid)
                         .snapshots(),
                     builder: (context, snapshot) {
-                      if (!snapshot.hasData && !snapshot.data!.exists)
+                      if (!(snapshot.hasData && snapshot.data!.exists))
                         return ShimmerEffect();
                       Map<String, dynamic> allData =
                           snapshot.data!.data() ?? {};

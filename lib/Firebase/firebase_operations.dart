@@ -455,16 +455,18 @@ class FirebaseOperations {
           .doc(canttenOwnerId)
           .get();
 
-      Map<String, dynamic> wholeData = data.get(timeKey);
-      wholeData['canteenName'] = canteenName;
-      wholeData['canteenPhoneNo'] = phoneNo;
-      wholeData['canteenId'] = canttenOwnerId;
+      Map<String, dynamic> wholeData = data.data() as Map<String, dynamic>;
+      Map<String, dynamic> finalData = wholeData[timeKey];
+      finalData['canteenName'] = canteenName;
+      finalData['canteenPhoneNo'] = phoneNo;
+      finalData['canteenId'] = canttenOwnerId;
+
       firebaseInstance
           .collection('cattle_owner')
           .doc(firebaseAuth.currentUser!.uid)
           .collection('history')
           .doc(firebaseAuth.currentUser!.uid)
-          .set({DateTime.now().toString(): wholeData}, SetOptions(merge: true));
+          .set({DateTime.now().toString(): finalData}, SetOptions(merge: true));
     });
   }
 
