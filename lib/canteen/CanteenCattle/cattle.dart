@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projrect_annam/canteen/CanteenCattle/card_model.dart';
+import 'package:projrect_annam/const/static_data.dart';
 import 'package:projrect_annam/firebase/firebase_operations.dart';
 
 import 'package:projrect_annam/utils/custom_text.dart';
@@ -103,12 +104,6 @@ class _CanteenCattleState extends ConsumerState<CanteenCattle> {
         });
   }
 
-  List<List<String>> val = [
-    ["20"],
-    ["20"],
-    ["20"],
-  ];
-
   @override
   Widget build(BuildContext context) {
     CustomSizeData sizeData = CustomSizeData.from(context);
@@ -136,7 +131,7 @@ class _CanteenCattleState extends ConsumerState<CanteenCattle> {
                       icon: Icon(Icons.abc)),
                 ),
                 SizedBox(
-                  height: height * 0.01,
+                  height: height * 0.02,
                 ),
                 StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
                     stream: FirebaseOperations.firebaseInstance
@@ -160,10 +155,17 @@ class _CanteenCattleState extends ConsumerState<CanteenCattle> {
                             child: ListView.builder(
                                 itemCount: timings.length,
                                 itemBuilder: (context, index) {
-                                  return CanteenCattleCardModel(
-                                      time: timings[index],
-                                      itemweight: data[timings[index]]['weight']
-                                          .toString());
+                                  if (timings[index]
+                                      .toString()
+                                      .startsWith(currentDate)) {
+                                    return CanteenCattleCardModel(
+                                        time: timings[index],
+                                        itemweight: data[timings[index]]
+                                                ['weight']
+                                            .toString());
+                                  } else {
+                                    return null;
+                                  }
                                 }));
                       return CustomText(text: "Please Use + icon to Post");
                     })

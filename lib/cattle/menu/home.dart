@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projrect_annam/const/static_data.dart';
 import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/utils/shimmer.dart';
 
@@ -9,7 +10,7 @@ import '../../utils/custom_text.dart';
 import '../../utils/size_data.dart';
 import 'package:projrect_annam/cattle/menu/card_model.dart';
 
-String currentDate = DateTime.now().toString().split(' ').first;
+
 
 class CattleHome extends ConsumerWidget {
   @override

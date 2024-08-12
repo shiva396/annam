@@ -417,10 +417,33 @@ class FirebaseOperations {
   }
 
   static Future<void> postToNgoOwners(
-      {required bool like,
-      required String categoryName,
-      required String itemName,
-      required String canteenId}) async {}
+      {required String itemName,
+      required int quantity,
+      required String address,
+      required String collegeName,
+      required String phoneNo,
+      required String image}) async {
+    firebaseInstance
+        .collection('ngo_posts')
+        .doc(firebaseAuth.currentUser!.uid)
+        .set({
+      DateTime.now().toString(): {
+        "notNeeded": [],
+        itemName: quantity,
+        "checkOut": false,
+      }
+    }, SetOptions(merge: true)).then((v) {
+      firebaseInstance
+          .collection('ngo_posts')
+          .doc(firebaseAuth.currentUser!.uid)
+          .set({
+        "address": address,
+        "collegeName": collegeName,
+        "phoneNumber": phoneNo,
+        "image": image,
+      }, SetOptions(merge: true));
+    });
+  }
 
 // TODO: implenting students likes
   static Future<void> studentLikes(
@@ -470,9 +493,50 @@ class FirebaseOperations {
     });
   }
 
+  static Future<void> acceptCanteenNgoPost(
+      {required String canttenOwnerId,
+      required String timeKey,
+      required String canteenName,
+      required String phoneNo}) async {
+    firebaseInstance.collection('ngo_posts').doc(canttenOwnerId).set({
+      timeKey: {
+        'checkOut': true,
+        'notNeeded': FieldValue.delete(),
+        'personPurchased': firebaseAuth.currentUser!.uid
+      }
+    }, SetOptions(merge: true)).then((v) async {
+      DocumentSnapshot<Map<String, dynamic>> data = await firebaseInstance
+          .collection('ngo_posts')
+          .doc(canttenOwnerId)
+          .get();
+
+      Map<String, dynamic> wholeData = data.data() as Map<String, dynamic>;
+      Map<String, dynamic> finalData = wholeData[timeKey];
+      finalData['canteenName'] = canteenName;
+      finalData['canteenPhoneNo'] = phoneNo;
+      finalData['canteenId'] = canttenOwnerId;
+
+      firebaseInstance
+          .collection('ngo')
+          .doc(firebaseAuth.currentUser!.uid)
+          .collection('history')
+          .doc(firebaseAuth.currentUser!.uid)
+          .set({DateTime.now().toString(): finalData}, SetOptions(merge: true));
+    });
+  }
+
   static Future<void> declineCanteenCanttlePost(
       {required String canttenOwnerId, required String timeKey}) async {
     firebaseInstance.collection('cattle_posts').doc(canttenOwnerId).set({
+      timeKey: {
+        'notNeeded': FieldValue.arrayUnion([firebaseAuth.currentUser!.uid])
+      }
+    }, SetOptions(merge: true));
+  }
+
+  static Future<void> declineCanteenNgoPost(
+      {required String canttenOwnerId, required String timeKey}) async {
+    firebaseInstance.collection('ngo_posts').doc(canttenOwnerId).set({
       timeKey: {
         'notNeeded': FieldValue.arrayUnion([firebaseAuth.currentUser!.uid])
       }

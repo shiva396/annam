@@ -1,5 +1,7 @@
- import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/utils/custom_network_image.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
 
@@ -10,13 +12,23 @@ class CardModel extends ConsumerWidget {
   const CardModel(
       {super.key,
       required this.collegename,
+      required this.canteenOwnerId,
       required this.item,
+      required this.imageUrl,
+      required this.canteenName,
+      required this.phoneNo,
+      required this.time,
       required this.quantity,
       required this.location});
   final String collegename;
   final String item;
   final int quantity;
   final String location;
+  final String imageUrl;
+  final String time;
+  final String canteenOwnerId;
+  final String canteenName;
+  final String phoneNo;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -45,6 +57,7 @@ class CardModel extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   CustomNetworkImage(
+                    url: imageUrl.isNotEmpty ? imageUrl : null,
                     size: 50,
                     radius: 50,
                   ),
@@ -117,11 +130,20 @@ class CardModel extends ConsumerWidget {
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(),
                       child: Text("Accept"),
-                      onPressed: () {}),
+                      onPressed: () {
+                        FirebaseOperations.acceptCanteenNgoPost(
+                            canttenOwnerId: canteenOwnerId,
+                            timeKey: time,
+                            canteenName: canteenName,
+                            phoneNo: phoneNo);
+                      }),
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(),
                       child: Text("Decline"),
-                      onPressed: () {}),
+                      onPressed: () {
+                        FirebaseOperations.declineCanteenNgoPost(
+                            canttenOwnerId: canteenOwnerId, timeKey: time);
+                      }),
                 ],
               )
             ],

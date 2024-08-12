@@ -29,7 +29,6 @@ const List<Color> primaryColors = [
   Color(0XFF2ADDC7),
 ];
 
-enum From {
-  history,
-  orders
-}
+enum From { history, orders }
+
+String currentDate = DateTime.now().toString().split(' ').first;

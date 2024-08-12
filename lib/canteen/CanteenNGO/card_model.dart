@@ -42,27 +42,6 @@ class CanteenNgoCardModel extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  CustomNetworkImage(
-                    size: 50,
-                    radius: 50,
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Expanded(
-                    child: CustomText(
-                        text: collegename ?? "Sairam",
-                        size: sizeData.superHeader,
-                        color: colorData.fontColor(1)),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: height * 0.01,
-              ),
-              Row(
                 children: [
                   CustomText(
                     text: "Quantity : ",
@@ -89,29 +68,9 @@ class CanteenNgoCardModel extends ConsumerWidget {
                   )
                 ],
               ),
-              Wrap(
-                children: [
-                  CustomText(
-                    text: "Location : ",
-                    color: colorData.fontColor(1),
-                    size: sizeData.subHeader,
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  CustomText(
-                    color: colorData.fontColor(1),
-                    text: location ?? "Chennai",
-                    maxLine: 3,
-                    size: sizeData.regular,
-                    align: TextAlign.justify,
-                  )
-                ],
-              ),
               SizedBox(
                 height: 5,
               ),
-             
             ],
           ),
         ),

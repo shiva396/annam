@@ -148,7 +148,7 @@ class _MoreViewState extends ConsumerState<MoreView> {
 
                                 break;
                               case "6":
-                                context.push(CanteenNgo());
+                                context.push(CanteenNgo(canteenData: widget.canteenData!,));
                                 break;
 
                               default:

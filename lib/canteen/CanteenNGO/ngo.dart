@@ -1,23 +1,31 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projrect_annam/canteen/CanteenNGO/card_model.dart';
+import 'package:projrect_annam/const/static_data.dart';
+import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
 import 'package:projrect_annam/utils/extension_methods.dart';
 import 'package:projrect_annam/utils/page_header.dart';
+import 'package:projrect_annam/utils/shimmer.dart';
 
 import '../../utils/color_data.dart';
 import '../../utils/size_data.dart';
 
 class CanteenNgo extends ConsumerStatefulWidget {
-  const CanteenNgo({super.key});
+  const CanteenNgo({super.key, required this.canteenData});
+  final Map<String, dynamic> canteenData;
 
   @override
   ConsumerState<CanteenNgo> createState() => _CanteenNgoState();
 }
 
 class _CanteenNgoState extends ConsumerState<CanteenNgo> {
-  void createPost({required BuildContext context}) {
+  void createPost({
+    required BuildContext context,
+  }) {
     TextEditingController itemnamecontroller = TextEditingController();
     TextEditingController itemcountcontroller = TextEditingController();
     DateTime timenow = DateTime.now();
@@ -72,7 +80,24 @@ class _CanteenNgoState extends ConsumerState<CanteenNgo> {
                             )
                           ],
                         ),
-                        onPressed: () async {}),
+                        onPressed: () async {
+                          if (itemcountcontroller.text.isNotEmpty &&
+                              itemnamecontroller.text.isNotEmpty) {
+                            FirebaseOperations.postToNgoOwners(
+                              itemName: itemnamecontroller.text,
+                              quantity: int.parse(
+                                  itemcountcontroller.text.trim().toString()),
+                              phoneNo: widget.canteenData['phoneNumber'],
+                              image: widget.canteenData['image'],
+                              address: widget.canteenData['address'],
+                              collegeName: widget.canteenData['collegeName'],
+                            ).whenComplete(() {
+                              context.pop();
+                            });
+                          } else {
+                            context.showSnackBar("Enter all the details");
+                          }
+                        }),
                     ElevatedButton(
                       child: Row(
                         children: [
@@ -113,29 +138,65 @@ class _CanteenNgoState extends ConsumerState<CanteenNgo> {
             right: width * 0.04,
             top: height * 0.02,
           ),
-          child: Column(
-            children: [
-              PageHeader(
-                title: "NGO",
-                secondaryWidget: IconButton(
-                    onPressed: () => createPost(context: context),
-                    icon: Icon(Icons.abc)),
-              ),
-              SizedBox(
-                height: height * 0.02,
-              ),
-              SizedBox(
-                height: height * 0.8,
-                child: ListView.builder(
-                    itemCount: val.length,
-                    itemBuilder: (context, index) {
-                      return CanteenNgoCardModel(
-                        item: val[index][0],
-                        quantity: int.parse(val[index][1]),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                PageHeader(
+                  title: "NGO",
+                  secondaryWidget: IconButton(
+                      onPressed: () => createPost(context: context),
+                      icon: Icon(Icons.abc)),
+                ),
+                SizedBox(
+                  height: height * 0.02,
+                ),
+                StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                  stream: FirebaseOperations.firebaseInstance
+                      .collection('ngo_posts')
+                      .doc(FirebaseOperations.firebaseAuth.currentUser!.uid)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!(snapshot.hasData && snapshot.data!.exists))
+                      return ShimmerEffect();
+                    Map<String, dynamic> allData = snapshot.data!.data() ?? {};
+                    Map<String, dynamic> data = Map.from(allData)
+                      ..remove('address')
+                      ..remove('collegeName')
+                      ..remove('image')
+                      ..remove('phoneNumber');
+                    List<String> timings = data.keys.toList();
+
+                    if (timings.isNotEmpty)
+                      return SizedBox(
+                        height: height * 0.8,
+                        child: ListView.builder(
+                            itemCount: timings.length,
+                            itemBuilder: (context, index) {
+                              if (timings[index]
+                                  .toString()
+                                  .startsWith(currentDate)) {
+                                Map<String, dynamic> finalData =
+                                    Map.from(data[timings[index]])
+                                      ..remove('checkOut')
+                                      ..remove('notNeeded')
+                                      ..remove('personPurchased');
+                                String item = (finalData.keys.first);
+
+                                return CanteenNgoCardModel(
+                                  item: item,
+                                  quantity:
+                                      int.parse(finalData[item].toString()),
+                                );
+                              } else {
+                                return null;
+                              }
+                            }),
                       );
-                    }),
-              )
-            ],
+                    return CustomText(text: "Please Use + icon to Post");
+                  },
+                )
+              ],
+            ),
           ),
         ),
       ),
