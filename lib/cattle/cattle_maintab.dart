@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:projrect_annam/Firebase/firebase_operations.dart';
 import 'package:projrect_annam/cattle/history/history.dart';
@@ -18,12 +19,12 @@ class CattleOwner extends ConsumerStatefulWidget {
 }
 
 class _CattleOwnerState extends ConsumerState<CattleOwner> {
-  int selctTab = 1;
+  int selctTab = 0;
   Widget? selectPageView;
   PageStorageBucket storageBucket = PageStorageBucket();
   @override
   void initState() {
-    // selectPageView = const
+    selectPageView = CattleHistory();
     super.initState();
   }
 
@@ -35,9 +36,9 @@ class _CattleOwnerState extends ConsumerState<CattleOwner> {
     double height = sizeData.height;
     double width = sizeData.width;
 
-    return StreamBuilder<Object>(
+    return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
       stream: FirebaseOperations.firebaseInstance
-          .collection('cattle')
+          .collection('cattle_owner')
           .doc(FirebaseOperations.firebaseAuth.currentUser!.uid)
           .snapshots(),
       builder: (context, snapshot) {
@@ -45,7 +46,8 @@ class _CattleOwnerState extends ConsumerState<CattleOwner> {
           return overlayContent(
               context: context, imagePath: 'assets/rive/loading.riv');
         }
-
+        Map<String, dynamic> cattleData =
+            snapshot.data!.data() as Map<String, dynamic>;
         return SafeArea(
           child: Scaffold(
             body: PageStorage(bucket: storageBucket, child: selectPageView!),
@@ -88,7 +90,9 @@ class _CattleOwnerState extends ConsumerState<CattleOwner> {
                       () {
                         _onTabSelected(
                           3,
-                          CattleProfile(),
+                          CattleProfile(
+                            cattleData: cattleData,
+                          ),
                         );
                       },
                     ),

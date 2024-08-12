@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:projrect_annam/cattle/cattle_maintab.dart';
 import 'package:projrect_annam/const/static_data.dart';
 import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/auth/login_signup.dart';
@@ -82,7 +83,7 @@ class AuthWrapper extends StatelessWidget {
                   } else if (role == UserRole.ngo.asString) {
                     return NgoMainTab();
                   } else if (role == UserRole.cattleOwner.asString) {
-                    return SizedBox();
+                    return CattleOwner();
                   }
                   {
                     return SizedBox();

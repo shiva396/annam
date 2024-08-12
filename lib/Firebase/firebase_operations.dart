@@ -337,13 +337,10 @@ class FirebaseOperations {
             .doc(firebaseAuth.currentUser!.uid)
             .collection('orders')
             .doc(firebaseAuth.currentUser!.uid)
-            .set({orderId.toString(): data}, SetOptions(merge: true)).then((v) {
-         
-        });
+            .set({orderId.toString(): data}, SetOptions(merge: true)).then(
+                (v) {});
       });
-    }).onError((e, s) {
-      
-    });
+    }).onError((e, s) {});
   }
 
   static Future<void> addCountForItems(
@@ -391,28 +388,41 @@ class FirebaseOperations {
     });
   }
 
-  static Future<void> pushToHistoryForCanteenOwners(
-      {required String userName,
-      required Map<String, dynamic> data,
-      required String timeStamp}) async {
-    data['studentName'] = userName;
+  static Future<void> postToCattleOwners(
+      {required double weight,
+      required String address,
+      required String collegeName,
+      required String phoneNo,
+      required String image}) async {
     firebaseInstance
-        .collection('history')
+        .collection('cattle_posts')
         .doc(firebaseAuth.currentUser!.uid)
-        .set({timeStamp: data}, SetOptions(merge: true));
+        .set({
+      DateTime.now().toString(): {
+        "checkOut": false,
+        "notNeeded": [],
+        "weight": weight,
+      }
+    }, SetOptions(merge: true)).then((v) {
+      firebaseInstance
+          .collection('cattle_posts')
+          .doc(firebaseAuth.currentUser!.uid)
+          .set({
+        "address": address,
+        "collegeName": collegeName,
+        "phoneNumber": phoneNo,
+        "image": image,
+      }, SetOptions(merge: true));
+    });
   }
 
-  static Future<void> deleteOrders({
-    required String canteenId,
-  }) async {
-    firebaseInstance
-        .collection('student')
-        .doc(firebaseAuth.currentUser!.uid)
-        .collection('orders')
-        .doc(firebaseAuth.currentUser!.uid)
-        .update({canteenId: FieldValue.delete()});
-  }
+  static Future<void> postToNgoOwners(
+      {required bool like,
+      required String categoryName,
+      required String itemName,
+      required String canteenId}) async {}
 
+// TODO: implenting students likes
   static Future<void> studentLikes(
       {required bool like,
       required String categoryName,
@@ -426,5 +436,44 @@ class FirebaseOperations {
         .collection('likes')
         .doc(canteenId)
         .set(data, SetOptions(merge: true));
+  }
+
+  static Future<void> acceptCanteenCattlePost(
+      {required String canttenOwnerId,
+      required String timeKey,
+      required String canteenName,
+      required String phoneNo}) async {
+    firebaseInstance.collection('cattle_posts').doc(canttenOwnerId).set({
+      timeKey: {
+        'checkOut': true,
+        'notNeeded': FieldValue.delete(),
+        'personPurchased': firebaseAuth.currentUser!.uid
+      }
+    }, SetOptions(merge: true)).then((v) async {
+      DocumentSnapshot<Map<String, dynamic>> data = await firebaseInstance
+          .collection('cattle_posts')
+          .doc(canttenOwnerId)
+          .get();
+
+      Map<String, dynamic> wholeData = data.get(timeKey);
+      wholeData['canteenName'] = canteenName;
+      wholeData['canteenPhoneNo'] = phoneNo;
+      wholeData['canteenId'] = canttenOwnerId;
+      firebaseInstance
+          .collection('cattle_owner')
+          .doc(firebaseAuth.currentUser!.uid)
+          .collection('history')
+          .doc(firebaseAuth.currentUser!.uid)
+          .set({DateTime.now().toString(): wholeData}, SetOptions(merge: true));
+    });
+  }
+
+  static Future<void> declineCanteenCanttlePost(
+      {required String canttenOwnerId, required String timeKey}) async {
+    firebaseInstance.collection('cattle_posts').doc(canttenOwnerId).set({
+      timeKey: {
+        'notNeeded': FieldValue.arrayUnion([firebaseAuth.currentUser!.uid])
+      }
+    }, SetOptions(merge: true));
   }
 }

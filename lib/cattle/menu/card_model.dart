@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/utils/custom_network_image.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
 
@@ -9,12 +10,20 @@ import '../../utils/size_data.dart';
 class CardModel extends ConsumerWidget {
   const CardModel(
       {super.key,
+      required this.phoneNumber,
+      required this.canteenOwnerId,
+      required this.time,
+      required this.imageUrl,
       required this.collegename,
       required this.weight,
       required this.location});
   final String collegename;
+  final String imageUrl;
+  final String phoneNumber;
 
-  final int weight;
+  final String weight;
+  final String time;
+  final String canteenOwnerId;
   final String location;
 
   @override
@@ -46,6 +55,7 @@ class CardModel extends ConsumerWidget {
                   CustomNetworkImage(
                     size: 50,
                     radius: 50,
+                    url: imageUrl.isEmpty ? null : imageUrl,
                   ),
                   SizedBox(
                     width: 20,
@@ -103,11 +113,21 @@ class CardModel extends ConsumerWidget {
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(),
                       child: Text("Accept"),
-                      onPressed: () {}),
+                      onPressed: () {
+                        FirebaseOperations.acceptCanteenCattlePost(
+                          canteenName: collegename,
+                          phoneNo: phoneNumber,
+                          canttenOwnerId: canteenOwnerId,
+                          timeKey: time,
+                        );
+                      }),
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(),
                       child: Text("Decline"),
-                      onPressed: () {}),
+                      onPressed: () {
+                        FirebaseOperations.declineCanteenCanttlePost(
+                            canttenOwnerId: canteenOwnerId, timeKey: time);
+                      }),
                 ],
               )
             ],

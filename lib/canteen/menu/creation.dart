@@ -95,22 +95,6 @@ class _CreationState extends ConsumerState<Creation> {
                     controller: countController,
                     decoration: InputDecoration(labelText: 'Count'),
                   ),
-                  // StatefulBuilder(builder: (context, state) {
-                  //   return Row(
-                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //     children: [
-                  //       CustomText(text: "Stock in Hand"),
-                  //       Switch(
-                  //         value: selected,
-                  //         onChanged: (v) {
-                  //           state(() {
-                  //             selected = v;
-                  //           });
-                  //         },
-                  //       ),
-                  //     ],
-                  //   );
-                  // })
                 ],
               ),
               actions: [

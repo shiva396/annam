@@ -154,8 +154,9 @@ class _CanteenOwnerState extends ConsumerState<CanteenOwner> {
                       () {
                         _onTabSelected(
                             4,
-                            const MoreView(
+                            MoreView(
                               from: UserRole.canteenOwner,
+                              canteenData: canteenOwnerData,
                             ));
                       },
                     ),

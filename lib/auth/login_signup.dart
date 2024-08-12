@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:projrect_annam/cattle/cattle_maintab.dart';
+import 'package:projrect_annam/cattle/menu/home.dart';
 import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/canteen/canteen_main_tab.dart';
 import 'package:projrect_annam/const/image_const.dart';
@@ -228,6 +230,8 @@ class _EmailBarState extends State<EmailBar> {
                     }
                   } else if (role == UserRole.ngo.asString) {
                     context.push(NgoMainTab());
+                  } else if (role == UserRole.cattleOwner.asString) {
+                    context.push(CattleOwner());
                   }
                 } else {
                   context.showSnackBar("Account not found");

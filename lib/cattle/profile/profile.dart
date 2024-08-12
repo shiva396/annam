@@ -23,9 +23,9 @@ import '../../utils/size_data.dart';
 class CattleProfile extends ConsumerStatefulWidget {
   const CattleProfile({
     super.key,
-    // required this.ngoData,
+    required this.cattleData,
   });
-  // final Map<String, dynamic> ngoData;
+  final Map<String, dynamic> cattleData;
 
   @override
   ConsumerState<CattleProfile> createState() => _CattleProfileState();
@@ -44,15 +44,14 @@ class _CattleProfileState extends ConsumerState<CattleProfile> {
   bool changeData = false;
 
   TextEditingController phoneNumberController = TextEditingController();
-  TextEditingController cordinatorPhoneNumberController =
-      TextEditingController();
-  TextEditingController organizationNameController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
 
   void dispose() {
     super.dispose();
     phoneNumberController.dispose();
-    cordinatorPhoneNumberController.dispose();
-    organizationNameController.dispose();
+    addressController.dispose();
+    nameController.dispose();
   }
 
   @override
@@ -62,17 +61,12 @@ class _CattleProfileState extends ConsumerState<CattleProfile> {
 
     double height = sizeData.height;
     double width = sizeData.width;
-    // String co_ordinatorPhoneNumber =
-    //     widget.ngoData['co-ordinator-phoneNumber'] ?? '';
-    // String phoneNumber = widget.ngoData['phoneNumber'] ?? '';
-    // String email = widget.ngoData['email'] ?? '';
-    // String organization = widget.ngoData['organization'] ?? '';
-    // String profileUrl = widget.ngoData['image'] ?? '';
-    String co_ordinatorPhoneNumber = '';
-    String phoneNumber = '';
-    String email = '';
-    String organization = '';
-    String profileUrl = '';
+    String phoneNumber = widget.cattleData['phoneNumber'] ?? '';
+    String email = widget.cattleData['email'] ?? '';
+    String profileUrl = widget.cattleData['image'] ?? '';
+    String address = widget.cattleData['address'] ?? '';
+    String name = widget.cattleData['name'] ?? "";
+
     return SafeArea(
       child: Scaffold(
         body: Container(
@@ -109,7 +103,7 @@ class _CattleProfileState extends ConsumerState<CattleProfile> {
                     alignment: Alignment.center,
                     child: GestureDetector(
                       onTap: () {
-                        selectProfileImage();
+                        changeData ? selectProfileImage() : null;
                       },
                       child: image != null
                           ? ClipRRect(
@@ -160,7 +154,7 @@ class _CattleProfileState extends ConsumerState<CattleProfile> {
                     height: height * 0.01,
                   ),
                   CustomText(
-                    text: organization,
+                    text: name,
                     size: sizeData.header,
                     color: colorData.primaryColor(1),
                   ),
@@ -188,9 +182,9 @@ class _CattleProfileState extends ConsumerState<CattleProfile> {
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
                     child: RoundTitleTextfield(
                       readOnly: !changeData,
-                      title: "Organization",
-                      hintText: changeData ? "Enter Name" : organization,
-                      controller: organizationNameController,
+                      title: "Name",
+                      hintText: changeData ? "Enter Name" : name,
+                      controller: nameController,
                     ),
                   ),
                   Padding(
@@ -218,12 +212,10 @@ class _CattleProfileState extends ConsumerState<CattleProfile> {
                     padding:
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
                     child: RoundTitleTextfield(
-                      title: "Cordinator mobile No",
+                      title: "Address",
                       readOnly: !changeData,
-                      hintText: changeData
-                          ? "Enter Mobile No"
-                          : co_ordinatorPhoneNumber,
-                      controller: cordinatorPhoneNumberController,
+                      hintText: changeData ? "Enter Address" : address,
+                      controller: addressController,
                       keyboardType: TextInputType.phone,
                     ),
                   ),
@@ -245,11 +237,8 @@ class _CattleProfileState extends ConsumerState<CattleProfile> {
                                 ),
                                 onPressed: () async {
                                   Map<String, dynamic> data = {};
-                                  if (organizationNameController.text
-                                      .trim()
-                                      .isNotEmpty) {
-                                    data['organization'] =
-                                        organizationNameController.text.trim();
+                                  if (nameController.text.trim().isNotEmpty) {
+                                    data['name'] = nameController.text.trim();
                                   }
                                   if (phoneNumberController.text
                                       .trim()
@@ -257,12 +246,11 @@ class _CattleProfileState extends ConsumerState<CattleProfile> {
                                     data['phoneNumber'] =
                                         phoneNumberController.text.trim();
                                   }
-                                  if (cordinatorPhoneNumberController.text
+                                  if (addressController.text
                                       .trim()
                                       .isNotEmpty) {
-                                    data['co-ordinator-phoneNumber'] =
-                                        cordinatorPhoneNumberController.text
-                                            .trim();
+                                    data['address'] =
+                                        addressController.text.trim();
                                   }
                                   // Editing data
                                   if (image != null) {
@@ -277,7 +265,7 @@ class _CattleProfileState extends ConsumerState<CattleProfile> {
                                     UploadTask dataUploaded = FirebaseOperations
                                         .firebaseStorage
                                         .ref(
-                                            'ngo/${FirebaseOperations.firebaseAuth.currentUser!.uid}/profileImage/')
+                                            'cattle/${FirebaseOperations.firebaseAuth.currentUser!.uid}/profileImage/')
                                         .putFile(File(image!.path));
                                     TaskSnapshot cases =
                                         await dataUploaded.whenComplete(() {});
@@ -288,7 +276,7 @@ class _CattleProfileState extends ConsumerState<CattleProfile> {
                                   Map<String, dynamic> userdata = data;
                                   if (data.isNotEmpty) {
                                     FirebaseOperations.firebaseInstance
-                                        .collection('ngo')
+                                        .collection('cattle_owner')
                                         .doc(FirebaseOperations
                                             .firebaseAuth.currentUser!.uid)
                                         .update(userdata);

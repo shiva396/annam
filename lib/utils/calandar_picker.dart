@@ -176,14 +176,16 @@ class _CalandarPickerState extends State<CalandarPicker> {
 
                     // Access the single map field in the document
                     String mapFieldName = dataMap.keys.first;
+                    String onlyDate = (mapFieldName.split(' ').first);
 
                     // Check if the target date exists as a key in the map
-                    if (mapFieldName.startsWith(
-                      _getValueText(
-                        config.calendarType,
-                        _singleDatePickerValueWithDefaultValue,
-                      ),
-                    )) {
+                    if (onlyDate.toString() ==
+                        _getValueText(
+                          config.calendarType,
+                          _singleDatePickerValueWithDefaultValue,
+                        ).toString()) {
+                      print(onlyDate);
+
                       Map<String, dynamic> historyData = dataMap[mapFieldName];
 
                       if (historyData['canteenId'] ==

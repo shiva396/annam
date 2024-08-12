@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:projrect_annam/cattle/cattle_maintab.dart';
 import 'package:projrect_annam/const/static_data.dart';
 import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/canteen/canteen_main_tab.dart';
@@ -329,6 +330,12 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                                 });
                               } else if (_selectedRole ==
                                   UserRole.cattleOwner.asString) {
+                                widget.userData.addAll({
+                                  'name': _nameController.text.trim(),
+                                  'phoneNumber': _phoneController.text.trim(),
+                                  'address': _addressController.text.trim(),
+                                  'image': "",
+                                });
                               } else if (_selectedRole ==
                                   UserRole.ngo.asString) {
                                 // TODO : Validate them
@@ -421,6 +428,9 @@ class _RoleSeperationPageState extends State<RoleSeperationPage> {
                                       } else if (_selectedRole ==
                                           UserRole.ngo.asString) {
                                         context.pushReplacement(NgoHome());
+                                      } else if (_selectedRole ==
+                                          UserRole.cattleOwner.asString) {
+                                        context.pushReplacement(CattleOwner());
                                       }
                                     });
                                   }

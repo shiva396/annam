@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:projrect_annam/canteen/canteen%20NGO/ngo.dart';
-import 'package:projrect_annam/canteen/canteen%20cattle/cattle.dart';
+import 'package:projrect_annam/canteen/CanteenNGO/ngo.dart';
+import 'package:projrect_annam/canteen/CanteenCattle/cattle.dart';
 import 'package:projrect_annam/const/image_const.dart';
 import 'package:projrect_annam/const/static_data.dart';
 import 'package:projrect_annam/students/more/about_us.dart';
@@ -16,9 +16,11 @@ import '../orders/my_cart.dart';
 import '../orders/my_orders.dart';
 
 class MoreView extends ConsumerStatefulWidget {
+  final Map<String, dynamic>? canteenData;
   final UserRole from;
   const MoreView({
     required this.from,
+    this.canteenData,
     super.key,
   });
 
@@ -140,7 +142,9 @@ class _MoreViewState extends ConsumerState<MoreView> {
                                 context.push(AboutUsView());
                                 break;
                               case "5":
-                                context.push(CanteenCattle());
+                                context.push(CanteenCattle(
+                                  canteenData: widget.canteenData!,
+                                ));
 
                                 break;
                               case "6":
