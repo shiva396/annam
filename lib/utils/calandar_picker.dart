@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:projrect_annam/utils/search.dart';
 import 'package:projrect_annam/utils/shimmer.dart';
+import 'package:lottie/lottie.dart';
 
 import '../canteen/home/expanded_card.dart';
 import '../const/static_data.dart';
@@ -139,11 +140,15 @@ class _CalandarPickerState extends State<CalandarPicker> {
               const CustomText(
                 text: 'Selected Date :  ',
               ),
-              const SizedBox(width: 10),
+              const SizedBox(height: 10),
               CustomText(
                 text: selectedDate.toString().split(" ").first,
               ),
+              const SizedBox(height: 10),
             ],
+          ),
+          SizedBox(
+            height: 10,
           ),
           if (UserRole.canteenOwner == widget.userRole) ...[
             CustomSearchBar(
@@ -203,14 +208,18 @@ class _CalandarPickerState extends State<CalandarPicker> {
                   }
                   if (orderWidgets.isNotEmpty)
                     return SizedBox(
-                      height: 200,
+                      height: 1000,
                       child: ListView(
                         children: orderWidgets,
                       ),
                     );
                   if (count == 0 && orderWidgets.isEmpty) {
-                    return CustomText(
-                        text: "No Orders placed at this selected Date");
+                    return Center(
+                      child: LottieBuilder.asset(
+                          "assets/lottie/no data found.json"),
+                    );
+                    //  CustomText(
+                    //     text: "No Orders placed at this selected Date");
                   }
                   return CustomText(text: "Search not Found");
                 }),
