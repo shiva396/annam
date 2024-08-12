@@ -542,4 +542,13 @@ class FirebaseOperations {
       }
     }, SetOptions(merge: true));
   }
+
+  Future<void> resetPassword(
+      {required String email, required BuildContext context}) async {
+    firebaseAuth.sendPasswordResetEmail(email: email).whenComplete(() {
+      context.showSnackBar("Password sent to the $email Successfully");
+    }).onError((e, s) {
+      context.showSnackBar(e.toString());
+    });
+  }
 }

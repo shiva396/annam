@@ -190,7 +190,7 @@ class _CanteenNgoState extends ConsumerState<CanteenNgo> {
                               } else {
                                 return null;
                               }
-                            }),
+                            },),
                       );
                     return CustomText(text: "Please Use + icon to Post");
                   },

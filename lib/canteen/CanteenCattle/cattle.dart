@@ -134,41 +134,42 @@ class _CanteenCattleState extends ConsumerState<CanteenCattle> {
                   height: height * 0.02,
                 ),
                 StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                    stream: FirebaseOperations.firebaseInstance
-                        .collection('cattle_posts')
-                        .doc(FirebaseOperations.firebaseAuth.currentUser!.uid)
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (!(snapshot.hasData && snapshot.data!.exists))
-                        return ShimmerEffect();
-                      Map<String, dynamic> allData =
-                          snapshot.data!.data() ?? {};
-                      Map<String, dynamic> data = Map.from(allData)
-                        ..remove('address')
-                        ..remove('collegeName')
-                        ..remove('image')
-                        ..remove('phoneNumber');
-                      List<String> timings = data.keys.toList();
-                      if (timings.isNotEmpty)
-                        return SizedBox(
-                            height: height * 0.8,
-                            child: ListView.builder(
-                                itemCount: timings.length,
-                                itemBuilder: (context, index) {
-                                  if (timings[index]
-                                      .toString()
-                                      .startsWith(currentDate)) {
-                                    return CanteenCattleCardModel(
-                                        time: timings[index],
-                                        itemweight: data[timings[index]]
-                                                ['weight']
-                                            .toString());
-                                  } else {
-                                    return null;
-                                  }
-                                }));
-                      return CustomText(text: "Please Use + icon to Post");
-                    })
+                  stream: FirebaseOperations.firebaseInstance
+                      .collection('cattle_posts')
+                      .doc(FirebaseOperations.firebaseAuth.currentUser!.uid)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!(snapshot.hasData && snapshot.data!.exists))
+                      return ShimmerEffect();
+                    Map<String, dynamic> allData = snapshot.data!.data() ?? {};
+                    Map<String, dynamic> data = Map.from(allData)
+                      ..remove('address')
+                      ..remove('collegeName')
+                      ..remove('image')
+                      ..remove('phoneNumber');
+                    List<String> timings = data.keys.toList();
+                    if (timings.isNotEmpty)
+                      return SizedBox(
+                        height: height * 0.8,
+                        child: ListView.builder(
+                          itemCount: timings.length,
+                          itemBuilder: (context, index) {
+                            if (timings[index]
+                                .toString()
+                                .startsWith(currentDate)) {
+                              return CanteenCattleCardModel(
+                                  time: timings[index],
+                                  itemweight: data[timings[index]]['weight']
+                                      .toString());
+                            } else {
+                              return null;
+                            }
+                          },
+                        ),
+                      );
+                    return CustomText(text: "Please Use + icon to Post");
+                  },
+                )
               ],
             ),
           ),

@@ -68,14 +68,14 @@ class AuthWrapper extends StatelessWidget {
                                   .firebaseAuth.currentUser!.uid)) {
                                 collegeName = v.id;
                               }
-                            });
+                            },);
 
                             if (collegeName.isNotEmpty) {
                               return CanteenOwner(collegeName: collegeName);
                             } else {
                               return LoginSignUp();
                             }
-                          });
+                          },);
                     } catch (e) {
                       context.showSnackBar('Error checking documents: $e');
                       return SizedBox();
@@ -91,7 +91,7 @@ class AuthWrapper extends StatelessWidget {
                 } else {
                   return SizedBox();
                 }
-              });
+              },);
         } else {
           return const LoginSignUp();
         }
