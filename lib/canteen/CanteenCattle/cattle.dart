@@ -74,6 +74,7 @@ class _CanteenCattleState extends ConsumerState<CanteenCattle> {
                         ),
                         onPressed: () async {
                           FirebaseOperations.postToCattleOwners(
+                            collegeName: widget.canteenData['collegeName'],
                                   weight: double.parse(
                                       itemweightcontroller.text.trim()))
                               .whenComplete(() {

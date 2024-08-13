@@ -388,9 +388,8 @@ class FirebaseOperations {
     });
   }
 
-  static Future<void> postToCattleOwners({
-    required double weight,
-  }) async {
+  static Future<void> postToCattleOwners(
+      {required double weight, required String collegeName}) async {
     firebaseInstance
         .collection('cattle_posts')
         .doc(firebaseAuth.currentUser!.uid)
@@ -400,13 +399,20 @@ class FirebaseOperations {
         "notNeeded": [],
         "weight": weight,
       }
-    }, SetOptions(merge: true));
+    }, SetOptions(merge: true)).then((v) {
+      firebaseInstance
+          .collection('cattle_posts')
+          .doc(firebaseAuth.currentUser!.uid)
+          .set({
+        "collegeName": collegeName,
+      }, SetOptions(merge: true));
+    });
   }
 
-  static Future<void> postToNgoOwners({
-    required String itemName,
-    required int quantity,
-  }) async {
+  static Future<void> postToNgoOwners(
+      {required String itemName,
+      required int quantity,
+      required String collegeName}) async {
     firebaseInstance
         .collection('ngo_posts')
         .doc(firebaseAuth.currentUser!.uid)
@@ -416,10 +422,16 @@ class FirebaseOperations {
         itemName: quantity,
         "checkOut": false,
       }
-    }, SetOptions(merge: true));
+    }, SetOptions(merge: true)).then((v) {
+      firebaseInstance
+          .collection('ngo_posts')
+          .doc(firebaseAuth.currentUser!.uid)
+          .set({
+        "collegeName": collegeName,
+      }, SetOptions(merge: true));
+    });
   }
 
-// TODO: implenting students likes
   static Future<void> studentLikes(
       {required bool like,
       required String categoryName,
@@ -438,8 +450,7 @@ class FirebaseOperations {
   static Future<void> acceptCanteenCattlePost(
       {required String canttenOwnerId,
       required String timeKey,
-      required String canteenName,
-      required String phoneNo}) async {
+      required String collegeName}) async {
     firebaseInstance.collection('cattle_posts').doc(canttenOwnerId).set({
       timeKey: {
         'checkOut': true,
@@ -454,8 +465,7 @@ class FirebaseOperations {
 
       Map<String, dynamic> wholeData = data.data() as Map<String, dynamic>;
       Map<String, dynamic> finalData = wholeData[timeKey];
-      finalData['canteenName'] = canteenName;
-      finalData['canteenPhoneNo'] = phoneNo;
+      finalData['collegeName'] = collegeName;
       finalData['canteenId'] = canttenOwnerId;
 
       firebaseInstance
@@ -470,8 +480,7 @@ class FirebaseOperations {
   static Future<void> acceptCanteenNgoPost(
       {required String canttenOwnerId,
       required String timeKey,
-      required String canteenName,
-      required String phoneNo}) async {
+      required String collegeName}) async {
     firebaseInstance.collection('ngo_posts').doc(canttenOwnerId).set({
       timeKey: {
         'checkOut': true,
@@ -486,9 +495,8 @@ class FirebaseOperations {
 
       Map<String, dynamic> wholeData = data.data() as Map<String, dynamic>;
       Map<String, dynamic> finalData = wholeData[timeKey];
-      finalData['canteenName'] = canteenName;
-      finalData['canteenPhoneNo'] = phoneNo;
-      finalData['canteenId'] = canttenOwnerId;
+      finalData['collegeName'] = collegeName;
+      finalData['canttenId'] = canttenOwnerId;
 
       firebaseInstance
           .collection('ngo')
@@ -517,7 +525,7 @@ class FirebaseOperations {
     }, SetOptions(merge: true));
   }
 
-  Future<void> resetPassword(
+ static Future<void> resetPassword(
       {required String email, required BuildContext context}) async {
     firebaseAuth.sendPasswordResetEmail(email: email).whenComplete(() {
       context.showSnackBar("Password sent to the $email Successfully");
@@ -525,4 +533,18 @@ class FirebaseOperations {
       context.showSnackBar(e.toString());
     });
   }
+
+ static Future<Map<String, dynamic>> fetchCanteenOwnerData(
+    {required String collegeName, required String canteenOwnerID}) async {
+  DocumentSnapshot<Map<String, dynamic>> data = await FirebaseOperations
+      .firebaseInstance
+      .collection('college')
+      .doc(collegeName)
+      .get();
+  Map<String, dynamic> filter = data.data() as Map<String, dynamic>;
+  Map<String, dynamic> finalData = filter[canteenOwnerID];
+
+  return finalData;
+}
+
 }

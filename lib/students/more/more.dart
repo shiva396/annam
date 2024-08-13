@@ -104,17 +104,22 @@ class _MoreViewState extends ConsumerState<MoreView> {
                       size: sizeData.header,
                       color: colorData.fontColor(1),
                     ),
-                    IconButton(
-                      onPressed: () {
-                        context.push(const CartView());
-                      },
-                      icon: Image.asset(
-                        ImageConst.shoppingCart,
-                        width: sizeData.superLarge,
-                        height: sizeData.superLarge,
-                      ),
-                    ),
+                    widget.from == UserRole.student
+                        ? IconButton(
+                            onPressed: () {
+                              context.push(const CartView());
+                            },
+                            icon: Image.asset(
+                              ImageConst.shoppingCart,
+                              width: sizeData.superLarge,
+                              height: sizeData.superLarge,
+                            ),
+                          )
+                        : SizedBox(),
                   ],
+                ),
+                SizedBox(
+                  height: height * 0.02,
                 ),
                 ListView.builder(
                     padding: EdgeInsets.zero,
@@ -148,7 +153,9 @@ class _MoreViewState extends ConsumerState<MoreView> {
 
                                 break;
                               case "6":
-                                context.push(CanteenNgo(canteenData: widget.canteenData!,));
+                                context.push(CanteenNgo(
+                                  canteenData: widget.canteenData!,
+                                ));
                                 break;
 
                               default:

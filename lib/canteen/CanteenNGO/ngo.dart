@@ -84,6 +84,7 @@ class _CanteenNgoState extends ConsumerState<CanteenNgo> {
                           if (itemcountcontroller.text.isNotEmpty &&
                               itemnamecontroller.text.isNotEmpty) {
                             FirebaseOperations.postToNgoOwners(
+                              collegeName: widget.canteenData['collegeName'],
                               itemName: itemnamecontroller.text,
                               quantity: int.parse(
                                   itemcountcontroller.text.trim().toString()),
