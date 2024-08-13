@@ -74,11 +74,6 @@ class _CanteenCattleState extends ConsumerState<CanteenCattle> {
                         ),
                         onPressed: () async {
                           FirebaseOperations.postToCattleOwners(
-                                  phoneNo: widget.canteenData['phoneNumber'],
-                                  image: widget.canteenData['image'],
-                                  address: widget.canteenData['address'],
-                                  collegeName:
-                                      widget.canteenData['collegeName'],
                                   weight: double.parse(
                                       itemweightcontroller.text.trim()))
                               .whenComplete(() {
@@ -142,32 +137,33 @@ class _CanteenCattleState extends ConsumerState<CanteenCattle> {
                     if (!(snapshot.hasData && snapshot.data!.exists))
                       return ShimmerEffect();
                     Map<String, dynamic> allData = snapshot.data!.data() ?? {};
-                    Map<String, dynamic> data = Map.from(allData)
-                      ..remove('address')
-                      ..remove('collegeName')
-                      ..remove('image')
-                      ..remove('phoneNumber');
-                    List<String> timings = data.keys.toList();
-                    if (timings.isNotEmpty)
+                    Map<String, dynamic> data = Map.from(allData);
+
+                    List<String> timingsData = data.keys.toList();
+
+                    if (timingsData.isNotEmpty) {
                       return SizedBox(
                         height: height * 0.8,
                         child: ListView.builder(
-                          itemCount: timings.length,
-                          itemBuilder: (context, index) {
-                            if (timings[index]
+                          itemCount: timingsData.length,
+                          itemBuilder: (context, indexing) {
+                            if (timingsData[indexing]
                                 .toString()
                                 .startsWith(currentDate)) {
                               return CanteenCattleCardModel(
-                                  time: timings[index],
-                                  itemweight: data[timings[index]]['weight']
+                                  time: timingsData[indexing],
+                                  itemweight: data[timingsData[indexing]]
+                                          ['weight']
                                       .toString());
                             } else {
-                              return null;
+                              return SizedBox();
                             }
                           },
                         ),
                       );
-                    return CustomText(text: "Please Use + icon to Post");
+                    } else {
+                      return CustomText(text: "Please Use + icon to Post");
+                    }
                   },
                 )
               ],

@@ -139,11 +139,11 @@ class _CalandarPickerState extends State<CalandarPicker> {
                       );
                     if (count == 0 && orderWidgets.isEmpty) {
                       return Center(
-                      child: LottieBuilder.asset(
-                          "assets/lottie/no data found.json"),
-                    );
-                     CustomText(
-                          text: "No Orders placed at this selected Date");
+                        child: LottieBuilder.asset(
+                            "assets/lottie/no data found.json"),
+                      );
+                      //  CustomText(
+                      //       text: "No Orders placed at this selected Date");
                     }
                     return CustomText(text: "Search not Found");
                   }),
@@ -232,7 +232,7 @@ class _CalandarPickerState extends State<CalandarPicker> {
                     data.forEach((k, v) {
                       if (k.startsWith(widget.selectedDate)) {
                         Map<String, dynamic> values = data[k];
-                        print(values);
+
                         Map<String, dynamic> filteredData = Map.from(values)
                           ..remove('checkOut')
                           ..remove('notNeeded')

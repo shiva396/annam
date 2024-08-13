@@ -388,12 +388,9 @@ class FirebaseOperations {
     });
   }
 
-  static Future<void> postToCattleOwners(
-      {required double weight,
-      required String address,
-      required String collegeName,
-      required String phoneNo,
-      required String image}) async {
+  static Future<void> postToCattleOwners({
+    required double weight,
+  }) async {
     firebaseInstance
         .collection('cattle_posts')
         .doc(firebaseAuth.currentUser!.uid)
@@ -403,26 +400,13 @@ class FirebaseOperations {
         "notNeeded": [],
         "weight": weight,
       }
-    }, SetOptions(merge: true)).then((v) {
-      firebaseInstance
-          .collection('cattle_posts')
-          .doc(firebaseAuth.currentUser!.uid)
-          .set({
-        "address": address,
-        "collegeName": collegeName,
-        "phoneNumber": phoneNo,
-        "image": image,
-      }, SetOptions(merge: true));
-    });
+    }, SetOptions(merge: true));
   }
 
-  static Future<void> postToNgoOwners(
-      {required String itemName,
-      required int quantity,
-      required String address,
-      required String collegeName,
-      required String phoneNo,
-      required String image}) async {
+  static Future<void> postToNgoOwners({
+    required String itemName,
+    required int quantity,
+  }) async {
     firebaseInstance
         .collection('ngo_posts')
         .doc(firebaseAuth.currentUser!.uid)
@@ -432,17 +416,7 @@ class FirebaseOperations {
         itemName: quantity,
         "checkOut": false,
       }
-    }, SetOptions(merge: true)).then((v) {
-      firebaseInstance
-          .collection('ngo_posts')
-          .doc(firebaseAuth.currentUser!.uid)
-          .set({
-        "address": address,
-        "collegeName": collegeName,
-        "phoneNumber": phoneNo,
-        "image": image,
-      }, SetOptions(merge: true));
-    });
+    }, SetOptions(merge: true));
   }
 
 // TODO: implenting students likes
