@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:projrect_annam/cattle/cattle_maintab.dart';
-import 'package:projrect_annam/cattle/menu/home.dart';
 import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/canteen/canteen_main_tab.dart';
 import 'package:projrect_annam/const/image_const.dart';
@@ -120,7 +119,6 @@ class _EmailBarState extends State<EmailBar> {
   Widget build(BuildContext context) {
     CustomSizeData sizeData = CustomSizeData.from(context);
     double height = sizeData.height;
-    double width = sizeData.width;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -268,7 +266,6 @@ class SignUpBar extends StatelessWidget {
   Widget build(BuildContext context) {
     CustomSizeData sizeData = CustomSizeData.from(context);
     double height = sizeData.height;
-    double width = sizeData.width;
     return Container(
       margin: const EdgeInsets.all(10),
       decoration: BoxDecoration(
