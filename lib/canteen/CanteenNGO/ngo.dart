@@ -84,13 +84,10 @@ class _CanteenNgoState extends ConsumerState<CanteenNgo> {
                           if (itemcountcontroller.text.isNotEmpty &&
                               itemnamecontroller.text.isNotEmpty) {
                             FirebaseOperations.postToNgoOwners(
+                              collegeName: widget.canteenData['collegeName'],
                               itemName: itemnamecontroller.text,
                               quantity: int.parse(
                                   itemcountcontroller.text.trim().toString()),
-                              phoneNo: widget.canteenData['phoneNumber'],
-                              image: widget.canteenData['image'],
-                              address: widget.canteenData['address'],
-                              collegeName: widget.canteenData['collegeName'],
                             ).whenComplete(() {
                               context.pop();
                             });
@@ -166,33 +163,35 @@ class _CanteenNgoState extends ConsumerState<CanteenNgo> {
                       ..remove('phoneNumber');
                     List<String> timings = data.keys.toList();
 
-                    if (timings.isNotEmpty)
+                    if (timings.isNotEmpty) {
                       return SizedBox(
                         height: height * 0.8,
                         child: ListView.builder(
-                            itemCount: timings.length,
-                            itemBuilder: (context, index) {
-                              if (timings[index]
-                                  .toString()
-                                  .startsWith(currentDate)) {
-                                Map<String, dynamic> finalData =
-                                    Map.from(data[timings[index]])
-                                      ..remove('checkOut')
-                                      ..remove('notNeeded')
-                                      ..remove('personPurchased');
-                                String item = (finalData.keys.first);
+                          itemCount: timings.length,
+                          itemBuilder: (context, index) {
+                            if (timings[index]
+                                .toString()
+                                .startsWith(currentDate)) {
+                              Map<String, dynamic> finalData =
+                                  Map.from(data[timings[index]])
+                                    ..remove('checkOut')
+                                    ..remove('notNeeded')
+                                    ..remove('personPurchased');
+                              String item = (finalData.keys.first);
 
-                                return CanteenNgoCardModel(
-                                  item: item,
-                                  quantity:
-                                      int.parse(finalData[item].toString()),
-                                );
-                              } else {
-                                return null;
-                              }
-                            }),
+                              return CanteenNgoCardModel(
+                                item: item,
+                                quantity: int.parse(finalData[item].toString()),
+                              );
+                            } else {
+                              return SizedBox();
+                            }
+                          },
+                        ),
                       );
-                    return CustomText(text: "Please Use + icon to Post");
+                    } else {
+                      return CustomText(text: "Please Use + icon to Post");
+                    }
                   },
                 )
               ],

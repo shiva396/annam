@@ -5,12 +5,14 @@ import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/utils/custom_network_image.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
 
+import '../../const/static_data.dart';
 import '../../utils/color_data.dart';
 import '../../utils/size_data.dart';
 
-class CardModel extends ConsumerWidget {
-  const CardModel(
+class NgoCardModel extends ConsumerWidget {
+  const NgoCardModel(
       {super.key,
+      required this.from,
       required this.collegename,
       required this.canteenOwnerId,
       required this.item,
@@ -29,6 +31,7 @@ class CardModel extends ConsumerWidget {
   final String canteenOwnerId;
   final String canteenName;
   final String phoneNo;
+  final From from;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -124,28 +127,31 @@ class CardModel extends ConsumerWidget {
               SizedBox(
                 height: 5,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(),
-                      child: Text("Accept"),
-                      onPressed: () {
-                        FirebaseOperations.acceptCanteenNgoPost(
-                            canttenOwnerId: canteenOwnerId,
-                            timeKey: time,
-                            canteenName: canteenName,
-                            phoneNo: phoneNo);
-                      }),
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(),
-                      child: Text("Decline"),
-                      onPressed: () {
-                        FirebaseOperations.declineCanteenNgoPost(
-                            canttenOwnerId: canteenOwnerId, timeKey: time);
-                      }),
-                ],
-              )
+              from == From.orders
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(),
+                            child: Text("Accept"),
+                            onPressed: () {
+                              FirebaseOperations.acceptCanteenNgoPost(
+                                canttenOwnerId: canteenOwnerId,
+                                timeKey: time,
+                                collegeName: collegename,
+                              );
+                            }),
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(),
+                            child: Text("Decline"),
+                            onPressed: () {
+                              FirebaseOperations.declineCanteenNgoPost(
+                                  canttenOwnerId: canteenOwnerId,
+                                  timeKey: time);
+                            }),
+                      ],
+                    )
+                  : SizedBox()
             ],
           ),
         ),

@@ -24,12 +24,19 @@ class _StudentHistoryState extends ConsumerState<StudentHistory> {
   _showDatePicker() {
     showDatePicker(
             context: context,
+            barrierDismissible: false,
             firstDate: DateTime(2024),
             lastDate: DateTime.now())
         .then((value) {
       setState(() {
-        selectedDate = value!;
+        if (value != null) {
+          selectedDate = value;
+        } else {
+          selectedDate = DateTime.now();
+        }
       });
+    }).onError((e, s) {
+      context.showSnackBar(e.toString());
     });
   }
 
@@ -80,7 +87,7 @@ class _StudentHistoryState extends ConsumerState<StudentHistory> {
                 ],
               ),
               CalandarPicker(
-                selectedDate: selectedDate,
+                selectedDate: selectedDate.toString().trim().split(' ').first,
                 userRole: widget.userRole,
               ),
             ],

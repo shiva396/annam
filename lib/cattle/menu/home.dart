@@ -5,12 +5,11 @@ import 'package:projrect_annam/const/static_data.dart';
 import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/utils/shimmer.dart';
 
+import '../../ngo/menu/card_model.dart';
 import '../../utils/color_data.dart';
 import '../../utils/custom_text.dart';
 import '../../utils/size_data.dart';
 import 'package:projrect_annam/cattle/menu/card_model.dart';
-
-
 
 class CattleHome extends ConsumerWidget {
   @override
@@ -43,47 +42,72 @@ class CattleHome extends ConsumerWidget {
               builder: (context, snapshot) {
                 if (!snapshot.hasData) return ShimmerEffect();
                 List todayData = [];
-
+                List<Future<void>> futures = [];
                 for (var i in snapshot.data!.docs) {
                   Map<String, dynamic> data = i.data();
+                  String collegeName = i.data()['collegeName'];
+                  String? address;
+                  String? phoneNumber;
+                  String? image;
+                  String? canteenName;
+                  futures.add(FirebaseOperations.fetchCanteenOwnerData(
+                          collegeName: collegeName, canteenOwnerID: i.id)
+                      .then((vv) {
+                    address = (vv['address']);
+                    phoneNumber = vv['phoneNumber'];
+                    canteenName = vv['name'];
 
-                  data.forEach((k, v) {
-                    if (k.startsWith(currentDate)) {
-                      Map<String, dynamic> item = v;
-                      item['collegeName'] = data['collegeName'];
-                      item['address'] = data['address'];
-                      item['phoneNumber'] = data['phoneNumber'];
-                      item['image'] = data['image'];
-                      item['canteenOwnerId'] = i.id;
-                      item['time'] = k;
-                      if (data[k]['checkOut'] == false) {
-                        List<dynamic> notNeededDynamic = data[k]['notNeeded'];
-                        if (!(notNeededDynamic.contains(FirebaseOperations
-                                .firebaseAuth.currentUser!.uid)) &&
-                            data[k]['checkOut'] == false) {
-                          todayData.add(item);
+                    image = vv['image'];
+                    data.forEach((k, v) {
+                      if (k.startsWith(currentDate)) {
+                        Map<String, dynamic> item = v;
+                        item['collegeName'] = collegeName;
+                        item['address'] = address ?? "";
+                        item['phoneNumber'] = phoneNumber ?? "";
+                        item['image'] = image ?? "";
+                        item['canteenOwnerId'] = i.id;
+                        item['time'] = k;
+                        item['weight'] = data[k]['weight'];
+                        item['canteenName'] = canteenName ?? "";
+                        if (data[k]['checkOut'] == false) {
+                          List<dynamic> notNeededDynamic = data[k]['notNeeded'];
+                          if (!(notNeededDynamic.contains(FirebaseOperations
+                                  .firebaseAuth.currentUser!.uid)) &&
+                              data[k]['checkOut'] == false) {
+                            todayData.add(item);
+                          }
                         }
                       }
-                    }
-                  });
+                    });
+                  }));
                 }
 
-                return Expanded(
-                  child: ListView.builder(
-                    itemCount: todayData.length,
-                    itemBuilder: (context, index) {
-                      print(todayData);
-                      return CardModel(
-                        phoneNumber: todayData[index]['phoneNumber'],
-                        time: todayData[index]['time'],
-                        canteenOwnerId: todayData[index]['canteenOwnerId'],
-                        imageUrl: todayData[index]['image'],
-                        collegename: todayData[index]['collegeName'],
-                        weight: todayData[index]['weight'].toString(),
-                        location: todayData[index]['address'],
-                      );
-                    },
-                  ),
+                return FutureBuilder<void>(
+                  future: Future.wait(futures),
+                  builder: (context, futureSnapshot) {
+                    if (futureSnapshot.connectionState !=
+                        ConnectionState.done) {
+                      return ShimmerEffect();
+                    }
+
+                    return Expanded(
+                      child: ListView.builder(
+                        itemCount: todayData.length,
+                        itemBuilder: (context, index) {
+                          return CattleCardModel(
+                            from: From.orders,
+                            phoneNumber: todayData[index]['phoneNumber'],
+                            time: todayData[index]['time'],
+                            canteenOwnerId: todayData[index]['canteenOwnerId'],
+                            imageUrl: todayData[index]['image'],
+                            collegename: todayData[index]['collegeName'],
+                            weight: todayData[index]['weight'].toString(),
+                            location: todayData[index]['address'],
+                          );
+                        },
+                      ),
+                    );
+                  },
                 );
               })
         ],

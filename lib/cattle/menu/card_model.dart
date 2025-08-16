@@ -4,12 +4,14 @@ import 'package:projrect_annam/firebase/firebase_operations.dart';
 import 'package:projrect_annam/utils/custom_network_image.dart';
 import 'package:projrect_annam/utils/custom_text.dart';
 
+import '../../const/static_data.dart';
 import '../../utils/color_data.dart';
 import '../../utils/size_data.dart';
 
-class CardModel extends ConsumerWidget {
-  const CardModel(
+class CattleCardModel extends ConsumerWidget {
+  const CattleCardModel(
       {super.key,
+      required this.from,
       required this.phoneNumber,
       required this.canteenOwnerId,
       required this.time,
@@ -22,6 +24,7 @@ class CardModel extends ConsumerWidget {
   final String phoneNumber;
 
   final String weight;
+  final  From from;
   final String time;
   final String canteenOwnerId;
   final String location;
@@ -115,8 +118,7 @@ class CardModel extends ConsumerWidget {
                       child: Text("Accept"),
                       onPressed: () {
                         FirebaseOperations.acceptCanteenCattlePost(
-                          canteenName: collegename,
-                          phoneNo: phoneNumber,
+                          collegeName: collegename,
                           canttenOwnerId: canteenOwnerId,
                           timeKey: time,
                         );

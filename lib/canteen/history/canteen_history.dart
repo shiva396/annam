@@ -22,15 +22,22 @@ class _CanteenHistoryState extends ConsumerState<CanteenHistory> {
 
   _showDatePicker() {
     showDatePicker(
+            barrierDismissible: false,
             context: context,
             firstDate: DateTime(2024),
             lastDate: DateTime.now())
         .then((value) {
       setState(() {
-        selectedDate = value!;
+        if (value != null) {
+          selectedDate = value;
+        } else {
+          selectedDate = DateTime.now();
+        }
       });
     });
   }
+
+  String choosedItem = "Ngo";
 
   @override
   Widget build(BuildContext context) {
@@ -57,15 +64,42 @@ class _CanteenHistoryState extends ConsumerState<CanteenHistory> {
                     size: sizeData.header,
                     color: colorData.fontColor(1),
                   ),
-                  IconButton(
-                      onPressed: () {
-                        _showDatePicker();
-                      },
-                      icon: Icon(Icons.sort))
+                  Row(
+                    children: [
+                      DropdownButton<String>(
+                          hint: Text(choosedItem),
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          items: [
+                            DropdownMenuItem(
+                              value: "Student",
+                              child: Text("Student"),
+                            ),
+                            DropdownMenuItem(
+                              value: "Cattle",
+                              child: Text("Cattle"),
+                            ),
+                            DropdownMenuItem(
+                              value: "Ngo",
+                              child: Text("Ngo"),
+                            ),
+                          ],
+                          onChanged: (v) {
+                            setState(() {
+                              choosedItem = v!;
+                            });
+                          }),
+                      IconButton(
+                          onPressed: () {
+                            _showDatePicker();
+                          },
+                          icon: Icon(Icons.sort)),
+                    ],
+                  )
                 ],
               ),
               CalandarPicker(
-                selectedDate: selectedDate,
+                selectedRoleCanteenHistory: choosedItem,
+                selectedDate: selectedDate.toString().trim().split(' ').first,
                 userRole: widget.userRole,
               ),
             ],
